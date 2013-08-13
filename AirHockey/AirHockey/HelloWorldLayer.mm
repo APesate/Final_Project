@@ -8,6 +8,7 @@
 
 // Import the interfaces
 #import "HelloWorldLayer.h"
+#import "PaddleSprite.h"
 
 // Not included in "cocos2d.h"
 #import "CCPhysicsSprite.h"
@@ -16,14 +17,12 @@
 #import "AppDelegate.h"
 
 
-enum {
-	kTagParentNode = 1,
-};
-
-
 #pragma mark - HelloWorldLayer
 
-@interface HelloWorldLayer()
+@interface HelloWorldLayer(){
+    PaddleSprite* paddleOne;
+    PaddleSprite* paddleTwo;
+}
 -(void) initPhysics;
 @end
 
@@ -51,6 +50,15 @@ enum {
 		// enable events
 		self.touchEnabled = YES;
 		self.accelerometerEnabled = YES;
+        
+        paddleOne = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 80, 80)];
+        paddleOne.position = ccp(90, [[CCDirector sharedDirector] winSize].height / 2);
+        [self addChild:paddleOne];
+        
+        paddleTwo = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 80, 80)];
+        paddleTwo.position = ccp(90, [[CCDirector sharedDirector] winSize].height / 2);
+        [self addChild:paddleTwo];
+        
 		// init physics
 		[self initPhysics];
 	}
@@ -67,8 +75,7 @@ enum {
 
 -(void) initPhysics
 {
-	
-	CGSize s = [[CCDirector sharedDirector] winSize];
+	CGSize winSize = [[CCDirector sharedDirector] winSize];
 	
 	b2Vec2 gravity;
 	gravity.Set(0.0f, -10.0f);
@@ -95,19 +102,19 @@ enum {
 	
 	// bottom
 	
-	groundBox.Set(b2Vec2(0,0), b2Vec2(s.width/PTM_RATIO,0));
+	groundBox.Set(b2Vec2(0,0), b2Vec2(winSize.width/PTM_RATIO,0));
 	groundBody->CreateFixture(&groundBox,0);
 	
 	// top
-	groundBox.Set(b2Vec2(0,s.height/PTM_RATIO), b2Vec2(s.width/PTM_RATIO,s.height/PTM_RATIO));
+	groundBox.Set(b2Vec2(0,winSize.height/PTM_RATIO), b2Vec2(winSize.width/PTM_RATIO,winSize.height/PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
 	
 	// left
-	groundBox.Set(b2Vec2(0,s.height/PTM_RATIO), b2Vec2(0,0));
+	groundBox.Set(b2Vec2(0,winSize.height/PTM_RATIO), b2Vec2(0,0));
 	groundBody->CreateFixture(&groundBox,0);
 	
 	// right
-	groundBox.Set(b2Vec2(s.width/PTM_RATIO,s.height/PTM_RATIO), b2Vec2(s.width/PTM_RATIO,0));
+	groundBox.Set(b2Vec2(winSize.width/PTM_RATIO,winSize.height/PTM_RATIO), b2Vec2(winSize.width/PTM_RATIO,0));
 	groundBody->CreateFixture(&groundBox,0);
 }
 

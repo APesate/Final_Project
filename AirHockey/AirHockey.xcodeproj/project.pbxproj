@@ -188,6 +188,7 @@
 		829E050D17BAD0F80056CD4B /* IntroLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 829E050C17BAD0F80056CD4B /* IntroLayer.mm */; };
 		829E051017BAD0F80056CD4B /* GLES-Render.mm in Sources */ = {isa = PBXBuildFile; fileRef = 829E050F17BAD0F80056CD4B /* GLES-Render.mm */; };
 		829E051217BAD0F80056CD4B /* blocks.png in Resources */ = {isa = PBXBuildFile; fileRef = 829E051117BAD0F80056CD4B /* blocks.png */; };
+		829E051A17BAE1D90056CD4B /* PaddleSprite.m in Sources */ = {isa = PBXBuildFile; fileRef = 829E051917BAE1D80056CD4B /* PaddleSprite.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -569,6 +570,8 @@
 		829E050E17BAD0F80056CD4B /* GLES-Render.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GLES-Render.h"; sourceTree = "<group>"; };
 		829E050F17BAD0F80056CD4B /* GLES-Render.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "GLES-Render.mm"; sourceTree = "<group>"; };
 		829E051117BAD0F80056CD4B /* blocks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blocks.png; path = Resources/blocks.png; sourceTree = "<group>"; };
+		829E051817BAE1D80056CD4B /* PaddleSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaddleSprite.h; sourceTree = "<group>"; };
+		829E051917BAE1D80056CD4B /* PaddleSprite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaddleSprite.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -633,6 +636,8 @@
 				829E050617BAD0F80056CD4B /* AppDelegate.mm */,
 				829E050817BAD0F80056CD4B /* HelloWorldLayer.h */,
 				829E050917BAD0F80056CD4B /* HelloWorldLayer.mm */,
+				829E051817BAE1D80056CD4B /* PaddleSprite.h */,
+				829E051917BAE1D80056CD4B /* PaddleSprite.m */,
 				829E050B17BAD0F80056CD4B /* IntroLayer.h */,
 				829E050C17BAD0F80056CD4B /* IntroLayer.mm */,
 				829E050E17BAD0F80056CD4B /* GLES-Render.h */,
@@ -1416,6 +1421,7 @@
 				829E050A17BAD0F80056CD4B /* HelloWorldLayer.mm in Sources */,
 				829E050D17BAD0F80056CD4B /* IntroLayer.mm in Sources */,
 				829E051017BAD0F80056CD4B /* GLES-Render.mm in Sources */,
+				829E051A17BAE1D90056CD4B /* PaddleSprite.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
