@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		826523E117BBDFEE00D52B87 /* puck2.png in Resources */ = {isa = PBXBuildFile; fileRef = 826523E017BBDFEE00D52B87 /* puck2.png */; };
 		829E02CE17BAD0F10056CD4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CD17BAD0F10056CD4B /* QuartzCore.framework */; };
 		829E02D017BAD0F10056CD4B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CF17BAD0F10056CD4B /* OpenGLES.framework */; };
 		829E02D217BAD0F10056CD4B /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02D117BAD0F10056CD4B /* OpenAL.framework */; };
@@ -195,6 +196,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		826523E017BBDFEE00D52B87 /* puck2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = puck2.png; path = ../../../../../Downloads/puck2.png; sourceTree = "<group>"; };
 		829E02CA17BAD0F10056CD4B /* AirHockey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirHockey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		829E02CD17BAD0F10056CD4B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		829E02CF17BAD0F10056CD4B /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -604,6 +606,7 @@
 		829E02C117BAD0F10056CD4B = {
 			isa = PBXGroup;
 			children = (
+				826523E017BBDFEE00D52B87 /* puck2.png */,
 				829E02E117BAD0F20056CD4B /* AirHockey */,
 				829E02CC17BAD0F10056CD4B /* Frameworks */,
 				829E02CB17BAD0F10056CD4B /* Products */,
@@ -1266,6 +1269,7 @@
 				829E051C17BAE5EB0056CD4B /* Paddle.png in Resources */,
 				829E051E17BB2EDE0056CD4B /* Puck.png in Resources */,
 				829E052017BBD8E40056CD4B /* TableBackground.png in Resources */,
+				826523E117BBDFEE00D52B87 /* puck2.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1286,7 +1290,6 @@
 			shellScript = "export CODESIGN_ALLOCATE=/Library/JailCoder/codesign_allocate\nif [ \"${PLATFORM_NAME}\" == \"iphoneos\" ]; then\n/Library/JailCoder/Entitlements/Entitlements.py \"my.company.${PROJECT_NAME}\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\";\ncodesign -f -s \"iPhone Developer\" --entitlements \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
-
 
 /* Begin PBXSourcesBuildPhase section */
 		829E02C617BAD0F10056CD4B /* Sources */ = {

@@ -23,6 +23,11 @@
     CCSprite* puckSprite;
     b2Body* puckBody;
     PaddleSprite* paddleTwo;
+    b2ContactFilter *contactFilter;
+    b2EdgeShape leftBarrier;
+    b2ContactFilter *filterbarrier;
+    b2FixtureDef bodyFixtureDef;
+
 }
 -(void) initPhysics;
 @end
@@ -47,7 +52,8 @@
 -(id) init
 {
 	if( (self=[super init])) {
-		
+        
+                
 		// enable events
 		self.touchEnabled = YES;
 		self.accelerometerEnabled = YES;
@@ -72,9 +78,9 @@
         paddleTwo.scale = 0.75;
         [self addChild:paddleTwo];
         
-        puckSprite = [[CCSprite alloc] initWithFile:@"Puck.png" rect:CGRectMake(0, 0, 85, 85)];
+        puckSprite = [[CCSprite alloc] initWithFile:@"puck2.png" rect:CGRectMake(0, 0, 150, 150)];
         puckSprite.position = ccp([[CCDirector sharedDirector] winSize].width / 2, [[CCDirector sharedDirector] winSize].height / 2);
-        puckSprite.scale = 0.75;
+        puckSprite.scale = 0.50;
         [self addChild:puckSprite];
         
 		// init physics
@@ -110,7 +116,9 @@
 	world->SetAllowSleeping(true);
 	
 	world->SetContinuousPhysics(true);
-    
+    world->SetContactFilter(filterbarrier);
+
+   // filterbarrier->ShouldCollide(bodyFixtureDef, );
     
     paddleOne->world = world;
     paddleTwo->world = world;
@@ -148,7 +156,12 @@
     
     groundBox.Set(b2Vec2(0, 2 * winSize.height/(3 * PTM_RATIO)), b2Vec2(0, winSize.height / PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
+    
+    leftBarrier.Set(b2Vec2(0, winSize.height/PTM_RATIO), b2Vec2(0, winSize.height / PTM_RATIO));
+	groundBody->CreateFixture(&leftBarrier,0);
 	
+    
+    
 	// right
 	groundBox.Set(b2Vec2(winSize.width/ PTM_RATIO, winSize.height/(3 * PTM_RATIO)), b2Vec2(winSize.width/PTM_RATIO, 0));
 	groundBody->CreateFixture(&groundBox,0);
@@ -166,16 +179,43 @@
     puckBody = world->CreateBody(&bodyDef);
     
     b2CircleShape paddleTwoShape;
-    paddleTwoShape.m_radius = 31.0/PTM_RATIO;
+    paddleTwoShape.m_radius = 28.0/PTM_RATIO;
     
-    b2FixtureDef bodyTextureDef;
-    bodyTextureDef.shape = &paddleTwoShape;
-    bodyTextureDef.density = 10.0f;
-    bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
-    bodyTextureDef.restitution = 0.8f;
-    puckBody->CreateFixture(&bodyTextureDef);
+
+    bodyFixtureDef.shape = &paddleTwoShape;
+    bodyFixtureDef.density = 10.0f;
+    bodyFixtureDef.friction = (0.5 * bodyFixtureDef.density);
+    bodyFixtureDef.restitution = 0.8f;
+    bodyFixtureDef.filter.groupIndex = 1;
+    puckBody->CreateFixture(&bodyFixtureDef);
     puckBody->SetLinearDamping(0.01 * puckBody->GetMass());
+    
 }
+
+/*void b2World::SetContactFilter(b2ContactFilter* filter)
+{
+    filter = filter;
+}*/
+
+//*bool b2ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
+//{
+    
+   /* const b2Filter& filterA = fixtureA->GetFilterData();
+    const b2Filter& filterB = fixtureB->GetFilterData();
+    
+    if (filterA.groupIndex == filterB.groupIndex && filterA.groupIndex != 0)
+    {
+        return filterA.groupIndex > 0;
+    }
+    
+    bool collide = (filterA.maskBits & filterB.categoryBits) != 0 &&
+    
+    (filterA.categoryBits & filterB.maskBits) != 0;*/
+    
+  //  return YES;
+    
+//}
+
 
 -(void) update: (ccTime) dt
 {
@@ -193,6 +233,14 @@
             myActor.position = CGPointMake( b->GetPosition().x * PTM_RATIO, b->GetPosition().y * PTM_RATIO);
             myActor.rotation = -1 * CC_RADIANS_TO_DEGREES(b->GetAngle());
         }
+    }
+    
+    if (puckSprite.position.x<0 ) {
+        puckBody->SetTransform(b2Vec2([[CCDirector sharedDirector] winSize].width / (2 * PTM_RATIO), [[CCDirector sharedDirector] winSize].height /(2 * PTM_RATIO)), 1.0);
+        b2Vec2 velocity = b2Vec2(0, 0);
+        puckBody->SetLinearVelocity(velocity);
+        puckBody->SetAngularVelocity(0);
+        
     }
 	// Instruct the world to perform a single step of simulation. It is
 	// generally best to keep the time step and iterations fixed.
