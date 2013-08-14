@@ -8,10 +8,8 @@
 
 // Import the interfaces
 #import "HelloWorldLayer.h"
-#import "PaddleSprite.h"
 
 // Not included in "cocos2d.h"
-#import "CCPhysicsSprite.h"
 
 // Needed to obtain the Navigation Controller
 #import "AppDelegate.h"
@@ -21,7 +19,9 @@
 
 @interface HelloWorldLayer(){
     PaddleSprite* paddleOne;
+    b2Body* paddleOneBody;
     PaddleSprite* paddleTwo;
+    b2Body* paddleTwoBody;
 }
 -(void) initPhysics;
 @end
@@ -51,12 +51,12 @@
 		self.touchEnabled = YES;
 		self.accelerometerEnabled = YES;
         
-        paddleOne = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 80, 80)];
+        paddleOne = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
         paddleOne.position = ccp(90, [[CCDirector sharedDirector] winSize].height / 2);
         [self addChild:paddleOne];
         
-        paddleTwo = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 80, 80)];
-        paddleTwo.position = ccp(90, [[CCDirector sharedDirector] winSize].height / 2);
+        paddleTwo = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
+        paddleTwo.position = ccp([[CCDirector sharedDirector] winSize].width - 90, [[CCDirector sharedDirector] winSize].height / 2);
         [self addChild:paddleTwo];
         
 		// init physics
@@ -78,16 +78,21 @@
 	CGSize winSize = [[CCDirector sharedDirector] winSize];
 	
 	b2Vec2 gravity;
-	gravity.Set(0.0f, -10.0f);
+	gravity.Set(0.0f, 0.0f);
 	world = new b2World(gravity);
 	
 	
 	// Do we want to let bodies sleep?
 	world->SetAllowSleeping(true);
 	
-	world->SetContinuousPhysics(true);	
+	world->SetContinuousPhysics(true);
+
+    paddleOne->world = world;
+    paddleTwo->world = world;
 	
-	
+    [paddleOne createBodyWithCoordinateType:1];
+    [paddleTwo createBodyWithCoordinateType:2];
+
 	// Define the ground body.
 	b2BodyDef groundBodyDef;
 	groundBodyDef.position.Set(0, 0); // bottom-left corner
@@ -96,7 +101,9 @@
 	// from a pool and creates the ground box shape (also from a pool).
 	// The body is also added to the world.
 	b2Body* groundBody = world->CreateBody(&groundBodyDef);
-	
+	paddleOne->world->CreateBody(&groundBodyDef);
+    paddleTwo->world->CreateBody(&groundBodyDef);
+    
 	// Define the ground box shape.
 	b2EdgeShape groundBox;		
 	
@@ -116,6 +123,8 @@
 	// right
 	groundBox.Set(b2Vec2(winSize.width/PTM_RATIO,winSize.height/PTM_RATIO), b2Vec2(winSize.width/PTM_RATIO,0));
 	groundBody->CreateFixture(&groundBox,0);
+    
+    [self schedule:@selector(update:)];
 }
 
 -(void) update: (ccTime) dt

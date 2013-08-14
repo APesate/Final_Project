@@ -188,7 +188,8 @@
 		829E050D17BAD0F80056CD4B /* IntroLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 829E050C17BAD0F80056CD4B /* IntroLayer.mm */; };
 		829E051017BAD0F80056CD4B /* GLES-Render.mm in Sources */ = {isa = PBXBuildFile; fileRef = 829E050F17BAD0F80056CD4B /* GLES-Render.mm */; };
 		829E051217BAD0F80056CD4B /* blocks.png in Resources */ = {isa = PBXBuildFile; fileRef = 829E051117BAD0F80056CD4B /* blocks.png */; };
-		829E051A17BAE1D90056CD4B /* PaddleSprite.m in Sources */ = {isa = PBXBuildFile; fileRef = 829E051917BAE1D80056CD4B /* PaddleSprite.m */; };
+		829E051A17BAE1D90056CD4B /* PaddleSprite.mm in Sources */ = {isa = PBXBuildFile; fileRef = 829E051917BAE1D80056CD4B /* PaddleSprite.mm */; };
+		829E051C17BAE5EB0056CD4B /* Paddle.png in Resources */ = {isa = PBXBuildFile; fileRef = 829E051B17BAE5EB0056CD4B /* Paddle.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -571,7 +572,8 @@
 		829E050F17BAD0F80056CD4B /* GLES-Render.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "GLES-Render.mm"; sourceTree = "<group>"; };
 		829E051117BAD0F80056CD4B /* blocks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blocks.png; path = Resources/blocks.png; sourceTree = "<group>"; };
 		829E051817BAE1D80056CD4B /* PaddleSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaddleSprite.h; sourceTree = "<group>"; };
-		829E051917BAE1D80056CD4B /* PaddleSprite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaddleSprite.m; sourceTree = "<group>"; };
+		829E051917BAE1D80056CD4B /* PaddleSprite.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PaddleSprite.mm; sourceTree = "<group>"; };
+		829E051B17BAE5EB0056CD4B /* Paddle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Paddle.png; path = Resources/Paddle.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -637,7 +639,7 @@
 				829E050817BAD0F80056CD4B /* HelloWorldLayer.h */,
 				829E050917BAD0F80056CD4B /* HelloWorldLayer.mm */,
 				829E051817BAE1D80056CD4B /* PaddleSprite.h */,
-				829E051917BAE1D80056CD4B /* PaddleSprite.m */,
+				829E051917BAE1D80056CD4B /* PaddleSprite.mm */,
 				829E050B17BAD0F80056CD4B /* IntroLayer.h */,
 				829E050C17BAD0F80056CD4B /* IntroLayer.mm */,
 				829E050E17BAD0F80056CD4B /* GLES-Render.h */,
@@ -652,6 +654,7 @@
 		829E02E217BAD0F20056CD4B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				829E051B17BAE5EB0056CD4B /* Paddle.png */,
 				829E02E317BAD0F20056CD4B /* Default.png */,
 				829E02E517BAD0F20056CD4B /* Default@2x.png */,
 				829E02E717BAD0F20056CD4B /* Default-568h@2x.png */,
@@ -1253,6 +1256,7 @@
 				829E02F917BAD0F20056CD4B /* iTunesArtwork in Resources */,
 				829E045217BAD0F60056CD4B /* ChangeLog in Resources */,
 				829E051217BAD0F80056CD4B /* blocks.png in Resources */,
+				829E051C17BAE5EB0056CD4B /* Paddle.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1421,7 +1425,7 @@
 				829E050A17BAD0F80056CD4B /* HelloWorldLayer.mm in Sources */,
 				829E050D17BAD0F80056CD4B /* IntroLayer.mm in Sources */,
 				829E051017BAD0F80056CD4B /* GLES-Render.mm in Sources */,
-				829E051A17BAE1D90056CD4B /* PaddleSprite.m in Sources */,
+				829E051A17BAE1D90056CD4B /* PaddleSprite.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1539,6 +1543,7 @@
 				829E051717BAD0F80056CD4B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
