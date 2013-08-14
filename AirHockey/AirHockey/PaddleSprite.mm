@@ -84,7 +84,7 @@
     b2MouseJointDef md;
     md.bodyA = world->GetBodyList();
     md.bodyB = body;
-    md.target = b2Vec2(touchLocation.x / PTM_RATIO, touchLocation.y / PTM_RATIO);
+    md.target = b2Vec2((body->GetPosition()).x, (body->GetPosition()).y);
     md.collideConnected = true;
     md.dampingRatio = 2.0f;
     md.frequencyHz =  100.0f;

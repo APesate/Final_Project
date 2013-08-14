@@ -20,13 +20,19 @@
 @interface HelloWorldLayer(){
     CGSize winSize;
     PaddleSprite* paddleOne;
+    PaddleSprite* paddleTwo;
+    CCSprite* playerOneScoreSprite;
+    CCSprite* playerTwoScoreSprite;
     CCSprite* backgroundSprite;
     CCSprite* puckSprite;
     b2Body* puckBody;
-    PaddleSprite* paddleTwo;
+    NSArray *scoreImagesArray;
+    int playerOneScore;
+    int playerTwoScore;
 }
--(void) initPhysics;
+
 @end
+
 
 @implementation HelloWorldLayer
 
@@ -45,6 +51,8 @@
 	return scene;
 }
 
+#pragma mark - Initialize Instances
+
 -(id) init
 {
 	if( (self=[super init])) {
@@ -54,15 +62,30 @@
 		self.touchEnabled = YES;
 		self.accelerometerEnabled = YES;
         
+        playerOneScore = 0;
+        playerTwoScore = 0;
+        
+#warning Change this array with the actual images of the score.
+        scoreImagesArray = [NSArray arrayWithObjects:@"Icon.png", @"Puck.png", @"Icon.png", @"Puck.png", @"Icon.png", @"Puck.png", @"Icon.png", nil];
+        [scoreImagesArray retain]; //Because it's no ARC
+                
         [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGB565];
         backgroundSprite = [CCSprite spriteWithFile:@"TableBackground.png"];
         backgroundSprite.position = ccp(winSize.width / 2,winSize.height / 2);
         backgroundSprite.rotation = 90;
         backgroundSprite.scale = 2;
-        backgroundSprite.scaleY = 2.37
-        ;
+        backgroundSprite.scaleY = 2.37;
         [self addChild:backgroundSprite];
         [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
+        
+        playerOneScoreSprite = [CCSprite spriteWithFile:[scoreImagesArray objectAtIndex:playerOneScore] rect:CGRectMake(0, 0, 50, 50)];
+        playerOneScoreSprite.position = ccp((winSize.width / 2) - 28, winSize.height - 34.5);
+        [self addChild:playerOneScoreSprite];
+        
+        playerTwoScoreSprite = [CCSprite spriteWithFile:[scoreImagesArray objectAtIndex:playerTwoScore] rect:CGRectMake(0, 0, 50, 50)];
+        playerTwoScoreSprite.position = ccp(winSize.width / 2 + 28, winSize.height - 34.5);
+        playerTwoScoreSprite.rotation = 180;
+        [self addChild:playerTwoScoreSprite];
         
         paddleOne = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
         paddleOne.position = ccp(90, winSize.height / 2);
@@ -89,7 +112,22 @@
 {
 	delete world;
 	world = NULL;
-	
+    puckBody = NULL;
+    scoreImagesArray = nil;
+    [scoreImagesArray release];
+    paddleOne = nil;
+    [paddleOne release];
+    paddleTwo = nil;
+    [paddleTwo release];
+    playerOneScoreSprite = nil;
+    [playerOneScoreSprite release];
+    playerTwoScoreSprite = nil;
+    [playerTwoScoreSprite release];
+    backgroundSprite = nil;
+    [backgroundSprite release];
+    puckSprite = nil;
+    [puckSprite release];
+    	
 	[super dealloc];
 }	
 
@@ -178,6 +216,8 @@
     puckBody->SetLinearDamping(0.01 * puckBody->GetMass());
 }
 
+#pragma mark - Update Time Step
+
 -(void) update: (ccTime) dt
 {
 	//It is recommended that a fixed time step is used with Box2D for stability
@@ -195,7 +235,16 @@
         }
     }
     
-    if((puckBody->GetPosition()).x > winSize.width / PTM_RATIO|| (puckBody->GetPosition()).x < 0){
+    //Analyse the position of the puck on the screen and replaced if neccesary
+    if((puckBody->GetPosition()).x > winSize.width / PTM_RATIO){
+        playerTwoScore++;
+        [playerTwoScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerTwoScore]]];
+        puckBody->SetTransform(b2Vec2(winSize.width / (2 * PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
+        puckBody->SetLinearVelocity(b2Vec2(0, 0));
+        puckBody->SetAngularVelocity(0);
+    }else if((puckBody->GetPosition()).x < 0){
+        playerOneScore++;
+        [playerOneScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerOneScore]]];
         puckBody->SetTransform(b2Vec2(winSize.width / (2 * PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
         puckBody->SetLinearVelocity(b2Vec2(0, 0));
         puckBody->SetAngularVelocity(0);
@@ -203,7 +252,6 @@
 	// Instruct the world to perform a single step of simulation. It is
 	// generally best to keep the time step and iterations fixed.
 	world->Step(dt, 10, 10);
-
 }
 
 @end
