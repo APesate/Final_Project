@@ -34,7 +34,7 @@
     body = world->CreateBody(&bodyDef);
     
     b2CircleShape paddleTwoShape;
-    paddleTwoShape.m_radius = 40.0/PTM_RATIO;
+    paddleTwoShape.m_radius = 31.0/PTM_RATIO;
     
     b2FixtureDef bodyTextureDef;
     bodyTextureDef.shape = &paddleTwoShape;
