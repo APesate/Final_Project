@@ -79,25 +79,31 @@
 
 -(void) initPhysics
 {
-	CGSize winSize = [[CCDirector sharedDirector] winSize];
-	
-	b2Vec2 gravity;
+	[self createWorld];
+    [paddleOne createBodyWithCoordinateType:1];
+    [paddleTwo createBodyWithCoordinateType:2];
+    [self createPuck];
+    [self createGround];
+    [self schedule:@selector(update:)];
+}
+
+-(void)createWorld{
+    b2Vec2 gravity;
 	gravity.Set(0.0f, 0.0f);
 	world = new b2World(gravity);
-	
 	
 	// Do we want to let bodies sleep?
 	world->SetAllowSleeping(true);
 	
 	world->SetContinuousPhysics(true);
-
+    
     paddleOne->world = world;
     paddleTwo->world = world;
-	
-    [paddleOne createBodyWithCoordinateType:1];
-    [paddleTwo createBodyWithCoordinateType:2];
-    [self createPuck];
-	
+}
+
+-(void)createGround{
+    CGSize winSize = [[CCDirector sharedDirector] winSize];
+    
     // Define the ground body.
 	b2BodyDef groundBodyDef;
 	groundBodyDef.position.Set(0, 0); // bottom-left corner
@@ -110,26 +116,30 @@
     paddleTwo->world->CreateBody(&groundBodyDef);
     
 	// Define the ground box shape.
-	b2EdgeShape groundBox;		
+	b2EdgeShape groundBox;
 	
 	// bottom
 	
-	groundBox.Set(b2Vec2(0,0), b2Vec2(winSize.width/PTM_RATIO,0));
+	groundBox.Set(b2Vec2(0, 0), b2Vec2(winSize.width/PTM_RATIO, 0));
 	groundBody->CreateFixture(&groundBox,0);
 	
 	// top
-	groundBox.Set(b2Vec2(0,winSize.height/PTM_RATIO), b2Vec2(winSize.width/PTM_RATIO,winSize.height/PTM_RATIO));
+	groundBox.Set(b2Vec2(0, winSize.height/PTM_RATIO), b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
 	
 	// left
-	groundBox.Set(b2Vec2(0,winSize.height/PTM_RATIO), b2Vec2(0,0));
+	groundBox.Set(b2Vec2(0, winSize.height/(3 * PTM_RATIO)), b2Vec2(0, 0));
+	groundBody->CreateFixture(&groundBox,0);
+    
+    groundBox.Set(b2Vec2(0, 2 * winSize.height/(3 * PTM_RATIO)), b2Vec2(0, winSize.height / PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
 	
 	// right
-	groundBox.Set(b2Vec2(winSize.width/PTM_RATIO,winSize.height/PTM_RATIO), b2Vec2(winSize.width/PTM_RATIO,0));
+	groundBox.Set(b2Vec2(winSize.width/ PTM_RATIO, winSize.height/(3 * PTM_RATIO)), b2Vec2(winSize.width/PTM_RATIO, 0));
 	groundBody->CreateFixture(&groundBox,0);
     
-    [self schedule:@selector(update:)];
+	groundBox.Set(b2Vec2(winSize.width/ PTM_RATIO, 2 * winSize.height/(3 * PTM_RATIO)), b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO));
+	groundBody->CreateFixture(&groundBox,0);
 }
 
 -(void)createPuck{
@@ -149,7 +159,6 @@
     bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
     bodyTextureDef.restitution = 0.8f;
     puckBody->CreateFixture(&bodyTextureDef);
-    //  _body->SetLinearVelocity(b2Vec2(10, 0));
     puckBody->SetLinearDamping(0.01 * puckBody->GetMass());
 }
 

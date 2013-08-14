@@ -42,7 +42,6 @@
     bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
     bodyTextureDef.restitution = 0.8f;
     body->CreateFixture(&bodyTextureDef);
-    //  _body->SetLinearVelocity(b2Vec2(10, 0));
     body->SetLinearDamping(0.01 * body->GetMass());
 }
 
@@ -69,7 +68,7 @@
 {
     CGPoint touchLocation = [touch locationInView:touch.view];
     touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
-    NSLog(@"Did you touch me?");
+
     if (state != kPaddleStateUngrabbed) return NO;
     if(!CGRectContainsPoint(self.boundingBox, touchLocation))return NO;
     //if ( ![self containsTouchLocation:touch] ) return NO;
@@ -92,7 +91,6 @@
 
 - (void)ccTouchMoved:(UITouch *)touch withEvent:(UIEvent *)event
 {
-    NSLog(@"Dont Move Me");
     // If it weren't for the TouchDispatcher, you would need to keep a reference
     // to the touch from touchBegan and check that the current touch is the same
     // as that one.
@@ -115,7 +113,6 @@
 
 - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
-    NSLog(@"Thanks");
     NSAssert(state == kPaddleStateGrabbed, @"Paddle - Unexpected state!");
     
     world->DestroyJoint(mouseJoint);
