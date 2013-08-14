@@ -8,13 +8,16 @@
 
 #import "PaddleSprite.h"
 
-@implementation PaddleSprite
+@implementation PaddleSprite{
+    CGSize winSize;
+}
 
 -(id)initWithFile:(NSString *)filename rect:(CGRect)rect{
     self = [super initWithFile:filename rect:rect];
     
     if(self){
         state = kPaddleStateUngrabbed;
+        winSize = [[CCDirector sharedDirector] winSize];
     }
     return self;
 }
@@ -41,12 +44,9 @@
     bodyTextureDef.density = 10.0f;
     bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
     bodyTextureDef.restitution = 0.8f;
+    bodyTextureDef.filter.groupIndex = 1;
     body->CreateFixture(&bodyTextureDef);
-
-    //  _body->SetLinearVelocity(b2Vec2(10, 0));
-//    body->SetLinearDamping(0.01 * body->GetMass());
     body->SetAngularDamping(0.01* body->GetMass());
-
     body->SetLinearDamping(0.01 * body->GetMass());
 
 }
@@ -108,15 +108,16 @@
     
     NSAssert(state == kPaddleStateGrabbed, @"Paddle - Unexpected state!");
     
-//    CGPoint touchPoint = [touch locationInView:[touch view]];
-//    touchPoint = [[CCDirector sharedDirector] convertToGL:touchPoint];
-//    
-//    
-//    self.position = CGPointMake(touchPoint.x, touchPoint.y);
     CGPoint touchLocation = [touch locationInView:[touch view]];
     touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
     
-    mouseJoint->SetTarget(b2Vec2(touchLocation.x / PTM_RATIO, touchLocation.y / PTM_RATIO));
+    if(!(self.position.x < 0 || self.position.x > winSize.width)){
+        mouseJoint->SetTarget(b2Vec2(touchLocation.x / PTM_RATIO, touchLocation.y / PTM_RATIO));
+    }else{
+        CGPoint previousTouch = [touch previousLocationInView:[touch view]];
+        previousTouch = [[CCDirector sharedDirector] convertToGL:previousTouch];
+        body->SetTransform(b2Vec2(previousTouch.x, previousTouch.y), 0.0);
+    }
 }
 
 - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event

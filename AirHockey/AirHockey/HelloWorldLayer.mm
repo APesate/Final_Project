@@ -18,6 +18,7 @@
 #pragma mark - HelloWorldLayer
 
 @interface HelloWorldLayer(){
+    CGSize winSize;
     PaddleSprite* paddleOne;
     CCSprite* backgroundSprite;
     CCSprite* puckSprite;
@@ -48,13 +49,14 @@
 {
 	if( (self=[super init])) {
 		
+        winSize = [[CCDirector sharedDirector] winSize];
 		// enable events
 		self.touchEnabled = YES;
 		self.accelerometerEnabled = YES;
         
         [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGB565];
         backgroundSprite = [CCSprite spriteWithFile:@"TableBackground.png"];
-        backgroundSprite.position = ccp([[CCDirector sharedDirector] winSize].width / 2,[[CCDirector sharedDirector] winSize].height / 2);
+        backgroundSprite.position = ccp(winSize.width / 2,winSize.height / 2);
         backgroundSprite.rotation = 90;
         backgroundSprite.scale = 2;
         backgroundSprite.scaleY = 2.37
@@ -63,17 +65,17 @@
         [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
         
         paddleOne = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
-        paddleOne.position = ccp(90, [[CCDirector sharedDirector] winSize].height / 2);
+        paddleOne.position = ccp(90, winSize.height / 2);
         paddleOne.scale = 0.75;
         [self addChild:paddleOne];
         
         paddleTwo = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
-        paddleTwo.position = ccp([[CCDirector sharedDirector] winSize].width - 90, [[CCDirector sharedDirector] winSize].height / 2);
+        paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
         paddleTwo.scale = 0.75;
         [self addChild:paddleTwo];
         
         puckSprite = [[CCSprite alloc] initWithFile:@"Puck.png" rect:CGRectMake(0, 0, 85, 85)];
-        puckSprite.position = ccp([[CCDirector sharedDirector] winSize].width / 2, [[CCDirector sharedDirector] winSize].height / 2);
+        puckSprite.position = ccp(winSize.width / 2, winSize.height / 2);
         puckSprite.scale = 0.75;
         [self addChild:puckSprite];
         
@@ -117,8 +119,7 @@
 }
 
 -(void)createGround{
-    CGSize winSize = [[CCDirector sharedDirector] winSize];
-    
+
     // Define the ground body.
 	b2BodyDef groundBodyDef;
 	groundBodyDef.position.Set(0, 0); // bottom-left corner
@@ -161,7 +162,7 @@
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     
-    bodyDef.position.Set([[CCDirector sharedDirector] winSize].width / (2 * PTM_RATIO), [[CCDirector sharedDirector] winSize].height /(2 * PTM_RATIO));
+    bodyDef.position.Set(winSize.width / (2 * PTM_RATIO), winSize.height /(2 * PTM_RATIO));
     bodyDef.userData = puckSprite;
     puckBody = world->CreateBody(&bodyDef);
     
@@ -184,7 +185,6 @@
 	//You need to make an informed choice, the following URL is useful
 	//http://gafferongames.com/game-physics/fix-your-timestep/
 	
-    
     for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
     {
         if (b->GetUserData() != NULL) {
@@ -193,6 +193,12 @@
             myActor.position = CGPointMake( b->GetPosition().x * PTM_RATIO, b->GetPosition().y * PTM_RATIO);
             myActor.rotation = -1 * CC_RADIANS_TO_DEGREES(b->GetAngle());
         }
+    }
+    
+    if((puckBody->GetPosition()).x > winSize.width / PTM_RATIO|| (puckBody->GetPosition()).x < 0){
+        puckBody->SetTransform(b2Vec2(winSize.width / (2 * PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
+        puckBody->SetLinearVelocity(b2Vec2(0, 0));
+        puckBody->SetAngularVelocity(0);
     }
 	// Instruct the world to perform a single step of simulation. It is
 	// generally best to keep the time step and iterations fixed.
