@@ -33,16 +33,22 @@
     bodyDef.userData = self;
     body = world->CreateBody(&bodyDef);
     
-    b2CircleShape paddleTwoShape;
-    paddleTwoShape.m_radius = 31.0/PTM_RATIO;
+    b2CircleShape paddle;
+    paddle.m_radius = 31.0/PTM_RATIO;
     
     b2FixtureDef bodyTextureDef;
-    bodyTextureDef.shape = &paddleTwoShape;
+    bodyTextureDef.shape = &paddle;
     bodyTextureDef.density = 10.0f;
     bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
     bodyTextureDef.restitution = 0.8f;
     body->CreateFixture(&bodyTextureDef);
+
+    //  _body->SetLinearVelocity(b2Vec2(10, 0));
+//    body->SetLinearDamping(0.01 * body->GetMass());
+    body->SetAngularDamping(0.01* body->GetMass());
+
     body->SetLinearDamping(0.01 * body->GetMass());
+
 }
 
 - (CGRect)rectInPixels
@@ -80,7 +86,9 @@
     md.bodyB = body;
     md.target = b2Vec2(touchLocation.x / PTM_RATIO, touchLocation.y / PTM_RATIO);
     md.collideConnected = true;
-    md.maxForce = 1000.0f * body->GetMass();
+    md.dampingRatio = 2.0f;
+    md.frequencyHz =  100.0f;
+    md.maxForce = 8000.0f * body->GetMass();
     
     mouseJoint = (b2MouseJoint *)world->CreateJoint(&md);
     body->SetAwake(true);
@@ -114,6 +122,10 @@
 - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
     NSAssert(state == kPaddleStateGrabbed, @"Paddle - Unexpected state!");
+    
+    /*b2MouseJointDef md;
+    md.maxForce = 2000.0f * body->GetMass();
+    mouseJoint = (b2MouseJoint *)world->CreateJoint(&md);*/
     
     world->DestroyJoint(mouseJoint);
     mouseJoint = NULL;
