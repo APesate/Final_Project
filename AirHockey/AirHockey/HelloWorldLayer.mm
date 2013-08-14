@@ -26,6 +26,11 @@
     CCSprite* backgroundSprite;
     CCSprite* puckSprite;
     b2Body* puckBody;
+    b2FixtureDef bodyFixtureDef;
+    b2ContactFilter *contactFilter;
+    b2EdgeShape leftBarrier;
+    b2ContactFilter *filterbarrier;
+
     NSArray *scoreImagesArray;
     int playerOneScore;
     int playerTwoScore;
@@ -150,7 +155,9 @@
 	world->SetAllowSleeping(true);
 	
 	world->SetContinuousPhysics(true);
-    
+   // world->SetContactFilter(filterbarrier);
+
+   // filterbarrier->ShouldCollide(bodyFixtureDef, );
     
     paddleOne->world = world;
     paddleTwo->world = world;
@@ -187,7 +194,12 @@
     
     groundBox.Set(b2Vec2(0, 2 * winSize.height/(3 * PTM_RATIO)), b2Vec2(0, winSize.height / PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
+    
+    leftBarrier.Set(b2Vec2(0, winSize.height/PTM_RATIO), b2Vec2(0, winSize.height / PTM_RATIO));
+	groundBody->CreateFixture(&leftBarrier,0);
 	
+    
+    
 	// right
 	groundBox.Set(b2Vec2(winSize.width/ PTM_RATIO, winSize.height/(3 * PTM_RATIO)), b2Vec2(winSize.width/PTM_RATIO, 0));
 	groundBody->CreateFixture(&groundBox,0);
@@ -205,16 +217,42 @@
     puckBody = world->CreateBody(&bodyDef);
     
     b2CircleShape paddleTwoShape;
-    paddleTwoShape.m_radius = 31.0/PTM_RATIO;
+    paddleTwoShape.m_radius = 28.0/PTM_RATIO;
     
-    b2FixtureDef bodyTextureDef;
-    bodyTextureDef.shape = &paddleTwoShape;
-    bodyTextureDef.density = 10.0f;
-    bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
-    bodyTextureDef.restitution = 0.8f;
-    puckBody->CreateFixture(&bodyTextureDef);
+
+    bodyFixtureDef.shape = &paddleTwoShape;
+    bodyFixtureDef.density = 10.0f;
+    bodyFixtureDef.friction = (0.5 * bodyFixtureDef.density);
+    bodyFixtureDef.restitution = 0.8f;
+    bodyFixtureDef.filter.groupIndex = 1;
+    puckBody->CreateFixture(&bodyFixtureDef);
     puckBody->SetLinearDamping(0.01 * puckBody->GetMass());
+    
 }
+
+/*void b2World::SetContactFilter(b2ContactFilter* filter)
+{
+    filter = filter;
+}*/
+
+//*bool b2ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
+//{
+    
+   /* const b2Filter& filterA = fixtureA->GetFilterData();
+    const b2Filter& filterB = fixtureB->GetFilterData();
+    
+    if (filterA.groupIndex == filterB.groupIndex && filterA.groupIndex != 0)
+    {
+        return filterA.groupIndex > 0;
+    }
+    
+    bool collide = (filterA.maskBits & filterB.categoryBits) != 0 &&
+    
+    (filterA.categoryBits & filterB.maskBits) != 0;*/
+    
+  //  return YES;
+    
+//}
 
 #pragma mark - Update Time Step
 
