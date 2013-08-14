@@ -42,13 +42,13 @@
     bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
     bodyTextureDef.restitution = 0.8f;
     body->CreateFixture(&bodyTextureDef);
-<<<<<<< HEAD
+
     //  _body->SetLinearVelocity(b2Vec2(10, 0));
 //    body->SetLinearDamping(0.01 * body->GetMass());
     body->SetAngularDamping(0.01* body->GetMass());
-=======
+
     body->SetLinearDamping(0.01 * body->GetMass());
->>>>>>> 8facb8a8814b3096d1d4a760106dd8c405aa2566
+
 }
 
 - (CGRect)rectInPixels
