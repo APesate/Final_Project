@@ -19,9 +19,9 @@
 
 @interface HelloWorldLayer(){
     PaddleSprite* paddleOne;
-    b2Body* paddleOneBody;
+    CCSprite* puckSprite;
+    b2Body* puckBody;
     PaddleSprite* paddleTwo;
-    b2Body* paddleTwoBody;
 }
 -(void) initPhysics;
 @end
@@ -59,6 +59,10 @@
         paddleTwo.position = ccp([[CCDirector sharedDirector] winSize].width - 90, [[CCDirector sharedDirector] winSize].height / 2);
         [self addChild:paddleTwo];
         
+        puckSprite = [[CCSprite alloc] initWithFile:@"Puck.png" rect:CGRectMake(0, 0, 85, 85)];
+        paddleTwo.position = ccp([[CCDirector sharedDirector] winSize].width / 2, [[CCDirector sharedDirector] winSize].height / 2);
+        [self addChild:puckSprite];
+        
 		// init physics
 		[self initPhysics];
 	}
@@ -92,8 +96,9 @@
 	
     [paddleOne createBodyWithCoordinateType:1];
     [paddleTwo createBodyWithCoordinateType:2];
-
-	// Define the ground body.
+    [self createPuck];
+	
+    // Define the ground body.
 	b2BodyDef groundBodyDef;
 	groundBodyDef.position.Set(0, 0); // bottom-left corner
 	
@@ -125,6 +130,27 @@
 	groundBody->CreateFixture(&groundBox,0);
     
     [self schedule:@selector(update:)];
+}
+
+-(void)createPuck{
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    
+    bodyDef.position.Set([[CCDirector sharedDirector] winSize].width / (2 * PTM_RATIO), [[CCDirector sharedDirector] winSize].height /(2 * PTM_RATIO));
+    bodyDef.userData = puckSprite;
+    puckBody = world->CreateBody(&bodyDef);
+    
+    b2CircleShape paddleTwoShape;
+    paddleTwoShape.m_radius = 40.0/PTM_RATIO;
+    
+    b2FixtureDef bodyTextureDef;
+    bodyTextureDef.shape = &paddleTwoShape;
+    bodyTextureDef.density = 10.0f;
+    bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
+    bodyTextureDef.restitution = 0.8f;
+    puckBody->CreateFixture(&bodyTextureDef);
+    //  _body->SetLinearVelocity(b2Vec2(10, 0));
+    puckBody->SetLinearDamping(0.01 * puckBody->GetMass());
 }
 
 -(void) update: (ccTime) dt
