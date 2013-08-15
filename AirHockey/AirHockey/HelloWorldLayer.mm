@@ -260,13 +260,13 @@
     
     //Analyse the position of the puck on the screen and replaced if neccesary
     if((puckBody->GetPosition()).x > winSize.width / PTM_RATIO){
-        playerTwoScore++;
+        //playerTwoScore++;
         [playerTwoScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerTwoScore]]];
         puckBody->SetTransform(b2Vec2(winSize.width / (2 * PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
         puckBody->SetLinearVelocity(b2Vec2(0, 0));
         puckBody->SetAngularVelocity(0);
     }else if((puckBody->GetPosition()).x < 0){
-        playerOneScore++;
+        //playerOneScore++;
         [playerOneScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerOneScore]]];
         puckBody->SetTransform(b2Vec2(winSize.width / (2 * PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
         puckBody->SetLinearVelocity(b2Vec2(0, 0));
