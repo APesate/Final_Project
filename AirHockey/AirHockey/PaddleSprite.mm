@@ -79,8 +79,6 @@
     if(!CGRectContainsPoint(self.boundingBox, touchLocation))return NO;
     //if ( ![self containsTouchLocation:touch] ) return NO;
     
-
-    
     b2MouseJointDef md;
     md.bodyA = world->GetBodyList();
     md.bodyB = body;
@@ -123,10 +121,6 @@
 - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
     NSAssert(state == kPaddleStateGrabbed, @"Paddle - Unexpected state!");
-    
-    /*b2MouseJointDef md;
-    md.maxForce = 2000.0f * body->GetMass();
-    mouseJoint = (b2MouseJoint *)world->CreateJoint(&md);*/
     
     world->DestroyJoint(mouseJoint);
     mouseJoint = NULL;

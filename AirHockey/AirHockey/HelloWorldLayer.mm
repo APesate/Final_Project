@@ -141,6 +141,7 @@
 	[self createWorld];
     [paddleOne createBodyWithCoordinateType:1];
     [paddleTwo createBodyWithCoordinateType:2];
+    
     [self createPuck];
     [self createGround];
     [self schedule:@selector(update:)];
