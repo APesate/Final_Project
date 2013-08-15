@@ -34,6 +34,7 @@
     NSArray *scoreImagesArray;
     int playerOneScore;
     int playerTwoScore;
+    
 }
 
 @end
@@ -196,10 +197,10 @@
     groundBox.Set(b2Vec2(0, 2 * winSize.height/(3 * PTM_RATIO)), b2Vec2(0, winSize.height / PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
     
-    leftBarrier.Set(b2Vec2(0, winSize.height/PTM_RATIO), b2Vec2(0, winSize.height / PTM_RATIO));
-	groundBody->CreateFixture(&leftBarrier,0);
-	
     
+    groundBox.Set(b2Vec2(0, winSize.height/PTM_RATIO), b2Vec2(0, 0));
+	groundBody->CreateMyFixture(&groundBox,0); //CreateMyFixture method created in b2Body class
+	
     
 	// right
 	groundBox.Set(b2Vec2(winSize.width/ PTM_RATIO, winSize.height/(3 * PTM_RATIO)), b2Vec2(winSize.width/PTM_RATIO, 0));
@@ -207,7 +208,13 @@
     
 	groundBox.Set(b2Vec2(winSize.width/ PTM_RATIO, 2 * winSize.height/(3 * PTM_RATIO)), b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
+    
+    
+    //http://www.iforce2d.net/b2dtut/collision-filtering
+    groundBox.Set(b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO), b2Vec2(winSize.width/PTM_RATIO, 0));
+	groundBody->CreateMyFixture(&groundBox,0); //CreateMyFixture method created in b2Body class
 }
+
 
 -(void)createPuck{
     b2BodyDef bodyDef;
@@ -225,35 +232,12 @@
     bodyFixtureDef.density = 10.0f;
     bodyFixtureDef.friction = (0.5 * bodyFixtureDef.density);
     bodyFixtureDef.restitution = 0.8f;
-    bodyFixtureDef.filter.groupIndex = 1;
+    bodyFixtureDef.filter.groupIndex = -1;
     puckBody->CreateFixture(&bodyFixtureDef);
     puckBody->SetLinearDamping(0.01 * puckBody->GetMass());
     
 }
 
-/*void b2World::SetContactFilter(b2ContactFilter* filter)
-{
-    filter = filter;
-}*/
-
-//*bool b2ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
-//{
-    
-   /* const b2Filter& filterA = fixtureA->GetFilterData();
-    const b2Filter& filterB = fixtureB->GetFilterData();
-    
-    if (filterA.groupIndex == filterB.groupIndex && filterA.groupIndex != 0)
-    {
-        return filterA.groupIndex > 0;
-    }
-    
-    bool collide = (filterA.maskBits & filterB.categoryBits) != 0 &&
-    
-    (filterA.categoryBits & filterB.maskBits) != 0;*/
-    
-  //  return YES;
-    
-//}
 
 #pragma mark - Update Time Step
 

@@ -196,6 +196,16 @@ b2Fixture* b2Body::CreateFixture(const b2Shape* shape, float32 density)
 	return CreateFixture(&def);
 }
 
+b2Fixture* b2Body::CreateMyFixture(const b2Shape* shape, float32 density)
+{
+	b2FixtureDef def;
+	def.shape = shape;
+	def.density = density;
+    def.filter.groupIndex = -1;
+    
+	return CreateFixture(&def);
+}
+
 void b2Body::DestroyFixture(b2Fixture* fixture)
 {
 	b2Assert(m_world->IsLocked() == false);
