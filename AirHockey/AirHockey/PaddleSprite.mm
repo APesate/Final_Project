@@ -41,13 +41,13 @@
     
     b2FixtureDef bodyTextureDef;
     bodyTextureDef.shape = &paddle;
-    bodyTextureDef.density = 10.0f;
+    bodyTextureDef.density = 5.0f;
     bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
     bodyTextureDef.restitution = 0.8f;
     bodyTextureDef.filter.groupIndex = 1;
     body->CreateFixture(&bodyTextureDef);
-    body->SetAngularDamping(0.01* body->GetMass());
-    body->SetLinearDamping(0.01 * body->GetMass());
+    body->SetAngularDamping(0.05* body->GetMass());
+    body->SetLinearDamping(0.05 * body->GetMass());
 
 }
 

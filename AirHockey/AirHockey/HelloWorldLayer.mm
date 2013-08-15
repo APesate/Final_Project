@@ -229,12 +229,13 @@
     
 
     bodyFixtureDef.shape = &paddleTwoShape;
-    bodyFixtureDef.density = 10.0f;
+    bodyFixtureDef.density = 0.5f;
     bodyFixtureDef.friction = (0.5 * bodyFixtureDef.density);
     bodyFixtureDef.restitution = 0.8f;
     bodyFixtureDef.filter.groupIndex = -1;
     puckBody->CreateFixture(&bodyFixtureDef);
-    puckBody->SetLinearDamping(0.01 * puckBody->GetMass());
+    puckBody->SetLinearDamping(0.05 * puckBody->GetMass());
+    puckBody->SetAngularDamping(0.05 * puckBody->GetMass());
     
 }
 
