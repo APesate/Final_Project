@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8216E24517BD377100DCA589 /* MenuLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8216E24417BD377100DCA589 /* MenuLayer.mm */; };
+		8216E24917BD3BF200DCA589 /* myfirstbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 8216E24617BD3BF100DCA589 /* myfirstbutton.png */; };
+		8216E24A17BD3BF200DCA589 /* mysecondbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 8216E24717BD3BF100DCA589 /* mysecondbutton.png */; };
+		8216E24B17BD3BF200DCA589 /* mythirdbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 8216E24817BD3BF200DCA589 /* mythirdbutton.png */; };
+		8216E24F17BD3C5100DCA589 /* myfirstbutton_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 8216E24C17BD3C5100DCA589 /* myfirstbutton_selected.png */; };
+		8216E25017BD3C5100DCA589 /* mysecondbutton_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 8216E24D17BD3C5100DCA589 /* mysecondbutton_selected.png */; };
+		8216E25117BD3C5100DCA589 /* mythirdbutton_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 8216E24E17BD3C5100DCA589 /* mythirdbutton_selected.png */; };
 		8265262617BC55A000D52B87 /* Puck.png in Resources */ = {isa = PBXBuildFile; fileRef = 8265262517BC55A000D52B87 /* Puck.png */; };
 		829E02CE17BAD0F10056CD4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CD17BAD0F10056CD4B /* QuartzCore.framework */; };
 		829E02D017BAD0F10056CD4B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CF17BAD0F10056CD4B /* OpenGLES.framework */; };
@@ -195,6 +202,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8216E24317BD377100DCA589 /* MenuLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuLayer.h; sourceTree = "<group>"; };
+		8216E24417BD377100DCA589 /* MenuLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuLayer.mm; sourceTree = "<group>"; };
+		8216E24617BD3BF100DCA589 /* myfirstbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = myfirstbutton.png; sourceTree = "<group>"; };
+		8216E24717BD3BF100DCA589 /* mysecondbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mysecondbutton.png; sourceTree = "<group>"; };
+		8216E24817BD3BF200DCA589 /* mythirdbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mythirdbutton.png; sourceTree = "<group>"; };
+		8216E24C17BD3C5100DCA589 /* myfirstbutton_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = myfirstbutton_selected.png; sourceTree = "<group>"; };
+		8216E24D17BD3C5100DCA589 /* mysecondbutton_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mysecondbutton_selected.png; sourceTree = "<group>"; };
+		8216E24E17BD3C5100DCA589 /* mythirdbutton_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mythirdbutton_selected.png; sourceTree = "<group>"; };
 		8265262517BC55A000D52B87 /* Puck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Puck.png; path = Resources/Puck.png; sourceTree = "<group>"; };
 		829E02CA17BAD0F10056CD4B /* AirHockey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirHockey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		829E02CD17BAD0F10056CD4B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -644,6 +659,8 @@
 				829E050917BAD0F80056CD4B /* HelloWorldLayer.mm */,
 				829E051817BAE1D80056CD4B /* PaddleSprite.h */,
 				829E051917BAE1D80056CD4B /* PaddleSprite.mm */,
+				8216E24317BD377100DCA589 /* MenuLayer.h */,
+				8216E24417BD377100DCA589 /* MenuLayer.mm */,
 				829E050B17BAD0F80056CD4B /* IntroLayer.h */,
 				829E050C17BAD0F80056CD4B /* IntroLayer.mm */,
 				829E050E17BAD0F80056CD4B /* GLES-Render.h */,
@@ -658,6 +675,12 @@
 		829E02E217BAD0F20056CD4B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8216E24C17BD3C5100DCA589 /* myfirstbutton_selected.png */,
+				8216E24D17BD3C5100DCA589 /* mysecondbutton_selected.png */,
+				8216E24E17BD3C5100DCA589 /* mythirdbutton_selected.png */,
+				8216E24617BD3BF100DCA589 /* myfirstbutton.png */,
+				8216E24717BD3BF100DCA589 /* mysecondbutton.png */,
+				8216E24817BD3BF200DCA589 /* mythirdbutton.png */,
 				8265262517BC55A000D52B87 /* Puck.png */,
 				829E051F17BBD8E40056CD4B /* TableBackground.png */,
 				829E051B17BAE5EB0056CD4B /* Paddle.png */,
@@ -1266,6 +1289,12 @@
 				829E051C17BAE5EB0056CD4B /* Paddle.png in Resources */,
 				829E052017BBD8E40056CD4B /* TableBackground.png in Resources */,
 				8265262617BC55A000D52B87 /* Puck.png in Resources */,
+				8216E24917BD3BF200DCA589 /* myfirstbutton.png in Resources */,
+				8216E24A17BD3BF200DCA589 /* mysecondbutton.png in Resources */,
+				8216E24B17BD3BF200DCA589 /* mythirdbutton.png in Resources */,
+				8216E24F17BD3C5100DCA589 /* myfirstbutton_selected.png in Resources */,
+				8216E25017BD3C5100DCA589 /* mysecondbutton_selected.png in Resources */,
+				8216E25117BD3C5100DCA589 /* mythirdbutton_selected.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1451,6 +1480,7 @@
 				829E050D17BAD0F80056CD4B /* IntroLayer.mm in Sources */,
 				829E051017BAD0F80056CD4B /* GLES-Render.mm in Sources */,
 				829E051A17BAE1D90056CD4B /* PaddleSprite.mm in Sources */,
+				8216E24517BD377100DCA589 /* MenuLayer.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
