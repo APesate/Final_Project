@@ -26,6 +26,6 @@ typedef enum tagPaddleState{
     b2MouseJoint* mouseJoint;
 }
 
--(void)createBodyWithCoordinateType:(int)coordinateType;
+-(void)createBody;
 
 @end
