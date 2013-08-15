@@ -195,7 +195,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8265262517BC55A000D52B87 /* Puck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Puck.png; path = ../Puck.png; sourceTree = "<group>"; };
+		8265262517BC55A000D52B87 /* Puck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Puck.png; path = Resources/Puck.png; sourceTree = "<group>"; };
 		829E02CA17BAD0F10056CD4B /* AirHockey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirHockey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		829E02CD17BAD0F10056CD4B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		829E02CF17BAD0F10056CD4B /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
