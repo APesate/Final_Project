@@ -22,14 +22,14 @@
     return self;
 }
 
--(void)createBodyWithCoordinateType:(int)coordinateType{
+-(void)createBody{
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     
-    if(coordinateType == 1){
-    bodyDef.position.Set(([[CCDirector sharedDirector] winSize].width - 90)/PTM_RATIO, [[CCDirector sharedDirector] winSize].height /(2 * PTM_RATIO));
-    }else{
+    if(self.tag == 1){
         bodyDef.position.Set(90/PTM_RATIO, [[CCDirector sharedDirector] winSize].height /(2 * PTM_RATIO));
+    }else{
+        bodyDef.position.Set(([[CCDirector sharedDirector] winSize].width - 90)/PTM_RATIO, [[CCDirector sharedDirector] winSize].height /(2 * PTM_RATIO));
     }
     
     
@@ -79,6 +79,7 @@
     if(!CGRectContainsPoint(self.boundingBox, touchLocation))return NO;
     //if ( ![self containsTouchLocation:touch] ) return NO;
     
+    
     b2MouseJointDef md;
     md.bodyA = world->GetBodyList();
     md.bodyB = body;
@@ -105,17 +106,18 @@
     // in each touchXXX method.
     
     NSAssert(state == kPaddleStateGrabbed, @"Paddle - Unexpected state!");
+
+#warning In case that we want to allow to throw the paddle
+//    if(self.tag == 1 && self.position.x > winSize.width / 2){
+//        return;
+//    }
+//    else if(self.tag == 2 && self.position.x < winSize.width / 2){
+//        return;
+//    }
     
     CGPoint touchLocation = [touch locationInView:[touch view]];
     touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
-    
-    if(!(self.position.x < 0 || self.position.x > winSize.width)){
-        mouseJoint->SetTarget(b2Vec2(touchLocation.x / PTM_RATIO, touchLocation.y / PTM_RATIO));
-    }else{
-        CGPoint previousTouch = [touch previousLocationInView:[touch view]];
-        previousTouch = [[CCDirector sharedDirector] convertToGL:previousTouch];
-        body->SetTransform(b2Vec2(previousTouch.x, previousTouch.y), 0.0);
-    }
+    mouseJoint->SetTarget(b2Vec2(touchLocation.x / PTM_RATIO, touchLocation.y / PTM_RATIO));
 }
 
 - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
