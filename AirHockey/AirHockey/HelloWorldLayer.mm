@@ -102,9 +102,9 @@
         paddleTwo.scale = 0.75;
         [self addChild:paddleTwo];
         
-        puckSprite = [[CCSprite alloc] initWithFile:@"Puck.png" rect:CGRectMake(0, 0, 85, 85)];
+        puckSprite = [[CCSprite alloc] initWithFile:@"Puck.png" rect:CGRectMake(0, 0, 150, 150)];
         puckSprite.position = ccp(winSize.width / 2, winSize.height / 2);
-        puckSprite.scale = 0.75;
+        puckSprite.scale = 0.48;
         [self addChild:puckSprite];
         
 		// init physics
@@ -217,7 +217,7 @@
     puckBody = world->CreateBody(&bodyDef);
     
     b2CircleShape paddleTwoShape;
-    paddleTwoShape.m_radius = 28.0/PTM_RATIO;
+    paddleTwoShape.m_radius = 27.0/PTM_RATIO;
     
 
     bodyFixtureDef.shape = &paddleTwoShape;

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		826523E317BC542C00D52B87 /* Puck.png in Resources */ = {isa = PBXBuildFile; fileRef = 826523E217BC542C00D52B87 /* Puck.png */; };
 		829E02CE17BAD0F10056CD4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CD17BAD0F10056CD4B /* QuartzCore.framework */; };
 		829E02D017BAD0F10056CD4B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CF17BAD0F10056CD4B /* OpenGLES.framework */; };
 		829E02D217BAD0F10056CD4B /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02D117BAD0F10056CD4B /* OpenAL.framework */; };
@@ -190,11 +191,11 @@
 		829E051217BAD0F80056CD4B /* blocks.png in Resources */ = {isa = PBXBuildFile; fileRef = 829E051117BAD0F80056CD4B /* blocks.png */; };
 		829E051A17BAE1D90056CD4B /* PaddleSprite.mm in Sources */ = {isa = PBXBuildFile; fileRef = 829E051917BAE1D80056CD4B /* PaddleSprite.mm */; };
 		829E051C17BAE5EB0056CD4B /* Paddle.png in Resources */ = {isa = PBXBuildFile; fileRef = 829E051B17BAE5EB0056CD4B /* Paddle.png */; };
-		829E051E17BB2EDE0056CD4B /* Puck.png in Resources */ = {isa = PBXBuildFile; fileRef = 829E051D17BB2EDE0056CD4B /* Puck.png */; };
 		829E052017BBD8E40056CD4B /* TableBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 829E051F17BBD8E40056CD4B /* TableBackground.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		826523E217BC542C00D52B87 /* Puck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Puck.png; path = ../../../../../../Downloads/Puck.png; sourceTree = "<group>"; };
 		829E02CA17BAD0F10056CD4B /* AirHockey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirHockey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		829E02CD17BAD0F10056CD4B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		829E02CF17BAD0F10056CD4B /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -576,7 +577,6 @@
 		829E051817BAE1D80056CD4B /* PaddleSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaddleSprite.h; sourceTree = "<group>"; };
 		829E051917BAE1D80056CD4B /* PaddleSprite.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PaddleSprite.mm; sourceTree = "<group>"; };
 		829E051B17BAE5EB0056CD4B /* Paddle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Paddle.png; path = Resources/Paddle.png; sourceTree = "<group>"; };
-		829E051D17BB2EDE0056CD4B /* Puck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Puck.png; sourceTree = "<group>"; };
 		829E051F17BBD8E40056CD4B /* TableBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TableBackground.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -658,8 +658,8 @@
 		829E02E217BAD0F20056CD4B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				826523E217BC542C00D52B87 /* Puck.png */,
 				829E051F17BBD8E40056CD4B /* TableBackground.png */,
-				829E051D17BB2EDE0056CD4B /* Puck.png */,
 				829E051B17BAE5EB0056CD4B /* Paddle.png */,
 				829E02E317BAD0F20056CD4B /* Default.png */,
 				829E02E517BAD0F20056CD4B /* Default@2x.png */,
@@ -1264,8 +1264,8 @@
 				829E045217BAD0F60056CD4B /* ChangeLog in Resources */,
 				829E051217BAD0F80056CD4B /* blocks.png in Resources */,
 				829E051C17BAE5EB0056CD4B /* Paddle.png in Resources */,
-				829E051E17BB2EDE0056CD4B /* Puck.png in Resources */,
 				829E052017BBD8E40056CD4B /* TableBackground.png in Resources */,
+				826523E317BC542C00D52B87 /* Puck.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
