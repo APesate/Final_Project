@@ -96,11 +96,13 @@
         paddleOne = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
         paddleOne.position = ccp(90, winSize.height / 2);
         paddleOne.scale = 0.75;
+        paddleOne.tag = 1;
         [self addChild:paddleOne];
         
         paddleTwo = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
         paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
         paddleTwo.scale = 0.75;
+        paddleTwo.tag = 2;
         [self addChild:paddleTwo];
         
         puckSprite = [[CCSprite alloc] initWithFile:@"Puck.png" rect:CGRectMake(0, 0, 150, 150)];
@@ -110,6 +112,7 @@
         
 		// init physics
 		[self initPhysics];
+        
 	}
 	return self;
 }
@@ -140,9 +143,8 @@
 -(void) initPhysics
 {
 	[self createWorld];
-    [paddleOne createBodyWithCoordinateType:1];
-    [paddleTwo createBodyWithCoordinateType:2];
-    
+    [paddleOne createBody];
+    [paddleTwo createBody];
     [self createPuck];
     [self createGround];
     [self schedule:@selector(update:)];
@@ -272,6 +274,20 @@
         puckBody->SetLinearVelocity(b2Vec2(0, 0));
         puckBody->SetAngularVelocity(0);
     }
+
+#warning In case that we want to allow to throw the paddle
+//    if((paddleOne.position.x > (winSize.width / 2)) && (paddleTwo.position.x < (winSize.width / 2))){
+//        [paddleOne setPosition:ccp(90, winSize.height / 2)];
+//        paddleOne->body->SetTransform(b2Vec2(90 / PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
+//        paddleOne->body->SetLinearVelocity(b2Vec2(0, 0));
+//        paddleOne->body->SetAngularVelocity(0);
+//        
+//        [paddleTwo setPosition:ccp(winSize.width - 90, winSize.height / 2)];
+//        paddleTwo->body->SetTransform(b2Vec2((winSize.width - 90) / PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
+//        paddleTwo->body->SetLinearVelocity(b2Vec2(0, 0));
+//        paddleTwo->body->SetAngularVelocity(0);
+//    }
+    
 	// Instruct the world to perform a single step of simulation. It is
 	// generally best to keep the time step and iterations fixed.
 	world->Step(dt, 10, 10);
