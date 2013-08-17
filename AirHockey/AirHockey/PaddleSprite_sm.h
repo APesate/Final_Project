@@ -27,7 +27,6 @@
 - (void)attack:(PaddleSpriteContext*)context;
 - (void)defend:(PaddleSpriteContext*)context;
 - (void)fallBack:(PaddleSpriteContext*)context;
-- (void)fallback:(PaddleSpriteContext*)context;
 - (void)update:(PaddleSpriteContext*)context :(ccTime)delta;
 
 - (void)Default:(PaddleSpriteContext*)context;
@@ -47,7 +46,7 @@
 - (void)attack:(PaddleSpriteContext*)context;
 - (void)defend:(PaddleSpriteContext*)context;
 - (void)update:(PaddleSpriteContext*)context :(ccTime)delta;
-- (void)fallback:(PaddleSpriteContext*)context;
+- (void)fallBack:(PaddleSpriteContext*)context;
 @end
 
 @interface PaddleSpriteMap_Defending : PaddleSpriteMap_Default
@@ -92,7 +91,6 @@
 - (void)attack;
 - (void)defend;
 - (void)fallBack;
-- (void)fallback;
 - (void)update:(ccTime)delta;
 @end
 

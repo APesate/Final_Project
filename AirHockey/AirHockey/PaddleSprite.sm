@@ -61,7 +61,7 @@ Default
 	attack	nil	{}
 	defend	nil	{}
 	update(delta:ccTime)	nil	{}
-	fallback		nil 	{}
+	fallBack		nil 	{}
 
 }
 
