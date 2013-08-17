@@ -1,5 +1,5 @@
 //
-//  MenuLayer.m
+//  MenuLayer.mm
 //  AirHockey
 //
 //  Created by Andrés Pesate on 8/15/13.
@@ -8,7 +8,7 @@
 
 #import "MenuLayer.h"
 #import "HelloWorldLayer.h"
-
+#import "Game.h"
 
 @implementation MenuLayer
 
@@ -16,10 +16,9 @@
 {
 	// 'scene' is an autorelease object.
 	CCScene *scene = [CCScene node];
-	
+
 	// 'layer' is an autorelease object.
 	MenuLayer *layer = [MenuLayer node];
-	
 	// add layer as a child to scene
 	[scene addChild: layer];
 	
@@ -27,11 +26,14 @@
 	return scene;
 }
 
+-(void)testDelegate{
+    NSLog(@"Funciona");
+}
+
 -(id)init{
     self = [super init];
     
     if(self){
-        
         CCMenuItemImage *singlePlayerButton = [CCMenuItemImage itemWithNormalImage:@"myfirstbutton.png"
                                                             selectedImage: @"myfirstbutton_selected.png"
                                                                    target:self
@@ -42,12 +44,17 @@
                                                                    target:self
                                                                  selector:@selector(playMultiplayerMode:)];
         
-        CCMenuItemImage *settingsButton = [CCMenuItemImage itemWithNormalImage:@"mythirdbutton.png"
+        CCMenuItemImage *hostGameButton = [CCMenuItemImage itemWithNormalImage:@"mythirdbutton.png"
                                                             selectedImage: @"mythirdbutton_selected.png"
                                                                    target:self
-                                                                 selector:@selector(connectionSettings:)];
+                                                                 selector:@selector(hostGameMode:)];
         
-        CCMenu *myMenu = [CCMenu menuWithItems:singlePlayerButton, multiplayerButton, settingsButton, nil];
+        CCMenuItemImage *joinGameButton= [CCMenuItemImage itemWithNormalImage:@"mythirdbutton.png"
+                                                                 selectedImage: @"mythirdbutton_selected.png"
+                                                                        target:self
+                                                                      selector:@selector(joinGameMode:)];
+        
+        CCMenu *myMenu = [CCMenu menuWithItems:singlePlayerButton, multiplayerButton, hostGameButton, joinGameButton, nil];
         
         [myMenu alignItemsVertically];
 
@@ -59,15 +66,244 @@
 
 - (void) playSinglePlayerMode: (CCMenuItem  *) menuItem
 {
-    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer scene] ]];
+    NSLog(@"First Button");
 }
+
 - (void) playMultiplayerMode: (CCMenuItem  *) menuItem
 {
-	NSLog(@"The second menu was called");
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer scene] ]];
 }
-- (void) connectionSettings: (CCMenuItem  *) menuItem
+
+- (void) hostGameMode: (CCMenuItem  *) menuItem
 {
-	NSLog(@"The third menu was called");
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HostGameLayer sceneWithDelegate:self]]];
+}
+
+- (void) joinGameMode: (CCMenuItem  *) menuItem
+{
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[JoinGameLayer sceneWithDelegate:self]]];
+}
+
+
+//#pragma mark - HostGameLayerDelegate
+//
+//- (void)hostGameLayerDidCancel:(HostGameLayer *)layer
+//{
+//	//[self dismissViewControllerAnimated:NO completion:nil];
+//}
+//
+//- (void)hostGameLayer:(HostGameLayer *)controller didEndSessionWithReason:(QuitReason)reason
+//{
+//	if (reason == QuitReasonNoNetwork)
+//	{
+//		[self showNoNetworkAlert];
+//	}
+//}
+//
+//- (void)hostGameLayer:(HostGameLayer *)controller startGameWithSession:(GKSession *)session clients:(NSArray *)clients;
+//{
+//	[[CCDirector sharedDirector] popScene];// dismissViewControllerAnimated:NO completion:^
+//     //{
+//         [self startGameWithBlock:^(Game *game)
+//          {
+//              [game startServerGameWithSession:session clients:clients];
+//          }];
+//    // }];
+//}
+//    
+//#pragma mark - JoinViewControllerMessages
+//
+//- (void)joinGameLayerDidCancel:(JoinGameLayer *)layer{
+////	[self dismissViewControllerAnimated:NO completion:nil];
+//}
+//
+//- (void)joinGameLayer:(JoinGameLayer *)layer didDisconnectWithReason:(QuitReason)reason
+//{
+//	if (reason == QuitReasonNoNetwork)
+//	{
+//		[self showNoNetworkAlert];
+//	}
+//	else if (reason == QuitReasonConnectionDropped)
+//	{
+//		//[self dismissViewControllerAnimated:NO completion:^
+//        [self showDisconnectedAlert];
+//	}
+//}
+//
+//- (void)joinGameLayer:(JoinGameLayer *)layer startGameWithSession:(GKSession *)session server:(NSString *)peerID
+//{
+////Start The Game
+//}
+//
+//- (void)joinGameLayerStartGameWithInfo:(NSDictionary *)informationDictionary{
+//    
+//    [self startGameWithBlock:^(Game *game)
+//     {
+//         [game startClientGameWithSession:[informationDictionary objectForKey:@"Session"] server:[informationDictionary objectForKey:@"Server"]];
+//     }];
+//}
+//
+//- (void)startGameWithBlock:(void (^)(Game *))block
+//{
+//	GameViewController *gameViewController = [[GameViewController alloc] initWithNibName:@"GameViewController" bundle:nil];
+//	Game *game = [[Game alloc] init];
+//    
+//    gameViewController.delegate = self;
+//    gameViewController.game = game;
+//    game.delegate = gameViewController;
+//    block(game);
+////    [[CCDirector sharedDirector] addChildViewController:gameViewController];
+//    [[CCDirector sharedDirector] presentModalViewController:gameViewController animated:YES];
+//}
+//
+//#pragma mark - GameViewControllerDelegate
+//
+//- (void)gameViewController:(GameViewController *)controller didQuitWithReason:(QuitReason)reason
+//{
+//
+//    if (reason == QuitReasonConnectionDropped)
+//    {
+//        [self showDisconnectedAlert];
+//    }
+//    
+//}
+//
+//#pragma mark - Alerts
+//
+//- (void)showNoNetworkAlert
+//{
+//	UIAlertView *alertView = [[UIAlertView alloc]
+//                              initWithTitle:NSLocalizedString(@"No Network", @"No network alert title")
+//                              message:NSLocalizedString(@"To use multiplayer, please enable Bluetooth or Wi-Fi in your device's Settings.", @"No network alert message")
+//                              delegate:nil
+//                              cancelButtonTitle:NSLocalizedString(@"OK", @"Button: OK")
+//                              otherButtonTitles:nil];
+//    
+//	[alertView show];
+//}
+//
+//#warning QuitReason = QuitReasonConnectionDropped
+//- (void)showDisconnectedAlert
+//{
+//	UIAlertView *alertView = [[UIAlertView alloc]
+//                              initWithTitle:NSLocalizedString(@"Disconnected", @"Client disconnected alert title")
+//                              message:NSLocalizedString(@"You were disconnected from the game.", @"Client disconnected alert message")
+//                              delegate:nil
+//                              cancelButtonTitle:NSLocalizedString(@"OK", @"Button: OK")
+//                              otherButtonTitles:nil];
+//    
+//	[alertView show];
+//}
+
+#pragma mark - HostViewControllerDelegate
+
+- (void)hostViewControllerDidCancel:(HostGameLayer *)controller
+{
+    [[CCDirector sharedDirector] popScene];
+}
+
+- (void)hostViewController:(HostGameLayer *)controller didEndSessionWithReason:(QuitReason)reason
+{
+	if (reason == QuitReasonNoNetwork)
+	{
+		[self showNoNetworkAlert];
+	}
+}
+
+- (void)hostViewController:(HostGameLayer *)controller startGameWithSession:(GKSession *)session clients:(NSArray *)clients
+{
+    [[CCDirector sharedDirector] popScene];
+    
+    [self startGameWithBlock:^(Game *game)
+     {
+         [game startServerGameWithSession:session clients:clients];
+     }];
+    
+}
+
+#pragma mark - JoinViewControllerDelegate
+
+- (void)joinViewControllerDidCancel:(JoinGameLayer *)controller
+{
+    [[CCDirector sharedDirector] popScene];
+}
+
+- (void)joinViewController:(JoinGameLayer *)controller didDisconnectWithReason:(QuitReason)reason
+{
+	if (reason == QuitReasonNoNetwork)
+	{
+		[self showNoNetworkAlert];
+	}
+	else if (reason == QuitReasonConnectionDropped)
+	{
+        [[CCDirector sharedDirector] popScene];
+        [self showDisconnectedAlert];
+	}
+}
+
+- (void)joinViewController:(JoinGameLayer *)controller startGameWithSession:(GKSession *)session server:(NSString *)peerID
+{
+    [[CCDirector sharedDirector] popScene];
+    
+    [self startGameWithBlock:^(Game *game)
+     {
+         [game startClientGameWithSession:session server:peerID];
+     }];
+}
+
+#pragma mark - GameViewControllerDelegate
+
+- (void)gameViewController:(GameViewController *)controller didQuitWithReason:(QuitReason)reason
+{
+	[[CCDirector sharedDirector] dismissViewControllerAnimated:NO completion:^
+     {
+         if (reason == QuitReasonConnectionDropped)
+         {
+             [self showDisconnectedAlert];
+         }
+     }];
+}
+
+#pragma mark - Alerts
+
+- (void)showNoNetworkAlert
+{
+	UIAlertView *alertView = [[UIAlertView alloc]
+                              initWithTitle:NSLocalizedString(@"No Network", @"No network alert title")
+                              message:NSLocalizedString(@"To use multiplayer, please enable Bluetooth or Wi-Fi in your device's Settings.", @"No network alert message")
+                              delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", @"Button: OK")
+                              otherButtonTitles:nil];
+    
+	[alertView show];
+}
+
+- (void)showDisconnectedAlert
+{
+	UIAlertView *alertView = [[UIAlertView alloc]
+                              initWithTitle:NSLocalizedString(@"Disconnected", @"Client disconnected alert title")
+                              message:NSLocalizedString(@"You were disconnected from the game.", @"Client disconnected alert message")
+                              delegate:nil
+                              cancelButtonTitle:NSLocalizedString(@"OK", @"Button: OK")
+                              otherButtonTitles:nil];
+    
+	[alertView show];
+}
+
+#pragma mark - Misc
+
+- (void)startGameWithBlock:(void (^)(Game *))block
+{
+	GameViewController *gameViewController = [[GameViewController alloc] initWithNibName:@"GameViewController" bundle:nil];
+	gameViewController.delegate = self;
+    
+	[[CCDirector sharedDirector] presentViewController:gameViewController animated:NO completion:^
+     {
+         Game *game = [[Game alloc] init];
+         gameViewController.game = game;
+         game.delegate = gameViewController;
+         block(game);
+     }];
 }
 
 @end
