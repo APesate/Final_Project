@@ -1,0 +1,68 @@
+%{
+//
+//PaddleSprite FSM
+//
+%}
+
+
+%start PaddleSpriteMap::Defending
+%class PaddleSprite
+%include "EnemyPaddleDefs.h"
+%header   PaddleSprite.h
+
+%map PaddleSpriteMap
+%%
+// State      Transition      End State       Action(s)
+// Start State definitions
+
+Defending
+Entry {
+      runAnimation(pDefendingAnimation);
+}
+Exit {
+     startFallingBackTimer();
+     stopDefendingTimer();
+}
+{
+	defend Defending	{}
+	attack Attacking	{}
+	update(delta:ccTime)	nil	{updateDefending(delta);}
+}
+
+Attacking
+Entry {
+      runAnimation(pAttackingAnimation);
+      startAttackingTimer();
+      //initPaddleSomething();
+}
+Exit {
+     stopAttackingTimer();
+}
+{
+	attack	Attacking		{}
+	fallBack FallingBack 	{}
+	update(delta:ccTime) 	nil		{updateAttacking(delta);}
+}
+
+FallingBack
+Entry {
+      runAnimation(pFallBackAnimation);
+      stopFallingBackTimer();
+}
+Exit {
+     startDefendingTimer();
+}
+{
+	defend	Defending	{}
+}
+
+Default
+{
+	attack	nil	{}
+	defend	nil	{}
+	update(delta:ccTime)	nil	{}
+	fallback		nil 	{}
+
+}
+
+%%

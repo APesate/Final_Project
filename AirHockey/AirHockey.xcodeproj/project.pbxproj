@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		82220B1417BEC9BB007DA3D3 /* statemap.m in Sources */ = {isa = PBXBuildFile; fileRef = 82220B1317BEC9BB007DA3D3 /* statemap.m */; };
+		82220B2117BED661007DA3D3 /* PaddleSprite_sm.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82220B2017BED661007DA3D3 /* PaddleSprite_sm.mm */; };
 		8265262617BC55A000D52B87 /* Puck.png in Resources */ = {isa = PBXBuildFile; fileRef = 8265262517BC55A000D52B87 /* Puck.png */; };
 		829E02CE17BAD0F10056CD4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CD17BAD0F10056CD4B /* QuartzCore.framework */; };
 		829E02D017BAD0F10056CD4B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CF17BAD0F10056CD4B /* OpenGLES.framework */; };
@@ -195,6 +197,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		82220B0D17BDF558007DA3D3 /* EnemyPaddleDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnemyPaddleDefs.h; sourceTree = "<group>"; };
+		82220B1217BEC9BB007DA3D3 /* statemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = statemap.h; sourceTree = "<group>"; };
+		82220B1317BEC9BB007DA3D3 /* statemap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = statemap.m; sourceTree = "<group>"; };
+		82220B2017BED661007DA3D3 /* PaddleSprite_sm.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PaddleSprite_sm.mm; sourceTree = "<group>"; };
 		8265262517BC55A000D52B87 /* Puck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Puck.png; path = Resources/Puck.png; sourceTree = "<group>"; };
 		829E02CA17BAD0F10056CD4B /* AirHockey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirHockey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		829E02CD17BAD0F10056CD4B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -601,6 +607,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		82220B1117BEC986007DA3D3 /* SMC */ = {
+			isa = PBXGroup;
+			children = (
+				82220B1217BEC9BB007DA3D3 /* statemap.h */,
+				82220B1317BEC9BB007DA3D3 /* statemap.m */,
+			);
+			name = SMC;
+			sourceTree = "<group>";
+		};
 		829E02C117BAD0F10056CD4B = {
 			isa = PBXGroup;
 			children = (
@@ -638,12 +653,15 @@
 		829E02E117BAD0F20056CD4B /* AirHockey */ = {
 			isa = PBXGroup;
 			children = (
+				82220B1117BEC986007DA3D3 /* SMC */,
 				829E050517BAD0F80056CD4B /* AppDelegate.h */,
 				829E050617BAD0F80056CD4B /* AppDelegate.mm */,
 				829E050817BAD0F80056CD4B /* HelloWorldLayer.h */,
 				829E050917BAD0F80056CD4B /* HelloWorldLayer.mm */,
+				82220B0D17BDF558007DA3D3 /* EnemyPaddleDefs.h */,
 				829E051817BAE1D80056CD4B /* PaddleSprite.h */,
 				829E051917BAE1D80056CD4B /* PaddleSprite.mm */,
+				82220B2017BED661007DA3D3 /* PaddleSprite_sm.mm */,
 				829E050B17BAD0F80056CD4B /* IntroLayer.h */,
 				829E050C17BAD0F80056CD4B /* IntroLayer.mm */,
 				829E050E17BAD0F80056CD4B /* GLES-Render.h */,
@@ -1451,6 +1469,8 @@
 				829E050D17BAD0F80056CD4B /* IntroLayer.mm in Sources */,
 				829E051017BAD0F80056CD4B /* GLES-Render.mm in Sources */,
 				829E051A17BAE1D90056CD4B /* PaddleSprite.mm in Sources */,
+				82220B1417BEC9BB007DA3D3 /* statemap.m in Sources */,
+				82220B2117BED661007DA3D3 /* PaddleSprite_sm.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

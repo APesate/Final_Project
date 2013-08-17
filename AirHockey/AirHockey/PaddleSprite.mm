@@ -8,6 +8,7 @@
 
 #import "PaddleSprite.h"
 
+
 @implementation PaddleSprite{
     CGSize winSize;
 }
@@ -144,6 +145,24 @@
     
     [[director touchDispatcher] removeDelegate:self];
     [super onExit];
+}
+
+#pragma marl SMC
+//
+// SMC AI
+//
+
+
+-(void)defend {
+    [_fsm defend];
+}
+
+-(void)attack {
+    [_fsm attack];
+}
+
+-(void)fallBack {
+    [_fsm fallBack];
 }
 
 @end
