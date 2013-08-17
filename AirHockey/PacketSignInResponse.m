@@ -7,7 +7,7 @@
 //
 
 #import "PacketSignInResponse.h"
-#import "NSData+SnapAdditions.h"
+#import "NSData+HockeyAdditions.h"
 
 @implementation PacketSignInResponse
 
@@ -29,14 +29,14 @@
 {
 	if ((self = [super initWithType:PacketTypeSignInResponse]))
 	{
-		self.playerName = playerName;
+		//self.playerName = playerName;
 	}
 	return self;
 }
 
 - (void)addPayloadToData:(NSMutableData *)data
 {
-	[data rw_appendString:self.playerName];
+	//[data rw_appendString:self.playerName];
 }
 
 @end

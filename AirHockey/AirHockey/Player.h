@@ -9,9 +9,7 @@
 typedef enum
 {
 	PlayerPositionBottom,  // the user
-	PlayerPositionLeft,
 	PlayerPositionTop,
-	PlayerPositionRight
 }
 PlayerPosition;
 
