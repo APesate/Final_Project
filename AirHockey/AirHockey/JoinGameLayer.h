@@ -10,24 +10,6 @@
 #import "cocos2d.h"
 #import "MatchMakingClient.h"
 
-//@class JoinGameLayer;
-//
-//@protocol JoinGameLayerDelegate <NSObject>
-//
-//- (void)joinGameLayerDidCancel:(JoinGameLayer *)layer;
-//- (void)joinGameLayer:(JoinGameLayer *)layer didDisconnectWithReason:(QuitReason)reason;
-//- (void)joinGameLayer:(JoinGameLayer *)layer startGameWithSession:(GKSession *)session server:(NSString *)peerID;
-//
-//@end
-//
-//@interface JoinGameLayer : CCLayerColor <MatchmakingClientDelegate>
-//
-//@property (nonatomic, strong) id <JoinGameLayerDelegate> delegate;
-//+(CCScene *) scene;
-//+(CCScene *) sceneWithDelegate:(id)_delegate;
-//
-//@end
-
 @class JoinGameLayer;
 
 @protocol JoinViewControllerDelegate <NSObject>

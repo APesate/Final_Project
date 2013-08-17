@@ -11,26 +11,6 @@
 #import "CCLayer.h"
 #import "MatchMakingServer.h"
 
-//@class HostGameLayer;
-//
-//@protocol HostGameLayerDelegate<NSObject>
-//
-//- (void)hostGameLayerDidCancel:(HostGameLayer *)controller;
-//- (void)hostGameLayer:(HostGameLayer *)controller didEndSessionWithReason:(QuitReason)reason;
-//- (void)hostGameLayer:(HostGameLayer *)controller startGameWithSession:(GKSession *)session clients:(NSArray *)clients;
-//
-//@end
-//
-//
-//@interface HostGameLayer : CCLayerColor <MatchmakingServerDelegate>
-//
-//@property (nonatomic, strong) id <HostGameLayerDelegate> delegate;
-//
-//+(CCScene *) scene;
-//+(CCScene *) sceneWithDelegate:(id)_delegate;
-//
-//@end
-
 @class HostGameLayer;
 
 @protocol HostViewControllerDelegate <NSObject>
