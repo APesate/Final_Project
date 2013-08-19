@@ -13,6 +13,7 @@
 //#import "Box2D.h"
 //#import "GLES-Render.h"
 #import "PaddleSprite.h"
+#import "Game.h"
 
 
 //Pixel to metres ratio. Box2D uses metres as the unit for measurement.
@@ -21,13 +22,30 @@
 //to define the ratio so that your most common object type is 1x1 metre.
 #define PTM_RATIO 32
 
+@class HelloWorldLayer;
+
+@protocol HelloWorldDelegate <NSObject>
+
+- (void)gameHelloWorld:(HelloWorldLayer *)layer didQuitWithReason:(QuitReason)reason;
+
+@end
+
 // HelloWorldLayer
-@interface HelloWorldLayer : CCLayer
+@interface HelloWorldLayer : CCLayer <UIAlertViewDelegate, GameDelegate>
 {
 	b2World* world;					// strong ref
 }
 
+
+@property (nonatomic, strong) id <HelloWorldDelegate> delegate;
+@property (nonatomic, strong) Game *game;
+
 // returns a CCScene that contains the HelloWorldLayer as the only child
 +(CCScene *) scene;
-
++(CCScene *) sceneWithDelegate:(id)_delegate;
++(void)setHelloGame:(Game *)menuGame;
 @end
+
+
+
+

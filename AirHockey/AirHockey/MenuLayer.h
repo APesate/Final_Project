@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
-#import "GameViewController.h"
+#import "HelloWorldLayer.h"
 #import "HostGameLayer.h"
 #import "JoinGameLayer.h"
 
-@interface MenuLayer : CCLayer <HostViewControllerDelegate, JoinViewControllerDelegate, GameViewControllerDelegate>
+@interface MenuLayer : CCLayer <HostViewControllerDelegate, JoinViewControllerDelegate, HelloWorldDelegate>
 +(CCScene *) scene;
 
 @end

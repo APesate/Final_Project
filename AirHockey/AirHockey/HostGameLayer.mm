@@ -35,13 +35,13 @@
 	return scene;
 }
 
-+(CCScene *) sceneWithDelegate:(id)_delegate
++(CCScene *) sceneWithDelegate:(id)sceneDelegate
 {
 	// 'scene' is an autorelease object.
 	CCScene *scene = [CCScene node];
 
 	// 'layer' is an autorelease object.
-	HostGameLayer *layer = [HostGameLayer nodeWithDelegate:_delegate];
+	HostGameLayer *layer = [HostGameLayer nodeWithDelegate:sceneDelegate];
 
 	// add layer as a child to scene
 	[scene addChild: layer];

@@ -16,6 +16,8 @@
 - (void)game:(Game *)game didQuitWithReason:(QuitReason)reason;
 - (void)gameWaitingForServerReady:(Game *)game;
 - (void)gameWaitingForClientsReady:(Game *)game;
+- (void)gameDidBegin:(Game *)game;
+- (void)game:(Game *)game playerDidDisconnect:(Player *)disconnectedPlayer;
 
 @end
 
@@ -27,5 +29,6 @@
 - (void)startClientGameWithSession:(GKSession *)session server:(NSString *)peerID;
 - (void)startServerGameWithSession:(GKSession *)session clients:(NSArray *)clients;
 - (void)quitGameWithReason:(QuitReason)reason;
+- (Player *)playerAtPosition:(PlayerPosition)position;
 
 @end

@@ -146,4 +146,9 @@
     [super onExit];
 }
 
+-(void)dealloc{
+    [super dealloc];
+    
+}
+
 @end

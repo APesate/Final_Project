@@ -32,29 +32,74 @@
     b2ContactFilter *filterbarrier;
 
     NSArray *scoreImagesArray;
+    CCLabelBMFont* centerLabel;
     int playerOneScore;
     int playerTwoScore;
     
 }
-
+-(Game *)localGame;
 @end
 
 
 @implementation HelloWorldLayer
 
+@synthesize delegate = _delegate;
+@synthesize game = _game;
+
 +(CCScene *) scene
 {
 	// 'scene' is an autorelease object.
 	CCScene *scene = [CCScene node];
-	
+    
 	// 'layer' is an autorelease object.
 	HelloWorldLayer *layer = [HelloWorldLayer node];
-	
+    
 	// add layer as a child to scene
 	[scene addChild: layer];
-	
+    
 	// return the scene
 	return scene;
+}
+
++(CCScene *) sceneWithDelegate:(id)sceneDelegate
+{
+	// 'scene' is an autorelease object.
+	CCScene *scene = [CCScene node];
+    
+	// 'layer' is an autorelease object.
+	HelloWorldLayer *layer = [HelloWorldLayer nodeWithDelegate:sceneDelegate];
+    
+	// add layer as a child to scene
+	[scene addChild: layer];
+    
+	// return the scene
+	return scene;
+}
+
++(void)setHelloGame:(Game *)menuGame{
+    HelloWorldLayer* layer = [self alloc];
+    Game* helloGame = [layer localGame];
+    helloGame = menuGame;
+    menuGame.delegate = layer;
+}
+
+-(Game *)localGame{
+    return _game;
+}
+
++(id)nodeWithDelegate:(id)aDelegate{
+    return  [[self alloc]  initWithDelegate:aDelegate];
+}
+
+-(id)initWithDelegate:(id)aDelegate{
+    self = [super init];
+    
+    if(self){
+        _delegate = aDelegate;
+        [self initialize];
+    }
+    
+    return self;
 }
 
 #pragma mark - Initialize Instances
@@ -62,59 +107,67 @@
 -(id) init
 {
 	if( (self=[super init])) {
-		
-        winSize = [[CCDirector sharedDirector] winSize];
-		// enable events
-		self.touchEnabled = YES;
-		self.accelerometerEnabled = YES;
-        
-        playerOneScore = 0;
-        playerTwoScore = 0;
-        
-#warning Change this array with the actual images of the score.
-        scoreImagesArray = [NSArray arrayWithObjects:@"Icon.png", @"Puck.png", @"Icon.png", @"Puck.png", @"Icon.png", @"Puck.png", @"Icon.png", nil];
-        [scoreImagesArray retain]; //Because it's no ARC
-                
-        [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGB565];
-        backgroundSprite = [CCSprite spriteWithFile:@"TableBackground.png"];
-        backgroundSprite.position = ccp(winSize.width / 2,winSize.height / 2);
-        backgroundSprite.rotation = 90;
-        backgroundSprite.scale = 2;
-        backgroundSprite.scaleY = 2.37;
-        [self addChild:backgroundSprite];
-        [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
-        
-        playerOneScoreSprite = [CCSprite spriteWithFile:[scoreImagesArray objectAtIndex:playerOneScore] rect:CGRectMake(0, 0, 50, 50)];
-        playerOneScoreSprite.position = ccp((winSize.width / 2) - 28, winSize.height - 34.5);
-        [self addChild:playerOneScoreSprite];
-        
-        playerTwoScoreSprite = [CCSprite spriteWithFile:[scoreImagesArray objectAtIndex:playerTwoScore] rect:CGRectMake(0, 0, 50, 50)];
-        playerTwoScoreSprite.position = ccp(winSize.width / 2 + 28, winSize.height - 34.5);
-        playerTwoScoreSprite.rotation = 180;
-        [self addChild:playerTwoScoreSprite];
-        
-        paddleOne = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
-        paddleOne.position = ccp(90, winSize.height / 2);
-        paddleOne.scale = 0.75;
-        paddleOne.tag = 1;
-        [self addChild:paddleOne];
-        
-        paddleTwo = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
-        paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
-        paddleTwo.scale = 0.75;
-        paddleTwo.tag = 2;
-        [self addChild:paddleTwo];
-        
-        puckSprite = [[CCSprite alloc] initWithFile:@"Puck.png" rect:CGRectMake(0, 0, 150, 150)];
-        puckSprite.position = ccp(winSize.width / 2, winSize.height / 2);
-        puckSprite.scale = 0.48;
-        [self addChild:puckSprite];
-        
-		// init physics
-		[self initPhysics];
-        
+        [self initialize];
 	}
 	return self;
+}
+
+-(void)initialize{
+    winSize = [[CCDirector sharedDirector] winSize];
+    // enable events
+    self.touchEnabled = YES;
+    self.accelerometerEnabled = YES;
+    
+    playerOneScore = 0;
+    playerTwoScore = 0;
+    
+#warning Change this array with the actual images of the score.
+    scoreImagesArray = [NSArray arrayWithObjects:@"Icon.png", @"Puck.png", @"Icon.png", @"Puck.png", @"Icon.png", @"Puck.png", @"Icon.png", nil];
+    [scoreImagesArray retain]; //Because it's no ARC
+    
+    [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGB565];
+    backgroundSprite = [CCSprite spriteWithFile:@"TableBackground.png"];
+    backgroundSprite.position = ccp(winSize.width / 2,winSize.height / 2);
+    backgroundSprite.rotation = 90;
+    backgroundSprite.scale = 2;
+    backgroundSprite.scaleY = 2.37;
+    [self addChild:backgroundSprite];
+    [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
+    
+    playerOneScoreSprite = [CCSprite spriteWithFile:[scoreImagesArray objectAtIndex:playerOneScore] rect:CGRectMake(0, 0, 50, 50)];
+    playerOneScoreSprite.position = ccp((winSize.width / 2) - 28, winSize.height - 34.5);
+    [self addChild:playerOneScoreSprite];
+    
+    playerTwoScoreSprite = [CCSprite spriteWithFile:[scoreImagesArray objectAtIndex:playerTwoScore] rect:CGRectMake(0, 0, 50, 50)];
+    playerTwoScoreSprite.position = ccp(winSize.width / 2 + 28, winSize.height - 34.5);
+    playerTwoScoreSprite.rotation = 180;
+    [self addChild:playerTwoScoreSprite];
+    
+    paddleOne = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
+    paddleOne.position = ccp(90, winSize.height / 2);
+    paddleOne.scale = 0.75;
+    paddleOne.tag = 1;
+    [self addChild:paddleOne];
+    
+    paddleTwo = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
+    paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
+    paddleTwo.scale = 0.75;
+    paddleTwo.tag = 2;
+    [self addChild:paddleTwo];
+    
+    puckSprite = [[CCSprite alloc] initWithFile:@"Puck.png" rect:CGRectMake(0, 0, 150, 150)];
+    puckSprite.position = ccp(winSize.width / 2, winSize.height / 2);
+    puckSprite.scale = 0.48;
+    [self addChild:puckSprite];
+    
+    centerLabel = [CCLabelTTF labelWithString:@"Host Name" fontName:@"Champagne & Limousines.ttf" fontSize:18];
+    centerLabel.position = ccp(winSize.width / 2, (winSize.height / 2) - 50);
+    centerLabel.color = ccc3(0.0, 0.0, 0.0);
+    [self addChild:centerLabel];
+    
+    // init physics
+    [self initPhysics];
+
 }
 
 -(void) dealloc
@@ -292,5 +345,37 @@
 	// generally best to keep the time step and iterations fixed.
 	world->Step(dt, 10, 10);
 }
+
+#pragma mark - GameDelegate
+
+- (void)gameDidBegin:(Game *)game
+{
+//	[self showPlayerLabels];
+//	[self calculateLabelFrames];
+//	[self updateWinsLabels];
+}
+
+- (void)game:(Game *)game didQuitWithReason:(QuitReason)reason
+{
+	[self.delegate gameHelloWorld:self didQuitWithReason:reason];
+}
+
+- (void)gameWaitingForServerReady:(Game *)game
+{
+	centerLabel.string = NSLocalizedString(@"Waiting for game to start...", @"Status text: waiting for server");
+}
+
+- (void)gameWaitingForClientsReady:(Game *)game
+{
+	centerLabel.string = NSLocalizedString(@"Waiting for other players...", @"Status text: waiting for clients");
+}
+
+- (void)game:(Game *)game playerDidDisconnect:(Player *)disconnectedPlayer
+{
+//	[self hidePlayerLabelsForPlayer:disconnectedPlayer];
+//	[self hideActiveIndicatorForPlayer:disconnectedPlayer];
+//	[self hideSnapIndicatorForPlayer:disconnectedPlayer];
+}
+
 
 @end

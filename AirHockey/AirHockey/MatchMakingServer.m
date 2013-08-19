@@ -40,7 +40,7 @@ ServerState;
     if (_serverState == ServerStateIdle)
 	{
 		_serverState = ServerStateAcceptingConnections;
-        _connectedClients = [NSMutableArray arrayWithCapacity:self.maxClients];
+        _connectedClients = [[NSMutableArray arrayWithCapacity:self.maxClients] retain];
         
         _session = [[GKSession alloc] initWithSessionID:sessionID displayName:nil sessionMode:GKSessionModeServer];
         _session.delegate = self;

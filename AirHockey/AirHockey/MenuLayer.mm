@@ -101,7 +101,7 @@
 
 - (void)hostViewController:(HostGameLayer *)controller startGameWithSession:(GKSession *)session clients:(NSArray *)clients
 {
-    [[CCDirector sharedDirector] popScene];
+    //[[CCDirector sharedDirector] popScene];
     
     [self startGameWithBlock:^(Game *game)
      {
@@ -132,7 +132,7 @@
 
 - (void)joinViewController:(JoinGameLayer *)controller startGameWithSession:(GKSession *)session server:(NSString *)peerID
 {
-    [[CCDirector sharedDirector] popScene];
+    //[[CCDirector sharedDirector] popScene];
     
     [self startGameWithBlock:^(Game *game)
      {
@@ -140,17 +140,16 @@
      }];
 }
 
-#pragma mark - GameViewControllerDelegate
+#pragma mark - GameHelloWorldDelegate
 
-- (void)gameViewController:(GameViewController *)controller didQuitWithReason:(QuitReason)reason
+- (void)gameHelloWorld:(HelloWorldLayer *)layer didQuitWithReason:(QuitReason)reason
 {
-	[[CCDirector sharedDirector] dismissViewControllerAnimated:NO completion:^
-     {
-         if (reason == QuitReasonConnectionDropped)
-         {
-             [self showDisconnectedAlert];
-         }
-     }];
+	[[CCDirector sharedDirector] popScene];
+    
+    if (reason == QuitReasonConnectionDropped)
+    {
+        [self showDisconnectedAlert];
+    }
 }
 
 #pragma mark - Alerts
@@ -183,16 +182,11 @@
 
 - (void)startGameWithBlock:(void (^)(Game *))block
 {
-	GameViewController *gameViewController = [[GameViewController alloc] initWithNibName:@"GameViewController" bundle:nil];
-	gameViewController.delegate = self;
+    [[CCDirector sharedDirector] replaceScene:[HelloWorldLayer sceneWithDelegate:self]];
     
-	[[CCDirector sharedDirector] presentViewController:gameViewController animated:NO completion:^
-     {
-         Game *game = [[Game alloc] init];
-         gameViewController.game = game;
-         game.delegate = gameViewController;
-         block(game);
-     }];
+    Game *game = [[Game alloc] init];
+    [HelloWorldLayer setHelloGame:game];
+    block(game);
 }
 
 @end

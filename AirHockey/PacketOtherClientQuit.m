@@ -7,7 +7,7 @@
 //
 
 #import "PacketOtherClientQuit.h"
-#import "NSData+SnapAdditions.h"
+#import "NSData+HockeyAdditions.h"
 
 @implementation PacketOtherClientQuit
 

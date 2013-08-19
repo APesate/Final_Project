@@ -41,7 +41,7 @@ ClientState;
 	if (_clientState == ClientStateIdle)
 	{
 		_clientState = ClientStateSearchingForServers;
-		_availableServers = [NSMutableArray arrayWithCapacity:10];
+		_availableServers = [[NSMutableArray arrayWithCapacity:10] retain];
         
         _session = [[GKSession alloc] initWithSessionID:sessionID displayName:nil sessionMode:GKSessionModeClient];
         _session.delegate = self;

@@ -9,11 +9,14 @@
 #import "Game.h"
 #import "Packet.h"
 #import "PacketSignInResponse.h"
+#import "PacketServerReady.h"
+#import "PacketOtherClientQuit.h"
 
 typedef enum
 {
 	GameStateWaitingForSignIn,
 	GameStateWaitingForReady,
+    GameStateLoading,
 	GameStatePlaying,
 	GameStateGameOver,
 	GameStateQuitting,
@@ -38,11 +41,34 @@ GameState;
 {
 	if ((self = [super init]))
 	{
-		_players = [NSMutableDictionary dictionaryWithCapacity:2];
+		_players = [[NSMutableDictionary dictionaryWithCapacity:2] retain];
 	}
 	return self;
 }
 
+
+- (void)beginGame
+{
+	_state = GameStateLoading;
+	NSLog(@"the game should begin");
+}
+
+- (void)changeRelativePositionsOfPlayers
+{
+	NSAssert(!self.isServer, @"Must be client");
+    
+	Player *myPlayer = [self playerWithPeerID:_session.peerID];
+	int diff = myPlayer.position;
+	myPlayer.position = PlayerPositionBottom;
+    
+	[_players enumerateKeysAndObjectsUsingBlock:^(id key, Player *obj, BOOL *stop)
+     {
+         if (obj != myPlayer)
+         {
+             obj.position = (obj.position - diff) % 2;
+         }
+     }];
+}
 #pragma mark - Game Logic
 
 - (void)startClientGameWithSession:(GKSession *)session server:(NSString *)peerID
@@ -116,6 +142,19 @@ GameState;
 			}
 			break;
             
+		case PacketTypeServerReady:
+			if (_state == GameStateWaitingForReady)
+			{
+				_players = ((PacketServerReady *)packet).players;
+				[self changeRelativePositionsOfPlayers];
+                
+				Packet *packet = [Packet packetWithType:PacketTypeClientReady];
+				[self sendPacketToServer:packet];
+                
+				[self beginGame];
+			}
+			break;
+            
 		default:
 			NSLog(@"Client received unexpected packet: %@", packet);
 			break;
@@ -131,7 +170,19 @@ GameState;
 			{
 				player.name = ((PacketSignInResponse *)packet).playerName;
                 
-				NSLog(@"server received sign in from client '%@'", player.name);
+				if ([self receivedResponsesFromAllPlayers])
+				{
+					_state = GameStateWaitingForReady;
+                    
+					NSLog(@"all clients have signed in");
+				}
+			}
+			break;
+            
+        case PacketTypeClientReady:
+			if (_state == GameStateWaitingForReady && [self receivedResponsesFromAllPlayers])
+			{
+				[self beginGame];
 			}
 			break;
             
@@ -139,6 +190,17 @@ GameState;
 			NSLog(@"Server received unexpected packet: %@", packet);
 			break;
 	}
+}
+
+- (BOOL)receivedResponsesFromAllPlayers
+{
+	for (NSString *peerID in _players)
+	{
+		Player *player = [self playerWithPeerID:peerID];
+		if (!player.receivedResponse)
+			return NO;
+	}
+	return YES;
 }
 
 - (Player *)playerWithPeerID:(NSString *)peerID
@@ -196,6 +258,10 @@ GameState;
 	}
     
 	Player *player = [self playerWithPeerID:peerID];
+	if (player != nil)
+	{
+		player.receivedResponse = YES;  // this is the new bit
+	}
     
 	if (self.isServer)
 		[self serverReceivedPacket:packet fromPlayer:player];
@@ -210,6 +276,12 @@ GameState;
 	GKSendDataMode dataMode = GKSendDataReliable;
 	NSData *data = [packet data];
 	NSError *error;
+    
+    [_players enumerateKeysAndObjectsUsingBlock:^(id key, Player *obj, BOOL *stop)
+     {
+         obj.receivedResponse = [_session.peerID isEqualToString:obj.peerID];
+     }];
+    
 	if (![_session sendDataToAllPeers:data withDataMode:dataMode error:&error])
 	{
 		NSLog(@"Error sending data to clients: %@", error);
@@ -224,6 +296,30 @@ GameState;
 	if (![_session sendData:data toPeers:[NSArray arrayWithObject:_serverPeerID] withDataMode:dataMode error:&error])
 	{
 		NSLog(@"Error sending data to server: %@", error);
+	}
+}
+
+- (void)clientDidDisconnect:(NSString *)peerID
+{
+	if (_state != GameStateQuitting)
+	{
+		Player *player = [self playerWithPeerID:peerID];
+		if (player != nil)
+		{
+			[_players removeObjectForKey:peerID];
+            
+			if (_state != GameStateWaitingForSignIn)
+			{
+				// Tell the other clients that this one is now disconnected.
+				if (self.isServer)
+				{
+					PacketOtherClientQuit *packet = [PacketOtherClientQuit packetWithPeerID:peerID];
+					[self sendPacketToAllClients:packet];
+				}
+                
+				[self.delegate game:self playerDidDisconnect:player];
+			}
+		}
 	}
 }
 
