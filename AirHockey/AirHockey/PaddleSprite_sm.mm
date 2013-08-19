@@ -74,10 +74,6 @@
 {
     [self Default:context];
 }
-- (void)fallback:(PaddleSpriteContext*)context;
-{
-    [self Default:context];
-}
 - (void)update:(PaddleSpriteContext*)context :(ccTime)delta;
 {
     [self Default:context];
@@ -104,7 +100,7 @@
 {
 }
 
-- (void)fallback:(PaddleSpriteContext*)context;
+- (void)fallBack:(PaddleSpriteContext*)context;
 {
 }
 @end
@@ -269,11 +265,6 @@
 - (void)fallBack;
 {
     [[self state] fallBack:self];
-}
-
-- (void)fallback;
-{
-    [[self state] fallback:self];
 }
 
 - (void)update:(ccTime)delta;

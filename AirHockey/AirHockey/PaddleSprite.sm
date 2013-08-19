@@ -26,7 +26,7 @@ Exit {
 {
 	defend Defending	{}
 	attack Attacking	{}
-	update(delta:ccTime)	nil	{updateDefending(delta);}
+	updateDef(delta:ccTime)	nil	{updateDefending(delta);}
 }
 
 Attacking
@@ -41,7 +41,7 @@ Exit {
 {
 	attack	Attacking		{}
 	fallBack FallingBack 	{}
-	update(delta:ccTime) 	nil		{updateAttacking(delta);}
+	updateAtt(delta:ccTime) 	nil		{updateAttacking(delta);}
 }
 
 FallingBack
@@ -60,7 +60,8 @@ Default
 {
 	attack	nil	{}
 	defend	nil	{}
-	update(delta:ccTime)	nil	{}
+	updateDeff(delta:ccTime)	nil	{}
+	updateAtt(delta:ccTime) nil {}
 	fallBack		nil 	{}
 
 }

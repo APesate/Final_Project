@@ -26,9 +26,12 @@
 @interface HelloWorldLayer : CCLayer
 {
 	b2World* world;					// strong ref
+    b2Body* puckBody;
+    CCSprite* puckSprite;
 }
 
 // returns a CCScene that contains the HelloWorldLayer as the only child
 +(CCScene *) scene;
++(CCSprite *)getPuckSprite;
 
 @end

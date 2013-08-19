@@ -24,8 +24,8 @@
     CCSprite* playerOneScoreSprite;
     CCSprite* playerTwoScoreSprite;
     CCSprite* backgroundSprite;
-    CCSprite* puckSprite;
-    b2Body* puckBody;
+    
+    
     b2FixtureDef bodyFixtureDef;
     b2ContactFilter *contactFilter;
     b2EdgeShape leftBarrier;
@@ -36,7 +36,7 @@
     int playerTwoScore;
     
 }
-
+-(CCSprite *)getLocalPuckSprite;
 @end
 
 
@@ -56,6 +56,19 @@
 	// return the scene
 	return scene;
 }
+
++(CCSprite *)getPuckSprite{
+    return [[self getSelf] getLocalPuckSprite];
+}
+
++(id)getSelf{
+    return self;
+}
+
+-(CCSprite *)getLocalPuckSprite{
+    return puckSprite;
+}
+
 
 #pragma mark - Initialize Instances
 
@@ -238,7 +251,7 @@
     puckBody->CreateFixture(&bodyFixtureDef);
     puckBody->SetLinearDamping(0.05 * puckBody->GetMass());
     puckBody->SetAngularDamping(0.05 * puckBody->GetMass());
-    
+    puckBody->SetLinearVelocity(b2Vec2(0, 4));
 }
 
 
