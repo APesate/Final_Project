@@ -14,6 +14,8 @@
 // Needed to obtain the Navigation Controller
 #import "AppDelegate.h"
 
+#import "SMStateMachine.h"
+
 
 #pragma mark - HelloWorldLayer
 
@@ -35,7 +37,14 @@
     int playerOneScore;
     int playerTwoScore;
     
+    // State Machine
+    SMStateMachine *sm;
+    SMState *attack;
+    SMState *deffend;
+    
 }
+
+-(void)defending;
 
 @end
 
@@ -112,9 +121,62 @@
         
 		// init physics
 		[self initPhysics];
+        [self initStateMachine];
         
 	}
 	return self;
+}
+
+-(void)initStateMachine{
+    //Create structure
+    sm = [[SMStateMachine alloc] init];
+    sm.globalExecuteIn = self; //execute all selectors on self object
+    attack = [sm createState:@"open"];
+    deffend = [sm createState:@"closed"];
+    sm.initialState = deffend;
+    
+    [attack setEntrySelector:@selector(attackMode)];
+    [attack setExitSelector:@selector(returnToDefense)];
+    [deffend setEntrySelector:@selector(deffendMode)];
+    
+    [sm transitionFrom:deffend to:attack forEvent:@"toAttack"];
+    [sm transitionFrom:attack to:deffend forEvent:@"toDeffend"];
+    
+    [sm transitionFrom:deffend to:deffend forEvent:@"deffending" withSel:@selector(defending)];
+    
+    /*
+    [sm transitionFrom:deffend to:opened forEvent:@"coin"];
+    [sm transitionFrom:opened to:closed forEvent:@"pass"];
+    [sm transitionFrom:opened to:closed forEvent:@"timeout"];
+    [sm transitionFrom:opened to:opened forEvent:@"coin" withSel:@selector(returnCoin)];
+    */
+    
+    //Usage
+      [sm validate];  
+   
+}
+
+-(void)defending
+{
+    CCLOG(@"Im defending");
+}
+
+-(void)deffendMode
+{
+
+    paddleOne.body->SetTransform(b2Vec2(90/PTM_RATIO, puckSprite.position.y/PTM_RATIO), 0);
+    CCLOG(@"im defending");
+    
+}
+
+-(void)attackMode
+{
+    CCLOG(@"Im Attacking");
+}
+
+-(void)returnToDefense
+{
+    
 }
 
 -(void) dealloc
@@ -275,6 +337,16 @@
         puckBody->SetLinearVelocity(b2Vec2(0, 0));
         puckBody->SetAngularVelocity(0);
     }
+    
+    if ((puckBody->GetPosition()).x>winSize.width/(2*PTM_RATIO)) {
+        [sm post:@"deffending"];
+        //[self defending];
+        //CCLOG(@"im here");
+    }
+    else if ((puckBody->GetPosition()).x>winSize.width/(2*PTM_RATIO)) {
+        [sm post:@"toAttack"];
+    }
+    
 
 #warning In case that we want to allow to throw the paddle
 //    if((paddleOne.position.x > (winSize.width / 2)) && (paddleTwo.position.x < (winSize.width / 2))){

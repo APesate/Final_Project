@@ -11,7 +11,7 @@
 @implementation PaddleSprite{
     CGSize winSize;
 }
-
+@synthesize body = _body;
 -(id)initWithFile:(NSString *)filename rect:(CGRect)rect{
     self = [super initWithFile:filename rect:rect];
     
@@ -34,7 +34,7 @@
     
     
     bodyDef.userData = self;
-    body = world->CreateBody(&bodyDef);
+    _body = world->CreateBody(&bodyDef);
     
     b2CircleShape paddle;
     paddle.m_radius = 31.0/PTM_RATIO;
@@ -45,9 +45,9 @@
     bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
     bodyTextureDef.restitution = 0.8f;
     bodyTextureDef.filter.groupIndex = 1;
-    body->CreateFixture(&bodyTextureDef);
-    body->SetAngularDamping(0.05* body->GetMass());
-    body->SetLinearDamping(0.05 * body->GetMass());
+    _body->CreateFixture(&bodyTextureDef);
+    _body->SetAngularDamping(0.05* _body->GetMass());
+    _body->SetLinearDamping(0.05 * _body->GetMass());
 
 }
 
@@ -82,15 +82,15 @@
     
     b2MouseJointDef md;
     md.bodyA = world->GetBodyList();
-    md.bodyB = body;
-    md.target = b2Vec2((body->GetPosition()).x, (body->GetPosition()).y);
+    md.bodyB = _body;
+    md.target = b2Vec2((_body->GetPosition()).x, (_body->GetPosition()).y);
     md.collideConnected = true;
     md.dampingRatio = 2.0f;
     md.frequencyHz =  100.0f;
-    md.maxForce = 8000.0f * body->GetMass();
+    md.maxForce = 8000.0f * _body->GetMass();
     
     mouseJoint = (b2MouseJoint *)world->CreateJoint(&md);
-    body->SetAwake(true);
+    _body->SetAwake(true);
     
     state = kPaddleStateGrabbed;
     return YES;

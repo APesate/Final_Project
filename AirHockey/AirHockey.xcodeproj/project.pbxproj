@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8248340D17C2B83D0050BA27 /* SMAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 824833FB17C2B83D0050BA27 /* SMAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		8248340E17C2B83D0050BA27 /* SMDecision.m in Sources */ = {isa = PBXBuildFile; fileRef = 824833FE17C2B83D0050BA27 /* SMDecision.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		8248340F17C2B83D0050BA27 /* SMMonitorNSLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340017C2B83D0050BA27 /* SMMonitorNSLog.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		8248341017C2B83D0050BA27 /* SMNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340217C2B83D0050BA27 /* SMNode.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		8248341117C2B83D0050BA27 /* SMState.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340417C2B83D0050BA27 /* SMState.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		8248341217C2B83D0050BA27 /* SMStateMachine.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340617C2B83D0050BA27 /* SMStateMachine.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		8248341317C2B83D0050BA27 /* SMStateMachineAsync.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340817C2B83D0050BA27 /* SMStateMachineAsync.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		8248341417C2B83D0050BA27 /* SMStateMachineExecuteContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340A17C2B83D0050BA27 /* SMStateMachineExecuteContext.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		8248341517C2B83D0050BA27 /* SMTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340C17C2B83D0050BA27 /* SMTransition.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		8265262617BC55A000D52B87 /* Puck.png in Resources */ = {isa = PBXBuildFile; fileRef = 8265262517BC55A000D52B87 /* Puck.png */; };
 		829E02CE17BAD0F10056CD4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CD17BAD0F10056CD4B /* QuartzCore.framework */; };
 		829E02D017BAD0F10056CD4B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CF17BAD0F10056CD4B /* OpenGLES.framework */; };
@@ -195,6 +204,25 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		824833FA17C2B83D0050BA27 /* SMAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMAction.h; sourceTree = "<group>"; };
+		824833FB17C2B83D0050BA27 /* SMAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMAction.m; sourceTree = "<group>"; };
+		824833FC17C2B83D0050BA27 /* SMCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMCommon.h; sourceTree = "<group>"; };
+		824833FD17C2B83D0050BA27 /* SMDecision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMDecision.h; sourceTree = "<group>"; };
+		824833FE17C2B83D0050BA27 /* SMDecision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMDecision.m; sourceTree = "<group>"; };
+		824833FF17C2B83D0050BA27 /* SMMonitorNSLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMMonitorNSLog.h; sourceTree = "<group>"; };
+		8248340017C2B83D0050BA27 /* SMMonitorNSLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMMonitorNSLog.m; sourceTree = "<group>"; };
+		8248340117C2B83D0050BA27 /* SMNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMNode.h; sourceTree = "<group>"; };
+		8248340217C2B83D0050BA27 /* SMNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMNode.m; sourceTree = "<group>"; };
+		8248340317C2B83D0050BA27 /* SMState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMState.h; sourceTree = "<group>"; };
+		8248340417C2B83D0050BA27 /* SMState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMState.m; sourceTree = "<group>"; };
+		8248340517C2B83D0050BA27 /* SMStateMachine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMStateMachine.h; sourceTree = "<group>"; };
+		8248340617C2B83D0050BA27 /* SMStateMachine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMStateMachine.m; sourceTree = "<group>"; };
+		8248340717C2B83D0050BA27 /* SMStateMachineAsync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMStateMachineAsync.h; sourceTree = "<group>"; };
+		8248340817C2B83D0050BA27 /* SMStateMachineAsync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMStateMachineAsync.m; sourceTree = "<group>"; };
+		8248340917C2B83D0050BA27 /* SMStateMachineExecuteContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMStateMachineExecuteContext.h; sourceTree = "<group>"; };
+		8248340A17C2B83D0050BA27 /* SMStateMachineExecuteContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMStateMachineExecuteContext.m; sourceTree = "<group>"; };
+		8248340B17C2B83D0050BA27 /* SMTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTransition.h; sourceTree = "<group>"; };
+		8248340C17C2B83D0050BA27 /* SMTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTransition.m; sourceTree = "<group>"; };
 		8265262517BC55A000D52B87 /* Puck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Puck.png; path = Resources/Puck.png; sourceTree = "<group>"; };
 		829E02CA17BAD0F10056CD4B /* AirHockey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirHockey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		829E02CD17BAD0F10056CD4B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -601,6 +629,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		824833F917C2B83D0050BA27 /* SMStateMachine */ = {
+			isa = PBXGroup;
+			children = (
+				824833FA17C2B83D0050BA27 /* SMAction.h */,
+				824833FB17C2B83D0050BA27 /* SMAction.m */,
+				824833FC17C2B83D0050BA27 /* SMCommon.h */,
+				824833FD17C2B83D0050BA27 /* SMDecision.h */,
+				824833FE17C2B83D0050BA27 /* SMDecision.m */,
+				824833FF17C2B83D0050BA27 /* SMMonitorNSLog.h */,
+				8248340017C2B83D0050BA27 /* SMMonitorNSLog.m */,
+				8248340117C2B83D0050BA27 /* SMNode.h */,
+				8248340217C2B83D0050BA27 /* SMNode.m */,
+				8248340317C2B83D0050BA27 /* SMState.h */,
+				8248340417C2B83D0050BA27 /* SMState.m */,
+				8248340517C2B83D0050BA27 /* SMStateMachine.h */,
+				8248340617C2B83D0050BA27 /* SMStateMachine.m */,
+				8248340717C2B83D0050BA27 /* SMStateMachineAsync.h */,
+				8248340817C2B83D0050BA27 /* SMStateMachineAsync.m */,
+				8248340917C2B83D0050BA27 /* SMStateMachineExecuteContext.h */,
+				8248340A17C2B83D0050BA27 /* SMStateMachineExecuteContext.m */,
+				8248340B17C2B83D0050BA27 /* SMTransition.h */,
+				8248340C17C2B83D0050BA27 /* SMTransition.m */,
+			);
+			path = SMStateMachine;
+			sourceTree = "<group>";
+		};
 		829E02C117BAD0F10056CD4B = {
 			isa = PBXGroup;
 			children = (
@@ -621,6 +675,7 @@
 		829E02CC17BAD0F10056CD4B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				824833F917C2B83D0050BA27 /* SMStateMachine */,
 				829E02CD17BAD0F10056CD4B /* QuartzCore.framework */,
 				829E02CF17BAD0F10056CD4B /* OpenGLES.framework */,
 				829E02D117BAD0F10056CD4B /* OpenAL.framework */,
@@ -1451,6 +1506,15 @@
 				829E050D17BAD0F80056CD4B /* IntroLayer.mm in Sources */,
 				829E051017BAD0F80056CD4B /* GLES-Render.mm in Sources */,
 				829E051A17BAE1D90056CD4B /* PaddleSprite.mm in Sources */,
+				8248340D17C2B83D0050BA27 /* SMAction.m in Sources */,
+				8248340E17C2B83D0050BA27 /* SMDecision.m in Sources */,
+				8248340F17C2B83D0050BA27 /* SMMonitorNSLog.m in Sources */,
+				8248341017C2B83D0050BA27 /* SMNode.m in Sources */,
+				8248341117C2B83D0050BA27 /* SMState.m in Sources */,
+				8248341217C2B83D0050BA27 /* SMStateMachine.m in Sources */,
+				8248341317C2B83D0050BA27 /* SMStateMachineAsync.m in Sources */,
+				8248341417C2B83D0050BA27 /* SMStateMachineExecuteContext.m in Sources */,
+				8248341517C2B83D0050BA27 /* SMTransition.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1512,6 +1576,7 @@
 				);
 				HEADER_SEARCH_PATHS = "\"AirHockey/libs/kazmath/include\"";
 				INFOPLIST_FILE = AirHockey/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				OTHER_LDFLAGS = (
 					"-lz",
 					"-lsqlite3",
@@ -1537,6 +1602,7 @@
 				);
 				HEADER_SEARCH_PATHS = "\"AirHockey/libs/kazmath/include\"";
 				INFOPLIST_FILE = AirHockey/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				OTHER_LDFLAGS = (
 					"-lz",
 					"-lsqlite3",

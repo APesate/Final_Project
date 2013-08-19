@@ -22,10 +22,10 @@ typedef enum tagPaddleState{
     PaddleState state;
     @public
     b2World* world;
-    b2Body* body;
+
     b2MouseJoint* mouseJoint;
 }
-
+@property b2Body * body;
 -(void)createBody;
 
 @end
