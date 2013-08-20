@@ -204,6 +204,7 @@
     b2Vec2 force = forceMagnitude * necessaryMovement;
     paddleOne.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
     
+    
 
 }
 
