@@ -45,6 +45,7 @@
 }
 
 -(void)defending;
+-(void)attacking;
 
 @end
 
@@ -135,6 +136,7 @@
     deffend = [sm createState:@"closed"];
     sm.initialState = deffend;
     
+    
     [attack setEntrySelector:@selector(attackMode)];
     [attack setExitSelector:@selector(returnToDefense)];
     [deffend setEntrySelector:@selector(deffendMode)];
@@ -143,7 +145,7 @@
     [sm transitionFrom:attack to:deffend forEvent:@"toDeffend"];
     
     [sm transitionFrom:deffend to:deffend forEvent:@"deffending" withSel:@selector(defending)];
-    
+    [sm transitionFrom:attack to:attack forEvent:@"attacking" withSel:@selector(attacking)];
     /*
     [sm transitionFrom:deffend to:opened forEvent:@"coin"];
     [sm transitionFrom:opened to:closed forEvent:@"pass"];
@@ -163,15 +165,46 @@
 
 -(void)deffendMode
 {
-
-    paddleOne.body->SetTransform(b2Vec2(90/PTM_RATIO, puckSprite.position.y/PTM_RATIO), 0);
+    b2Vec2 linearVel = paddleOne.body->GetLinearVelocity();
+    linearVel.x *= 0.09;
+    linearVel.y *= 0.1;
+    b2Vec2 currentPosition = paddleOne.body->GetPosition() + linearVel;
+    b2Vec2 desiredPosition = b2Vec2(90/PTM_RATIO, puckBody->GetPosition().y);
+    b2Vec2 necessaryMovement = desiredPosition - currentPosition;
+    float necessaryDistance = necessaryMovement.Length();
+    necessaryMovement.Normalize();
+    float forceMagnitude = 1000;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
+    b2Vec2 force = forceMagnitude * necessaryMovement;
+    paddleOne.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
+    
+    //paddleOne.body->SetTransform(b2Vec2(90/PTM_RATIO, puckSprite.position.y/PTM_RATIO), 0);
     CCLOG(@"im defending");
     
 }
 
--(void)attackMode
+-(void)attacking
 {
     CCLOG(@"Im Attacking");
+}
+
+-(void)attackMode
+{
+    
+    CCLOG(@"im Attacking");
+    
+    b2Vec2 linearVel = paddleOne.body->GetLinearVelocity();
+    linearVel.x *= 0.1;
+    linearVel.y *= 0.1;
+    b2Vec2 currentPosition = paddleOne.body->GetPosition() + linearVel;
+    b2Vec2 desiredPosition = b2Vec2(puckBody->GetPosition().x-20/PTM_RATIO, puckBody->GetPosition().y);
+    b2Vec2 necessaryMovement = desiredPosition - currentPosition;
+    float necessaryDistance = necessaryMovement.Length();
+    necessaryMovement.Normalize();
+    float forceMagnitude = 1000;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
+    b2Vec2 force = forceMagnitude * necessaryMovement;
+    paddleOne.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
+    
+
 }
 
 -(void)returnToDefense
@@ -339,12 +372,14 @@
     }
     
     if ((puckBody->GetPosition()).x>winSize.width/(2*PTM_RATIO)) {
+        [sm post:@"toDeffend"];
         [sm post:@"deffending"];
         //[self defending];
         //CCLOG(@"im here");
     }
-    else if ((puckBody->GetPosition()).x>winSize.width/(2*PTM_RATIO)) {
+    if ((puckBody->GetPosition()).x<=winSize.width/(2*PTM_RATIO)) {
         [sm post:@"toAttack"];
+        [sm post:@"attacking"];
     }
     
 
