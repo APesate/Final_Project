@@ -11,7 +11,9 @@
 @implementation PaddleSprite{
     CGSize winSize;
 }
+
 @synthesize body = _body;
+
 -(id)initWithFile:(NSString *)filename rect:(CGRect)rect{
     self = [super initWithFile:filename rect:rect];
     
@@ -32,7 +34,6 @@
         bodyDef.position.Set(([[CCDirector sharedDirector] winSize].width - 90)/PTM_RATIO, [[CCDirector sharedDirector] winSize].height /(2 * PTM_RATIO));
     }
     
-    
     bodyDef.userData = self;
     _body = world->CreateBody(&bodyDef);
     
@@ -45,6 +46,7 @@
     bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
     bodyTextureDef.restitution = 0.8f;
     bodyTextureDef.filter.groupIndex = 1;
+    
     _body->CreateFixture(&bodyTextureDef);
     _body->SetAngularDamping(0.05* _body->GetMass());
     _body->SetLinearDamping(0.05 * _body->GetMass());

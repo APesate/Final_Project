@@ -138,7 +138,6 @@
     
     
     [attack setEntrySelector:@selector(attackMode)];
-    [attack setExitSelector:@selector(returnToDefense)];
     [deffend setEntrySelector:@selector(deffendMode)];
     
     [sm transitionFrom:deffend to:attack forEvent:@"toAttack"];
@@ -171,7 +170,7 @@
     b2Vec2 currentPosition = paddleOne.body->GetPosition() + linearVel;
     b2Vec2 desiredPosition = b2Vec2(90/PTM_RATIO, puckBody->GetPosition().y);
     b2Vec2 necessaryMovement = desiredPosition - currentPosition;
-    float necessaryDistance = necessaryMovement.Length();
+    //float necessaryDistance = necessaryMovement.Length();
     necessaryMovement.Normalize();
     float forceMagnitude = 1000;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
     b2Vec2 force = forceMagnitude * necessaryMovement;
@@ -198,20 +197,14 @@
     b2Vec2 currentPosition = paddleOne.body->GetPosition() + linearVel;
     b2Vec2 desiredPosition = b2Vec2(puckBody->GetPosition().x-20/PTM_RATIO, puckBody->GetPosition().y);
     b2Vec2 necessaryMovement = desiredPosition - currentPosition;
-    float necessaryDistance = necessaryMovement.Length();
+    //float necessaryDistance = necessaryMovement.Length();
     necessaryMovement.Normalize();
     float forceMagnitude = 1000;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
     b2Vec2 force = forceMagnitude * necessaryMovement;
     paddleOne.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
     
-    
-
 }
 
--(void)returnToDefense
-{
-    
-}
 
 -(void) dealloc
 {
@@ -383,7 +376,8 @@
         [sm post:@"attacking"];
     }
     
-
+    world->Step(dt, 10, 10);
+    
 #warning In case that we want to allow to throw the paddle
 //    if((paddleOne.position.x > (winSize.width / 2)) && (paddleTwo.position.x < (winSize.width / 2))){
 //        [paddleOne setPosition:ccp(90, winSize.height / 2)];
@@ -399,7 +393,7 @@
     
 	// Instruct the world to perform a single step of simulation. It is
 	// generally best to keep the time step and iterations fixed.
-	world->Step(dt, 10, 10);
+
 }
 
 @end
