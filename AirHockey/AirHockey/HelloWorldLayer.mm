@@ -28,9 +28,12 @@
     CCSprite* backgroundSprite;
     CCSprite* puckSprite;
     b2Body* puckBody;
+    
     b2FixtureDef bodyFixtureDef;
+    
     b2ContactFilter *contactFilter;
     b2EdgeShape leftBarrier;
+    
     b2ContactFilter *filterbarrier;
 
     NSArray *scoreImagesArray;
@@ -120,6 +123,8 @@
         puckSprite.scale = 0.48;
         [self addChild:puckSprite];
         
+        
+                
 		// init physics
 		[self initPhysics];
         [self initStateMachine];
@@ -127,6 +132,8 @@
 	}
 	return self;
 }
+
+#pragma mark StateMachine Compiler
 
 -(void)initStateMachine{
     //Create structure
@@ -288,7 +295,7 @@
     groundBox.Set(b2Vec2(0, 2 * winSize.height/(3 * PTM_RATIO)), b2Vec2(0, winSize.height / PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
     
-    
+    // left boundary for paddle
     groundBox.Set(b2Vec2(0, winSize.height/PTM_RATIO), b2Vec2(0, 0));
 	groundBody->CreateMyFixture(&groundBox,0); //CreateMyFixture method created in b2Body class
 	
@@ -301,9 +308,34 @@
 	groundBody->CreateFixture(&groundBox,0);
     
     
-    //http://www.iforce2d.net/b2dtut/collision-filtering
+    // right boundary for paddle   http://www.iforce2d.net/b2dtut/collision-filtering
     groundBox.Set(b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO), b2Vec2(winSize.width/PTM_RATIO, 0));
 	groundBody->CreateMyFixture(&groundBox,0); //CreateMyFixture method created in b2Body class
+    
+    // Create circle that restricts movement of paddle near the
+    
+    b2BodyDef semiCircleDef;
+    b2FixtureDef semiCircleFixture;
+    b2CircleShape semiCircleShape;
+    
+    semiCircleDef.type = b2_staticBody;
+    semiCircleDef.position.Set(0, winSize.height /(2 * PTM_RATIO));
+    
+    b2Body* semiCircleBody = world->CreateBody(&semiCircleDef);
+    
+    semiCircleShape.m_radius = ((winSize.height/6)/PTM_RATIO);
+    semiCircleBody->CreateMyFixture(&semiCircleShape, 100);
+    
+    /*
+    semiCircleFixture.shape = &semiCircleShape;
+    semiCircleFixture.density = 100.0f;
+    semiCircleFixture.friction = (100 * semiCircleFixture.density);
+    semiCircleFixture.restitution = 0.8f;
+    semiCircleFixture.filter.groupIndex = -1;
+    semiCircleBody->CreateFixture(&semiCircleFixture);
+    semiCircleBody->SetLinearDamping(0.05 * puckBody->GetMass());
+    semiCircleBody->SetAngularDamping(0.05 * puckBody->GetMass());
+     */
 }
 
 
