@@ -99,19 +99,7 @@
     }
     [self paddleWillStartMoving];
     
-    b2MouseJointDef md;
-    md.bodyA = world->GetBodyList();
-    md.bodyB = _body;
-    md.target = b2Vec2((_body->GetPosition()).x, (_body->GetPosition()).y);
-    md.collideConnected = true;
-    md.dampingRatio = 2.0f;
-    md.frequencyHz =  100.0f;
-    md.maxForce = 8000.0f * _body->GetMass();
-    
-    mouseJoint = (b2MouseJoint *)world->CreateJoint(&md);
-    _body->SetAwake(true);
-    
-    state = kPaddleStateGrabbed;
+   
 
     return YES;
 }

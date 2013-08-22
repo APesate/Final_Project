@@ -26,9 +26,9 @@ typedef enum tagPaddleState{
 
     b2MouseJoint* mouseJoint;
 }
-@property b2Body * body;
 
-}
+
+
 
 @property b2MouseJoint* mouseJoint;
 @property b2Body* body;
