@@ -22,9 +22,6 @@ typedef enum tagPaddleState{
     PaddleState state;
     @public
     b2World* world;
-
-
-    b2MouseJoint* mouseJoint;
 }
 
 

@@ -12,7 +12,7 @@
     CGSize winSize;
 }
 
-@synthesize body = _body;
+//@synthesize body = _body;
 @synthesize session = _session;
 @synthesize myID = _myID;
 @synthesize firendID = _firendID;

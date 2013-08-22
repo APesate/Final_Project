@@ -138,8 +138,6 @@ static GameMode sGameMode;
 -(id) init
 {
 	if( (self=[super init])) {
-
-        [self initStateMachine];
         [self initialize];
 	}
 	return self;
@@ -200,8 +198,8 @@ static GameMode sGameMode;
 -(void)deffendMode
 {
     b2Vec2 linearVel = paddleOne.body->GetLinearVelocity();
-    linearVel.x *= .4;
-    linearVel.y *= .4;
+    linearVel.x *= .2;
+    linearVel.y *= .2;
     /*if (linearVel.y<.2) {
         linearVel.y = 0;
     }
@@ -218,7 +216,7 @@ static GameMode sGameMode;
     float windowSizeX = winSize.width/PTM_RATIO;
     
     float positionPaddleY = (puckRatio*5.26)+2.364;
-    float positionPaddleX = sqrtf(powf((windowSizeY/6+80/PTM_RATIO),2)-powf((positionPaddleY-windowSizeY/2),2));
+    float positionPaddleX = sqrtf(powf((windowSizeY/6+60/PTM_RATIO),2)-powf((positionPaddleY-windowSizeY/2),2));
     
     //CCLOG(@"X: %f Y: %f",positionPaddleX,positionPaddleY);
 
@@ -229,7 +227,7 @@ static GameMode sGameMode;
     float necessaryDistance = necessaryMovement.Length();
     
     necessaryMovement.Normalize();
-    float forceMagnitude = (500>necessaryDistance)? 500:necessaryDistance;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
+    float forceMagnitude = (800>necessaryDistance)? 800:necessaryDistance;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
     b2Vec2 force = forceMagnitude * necessaryMovement;
     
     paddleOne.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
@@ -250,14 +248,14 @@ static GameMode sGameMode;
     CCLOG(@"im Attacking");
     
     b2Vec2 linearVel = paddleOne.body->GetLinearVelocity();
-    linearVel.x *= 0.1;
-    linearVel.y *= 0.1;
+    linearVel.x *= 0.3;
+    linearVel.y *= 0.3;
     b2Vec2 currentPosition = paddleOne.body->GetPosition() + linearVel;
     b2Vec2 desiredPosition = b2Vec2(puckBody->GetPosition().x-20/PTM_RATIO, puckBody->GetPosition().y);
     b2Vec2 necessaryMovement = desiredPosition - currentPosition;
     //float necessaryDistance = necessaryMovement.Length();
     necessaryMovement.Normalize();
-    float forceMagnitude = 1000;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
+    float forceMagnitude = 1500;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
     b2Vec2 force = forceMagnitude * necessaryMovement;
     paddleOne.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
     
@@ -313,7 +311,9 @@ static GameMode sGameMode;
     
     switch (sGameMode) {
         case SinglePlayerMode:
-            paddleTwo.enabled = NO;
+            paddleOne.enabled = NO;
+            paddleTwo.enabled = YES;
+            [self initStateMachine];
             break;
         case MultiplayerMode:
             paddleTwo.enabled = YES;
