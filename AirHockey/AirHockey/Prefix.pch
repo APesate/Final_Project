@@ -19,8 +19,8 @@
 
 typedef enum
 {
-    DataForPaddleStartMoving,
-    DataForPaddleIsMoving,
-    DataForPaddleStopMoving
+    SinglePlayerMode,
+    MultiplayerMode,
+    BluetoothMode
 }
-SendingDataOfType;
+GameMode;

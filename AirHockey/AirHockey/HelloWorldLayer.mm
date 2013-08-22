@@ -14,6 +14,7 @@
 // Needed to obtain the Navigation Controller
 #import "AppDelegate.h"
 
+static GameMode sGameMode;
 
 #pragma mark - HelloWorldLayer
 
@@ -68,6 +69,21 @@
 	return scene;
 }
 
++(CCScene *) sceneWithGameMode:(GameMode)mode
+{
+	// 'scene' is an autorelease object.
+	CCScene *scene = [CCScene node];
+    
+	// 'layer' is an autorelease object.
+	HelloWorldLayer *layer = [HelloWorldLayer nodeWithGameMode:mode];
+    
+	// add layer as a child to scene
+	[scene addChild: layer];
+    
+	// return the scene
+	return scene;
+}
+
 +(CCScene *) sceneForLayer:(id)layer
 {
 	// 'scene' is an autorelease object.
@@ -82,8 +98,22 @@
 
 #pragma mark - Initialize Instances
 
-+(id)nodeWithLayer:(id)layer andDelegate:(id)aDelegate{
++(id)nodeWithLayer:(id)layer gameMode:(GameMode)mode andDelegate:(id)aDelegate{
+    sGameMode = mode;
     return [[[self alloc] initWithLayer:layer andDelegate:aDelegate] autorelease];
+}
+
++(id)nodeWithGameMode:(GameMode)mode{
+    return [[[self alloc] initWithGameMode:mode] autorelease];
+}
+
+-(id) initWithGameMode:(GameMode)mode
+{
+	if( (self=[super init])) {
+        sGameMode = mode;
+        [self initialize];
+	}
+	return self;
 }
 
 -(id) init
@@ -146,17 +176,33 @@
     paddleOne.position = ccp(90, winSize.height / 2);
     paddleOne.scale = 0.75;
     paddleOne.tag = 1;
+    paddleOne.enabled = YES;
     [self addChild:paddleOne];
     
     paddleTwo = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
     paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
     paddleTwo.scale = 0.75;
     paddleTwo.tag = 2;
+    
+    switch (sGameMode) {
+        case SinglePlayerMode:
+            paddleTwo.enabled = NO;
+            break;
+        case MultiplayerMode:
+            paddleTwo.enabled = YES;
+            break;
+        case BluetoothMode:
+            paddleTwo.enabled = NO;
+            break;
+            
+        default:
+            break;
+    }
     [self addChild:paddleTwo];
     
     puckSprite = [[CCSprite alloc] initWithFile:@"Puck.png" rect:CGRectMake(0, 0, 150, 150)];
     puckSprite.position = ccp(winSize.width / 2, winSize.height / 2);
-    puckSprite.scale = 0.48;
+    puckSprite.scale = 0.48;    
     [self addChild:puckSprite];
     
     centerLabel = [CCLabelTTF labelWithString:@"Host Name" fontName:@"Champagne & Limousines.ttf" fontSize:18];
@@ -214,6 +260,9 @@
 
 -(void)createWorld{
     b2Vec2 gravity;
+    float32 timeStep = 1/60.0;      //the length of time passed to simulate (seconds)
+    int32 velocityIterations = 8;   //how strongly to correct velocity
+    int32 positionIterations = 3;   //how strongly to correct position
 	gravity.Set(0.0f, 0.0f);
 	world = new b2World(gravity);
 	
@@ -221,6 +270,7 @@
 	world->SetAllowSleeping(true);
 	
 	world->SetContinuousPhysics(true);
+    world->Step(timeStep, velocityIterations, positionIterations);
    // world->SetContactFilter(filterbarrier);
 
    // filterbarrier->ShouldCollide(bodyFixtureDef, );
@@ -326,7 +376,7 @@
 	//of the simulation, however, we are using a variable time step here.
 	//You need to make an informed choice, the following URL is useful
 	//http://gafferongames.com/game-physics/fix-your-timestep/
-	
+//	
     for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
     {
         if (b->GetUserData() != NULL) {
@@ -418,8 +468,12 @@
     // Use a retaining property to take ownership of the session.
     self.session = session;
     // Assumes our object will also become the session's delegate.
+    paddleOne.session = [[GKSession alloc] init];
     paddleOne.session = session;
+
+    paddleTwo.session = [[GKSession alloc] init];
     paddleTwo.session = session;
+    
     
     [paddleOne.session setDataReceiveHandler:self withContext:nil];
     [paddleTwo.session setDataReceiveHandler:self withContext:nil];

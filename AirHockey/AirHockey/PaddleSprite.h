@@ -26,6 +26,7 @@ typedef enum tagPaddleState{
 
 @property b2MouseJoint* mouseJoint;
 @property b2Body* body;
+@property BOOL enabled;
 @property (nonatomic, strong) GKSession* session;
 @property (nonatomic, strong) NSString* myID;
 @property (nonatomic, strong) NSString* firendID;

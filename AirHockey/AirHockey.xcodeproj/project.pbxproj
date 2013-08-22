@@ -622,7 +622,6 @@
 			isa = PBXGroup;
 			children = (
 				829E02E117BAD0F20056CD4B /* AirHockey */,
-				82F99C8017BD61A700F6080F /* Networking */,
 				829E02CC17BAD0F10056CD4B /* Frameworks */,
 				829E02CB17BAD0F10056CD4B /* Products */,
 			);
@@ -1225,13 +1224,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		82F99C8017BD61A700F6080F /* Networking */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Networking;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1242,7 +1234,6 @@
 				829E02C617BAD0F10056CD4B /* Sources */,
 				829E02C717BAD0F10056CD4B /* Frameworks */,
 				829E02C817BAD0F10056CD4B /* Resources */,
-				50524F424C454D533F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1311,22 +1302,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		50524F424C454D533F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export CODESIGN_ALLOCATE=/Library/JailCoder/codesign_allocate\nif [ \"${PLATFORM_NAME}\" == \"iphoneos\" ]; then\n/Library/JailCoder/Entitlements/Entitlements.py \"my.company.${PROJECT_NAME}\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\";\ncodesign -f -s \"iPhone Developer\" --entitlements \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\nfi";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		829E02C617BAD0F10056CD4B /* Sources */ = {
@@ -1544,6 +1519,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Andres Pesate (H82P7J6B3B)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Andres Pesate (H82P7J6B3B)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1562,6 +1539,8 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "710A51DD-A33C-46A1-A0AC-DF08AA564276";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "710A51DD-A33C-46A1-A0AC-DF08AA564276";
 				USER_HEADER_SEARCH_PATHS = "\"AirHockey/libs\"";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1572,6 +1551,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Andres Pesate (H82P7J6B3B)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Andres Pesate (H82P7J6B3B)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AirHockey/Prefix.pch;
@@ -1589,6 +1570,8 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "710A51DD-A33C-46A1-A0AC-DF08AA564276";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "710A51DD-A33C-46A1-A0AC-DF08AA564276";
 				USER_HEADER_SEARCH_PATHS = "\"AirHockey/libs\"";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;

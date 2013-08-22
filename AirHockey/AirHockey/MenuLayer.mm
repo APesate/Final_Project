@@ -76,17 +76,17 @@
 
 - (void) playSinglePlayerMode: (CCMenuItem  *) menuItem
 {
-    NSLog(@"First Button");
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneWithGameMode:SinglePlayerMode]]];
 }
 
 - (void) playMultiplayerMode: (CCMenuItem  *) menuItem
 {
-    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer scene]]];
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneWithGameMode:MultiplayerMode]]];
 }
 
 - (void) hostGameMode: (CCMenuItem  *) menuItem
 {
-    HelloWorldLayer* layer = [HelloWorldLayer nodeWithLayer:layer andDelegate:self];
+    HelloWorldLayer* layer = [HelloWorldLayer nodeWithLayer:layer gameMode:BluetoothMode andDelegate:self];
     [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneForLayer:layer]]];
 }
 

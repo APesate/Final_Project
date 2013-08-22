@@ -40,8 +40,9 @@
 
 // returns a CCScene that contains the HelloWorldLayer as the only child
 +(CCScene *) scene;
++(CCScene *) sceneWithGameMode:(GameMode)mode;
 +(CCScene *) sceneForLayer:(id)layer;
-+(id)nodeWithLayer:(id)layer andDelegate:(id)aDelegate;
++(id)nodeWithLayer:(id)layer gameMode:(GameMode)mode andDelegate:(id)aDelegate;
 
 @end
 

@@ -22,7 +22,6 @@
     if(self){
         state = kPaddleStateUngrabbed;
         winSize = [[CCDirector sharedDirector] winSize];
-        _session = [[GKSession alloc] init];
     }
     return self;
 }
@@ -80,7 +79,7 @@
     CGPoint touchLocation = [touch locationInView:touch.view];
     touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
 
-    if(self.tag == 2) return NO;
+    if(!self.enabled) return NO;
     if (state != kPaddleStateUngrabbed) return NO;
     if(!CGRectContainsPoint(self.boundingBox, touchLocation))return NO;
     //if ( ![self containsTouchLocation:touch] ) return NO;
