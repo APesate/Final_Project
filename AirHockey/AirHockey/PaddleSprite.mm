@@ -13,6 +13,9 @@
 }
 
 @synthesize body = _body;
+@synthesize session = _session;
+@synthesize myID = _myID;
+@synthesize firendID = _firendID;
 
 -(id)initWithFile:(NSString *)filename rect:(CGRect)rect{
     self = [super initWithFile:filename rect:rect];
@@ -50,6 +53,9 @@
     _body->CreateFixture(&bodyTextureDef);
     _body->SetAngularDamping(0.05* _body->GetMass());
     _body->SetLinearDamping(0.05 * _body->GetMass());
+    _body->CreateFixture(&bodyTextureDef);
+    _body->SetAngularDamping(0.01* _body->GetMass());
+    _body->SetLinearDamping(0.01 * _body->GetMass());
 
 }
 
@@ -77,10 +83,21 @@
     CGPoint touchLocation = [touch locationInView:touch.view];
     touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
 
+    if(!self.enabled) return NO;
     if (state != kPaddleStateUngrabbed) return NO;
     if(!CGRectContainsPoint(self.boundingBox, touchLocation))return NO;
     //if ( ![self containsTouchLocation:touch] ) return NO;
     
+    if(self.session != nil){
+        NSDictionary* coordinates = @{@"DataType": @"DataForPaddleStartMoving"};
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
+        NSError* error = nil;
+        
+        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+            NSLog(@"Error sending data to clients: %@", error);
+        }
+    }
+    [self paddleWillStartMoving];
     
     b2MouseJointDef md;
     md.bodyA = world->GetBodyList();
@@ -95,6 +112,7 @@
     _body->SetAwake(true);
     
     state = kPaddleStateGrabbed;
+
     return YES;
 }
 
@@ -119,15 +137,67 @@
     
     CGPoint touchLocation = [touch locationInView:[touch view]];
     touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
-    mouseJoint->SetTarget(b2Vec2(touchLocation.x / PTM_RATIO, touchLocation.y / PTM_RATIO));
+    
+    NSNumber* xCoordinate = [NSNumber numberWithFloat:(touchLocation.x / PTM_RATIO)];
+    NSNumber* yCoordinate = [NSNumber numberWithFloat:(touchLocation.y / PTM_RATIO)];
+    
+    if(self.session != nil){
+        NSNumber* xCoordinateToSend = @(((winSize.width / PTM_RATIO) - xCoordinate.floatValue) / winSize.width);
+        NSNumber* yCoordinateToSend = @(((winSize.height / PTM_RATIO) - yCoordinate.floatValue) / winSize.height);
+        
+        NSDictionary* coordinates = @{@"x": xCoordinateToSend, @"y": yCoordinateToSend, @"DataType": @"DataForPaddleIsMoving"};
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
+        NSError* error = nil;
+        
+        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+            NSLog(@"Error sending data to clients: %@", error);
+        }
+    }
+    
+    [self movePaddleToX:xCoordinate.floatValue andY:yCoordinate.floatValue];
 }
 
 - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
     NSAssert(state == kPaddleStateGrabbed, @"Paddle - Unexpected state!");
     
-    world->DestroyJoint(mouseJoint);
-    mouseJoint = NULL;
+    
+    if(self.session != nil){
+        NSDictionary* coordinates = @{@"DataType": @"DataForPaddleStopMoving"};
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
+        NSError* error = nil;
+        
+        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+            NSLog(@"Error sending data to clients: %@", error);
+        }
+    }
+    [self paddleWillStopMoving];
+}
+
+-(void)paddleWillStartMoving{
+    
+    b2MouseJointDef md;
+    md.bodyA = world->GetBodyList();
+    md.bodyB = _body;
+    md.target = b2Vec2((_body->GetPosition()).x, (_body->GetPosition()).y);
+    md.collideConnected = true;
+    md.dampingRatio = 2.0f;
+    md.frequencyHz =  100.0f;
+    md.maxForce = 8000.0f * _body->GetMass();
+    
+    _mouseJoint = (b2MouseJoint *)world->CreateJoint(&md);
+    _body->SetAwake(true);
+    
+    state = kPaddleStateGrabbed;
+}
+
+-(void)movePaddleToX:(CGFloat)xCoordinate andY:(CGFloat)yCoordinate{
+    _mouseJoint->SetTarget(b2Vec2(xCoordinate, yCoordinate));
+}
+
+-(void)paddleWillStopMoving{
+    world->DestroyJoint(_mouseJoint);
+    _mouseJoint = NULL;
     
     state = kPaddleStateUngrabbed;
 }
@@ -146,6 +216,11 @@
     
     [[director touchDispatcher] removeDelegate:self];
     [super onExit];
+}
+
+-(void)dealloc{
+    [super dealloc];
+    
 }
 
 @end

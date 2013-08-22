@@ -9,6 +9,18 @@
 #endif
 
 #ifdef __OBJC__
-#import <UIKit/UIKit.h>
-#import <Foundation/Foundation.h>
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+    #import <GameKit/GameKit.h>
+
 #endif
+
+#define SESSION_ID @"DoubleA"
+
+typedef enum
+{
+    SinglePlayerMode,
+    MultiplayerMode,
+    BluetoothMode
+}
+GameMode;
