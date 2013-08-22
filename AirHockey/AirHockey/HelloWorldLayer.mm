@@ -107,7 +107,7 @@
         [self addChild:playerTwoScoreSprite];
         
         paddleOne = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
-        paddleOne.position = ccp(90, winSize.height / 2);
+        paddleOne.position = ccp(120, winSize.height / 2);
         paddleOne.scale = 0.75;
         paddleOne.tag = 1;
         [self addChild:paddleOne];
@@ -166,25 +166,48 @@
 
 -(void)defending
 {
-    CCLOG(@"Im defending");
+//    CCLOG(@"Im defending");
 }
 
 -(void)deffendMode
 {
     b2Vec2 linearVel = paddleOne.body->GetLinearVelocity();
-    linearVel.x *= 0.09;
-    linearVel.y *= 0.1;
+    linearVel.x *= .4;
+    linearVel.y *= .4;
+    /*if (linearVel.y<.2) {
+        linearVel.y = 0;
+    }
+    if (linearVel.x<.2) {
+        linearVel.x = 0;
+    }*/
+    //CCLOG(@"X: %f Y: %f",linearVel.x,linearVel.y);
+    
     b2Vec2 currentPosition = paddleOne.body->GetPosition() + linearVel;
-    b2Vec2 desiredPosition = b2Vec2(90/PTM_RATIO, puckBody->GetPosition().y);
+    float puckRatio = (puckBody->GetPosition().y/10);
+    
+    
+    float windowSizeY = winSize.height/PTM_RATIO;
+    float windowSizeX = winSize.width/PTM_RATIO;
+    
+    float positionPaddleY = (puckRatio*5.26)+2.364;
+    float positionPaddleX = sqrtf(powf((windowSizeY/6+80/PTM_RATIO),2)-powf((positionPaddleY-windowSizeY/2),2));
+    
+    //CCLOG(@"X: %f Y: %f",positionPaddleX,positionPaddleY);
+
+   // CCLOG(@"%")
+    
+    b2Vec2 desiredPosition = b2Vec2((positionPaddleX>0)? positionPaddleX:0, positionPaddleY );
     b2Vec2 necessaryMovement = desiredPosition - currentPosition;
-    //float necessaryDistance = necessaryMovement.Length();
+    float necessaryDistance = necessaryMovement.Length();
+    
     necessaryMovement.Normalize();
-    float forceMagnitude = 1000;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
+    float forceMagnitude = (500>necessaryDistance)? 500:necessaryDistance;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
     b2Vec2 force = forceMagnitude * necessaryMovement;
+    
     paddleOne.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
     
     //paddleOne.body->SetTransform(b2Vec2(90/PTM_RATIO, puckSprite.position.y/PTM_RATIO), 0);
-    CCLOG(@"im defending");
+   // CCLOG(@"im defending");
     
 }
 
