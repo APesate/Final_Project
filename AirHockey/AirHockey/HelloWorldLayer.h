@@ -13,8 +13,6 @@
 //#import "Box2D.h"
 //#import "GLES-Render.h"
 #import "PaddleSprite.h"
-#import "Game.h"
-
 
 //Pixel to metres ratio. Box2D uses metres as the unit for measurement.
 //This ratio defines how many pixels correspond to 1 Box2D "metre"
@@ -24,26 +22,27 @@
 
 @class HelloWorldLayer;
 
-@protocol HelloWorldDelegate <NSObject>
+@protocol HelloWorldLayerDelegate <NSObject>
 
-- (void)gameHelloWorld:(HelloWorldLayer *)layer didQuitWithReason:(QuitReason)reason;
+-(void)goToMenuLayer;
 
 @end
 
 // HelloWorldLayer
-@interface HelloWorldLayer : CCLayer <UIAlertViewDelegate, GameDelegate>
+@interface HelloWorldLayer : CCLayer <UIAlertViewDelegate, GKSessionDelegate, GKPeerPickerControllerDelegate>
 {
 	b2World* world;					// strong ref
 }
 
-
-@property (nonatomic, strong) id <HelloWorldDelegate> delegate;
-@property (nonatomic, strong) Game *game;
+@property (nonatomic, strong) GKSession* session;
+@property (nonatomic, strong) NSString* serverID;
+@property (nonatomic, retain) id <HelloWorldLayerDelegate> delegate;
 
 // returns a CCScene that contains the HelloWorldLayer as the only child
 +(CCScene *) scene;
-+(CCScene *) sceneWithDelegate:(id)_delegate;
-+(void)setHelloGame:(Game *)menuGame;
++(CCScene *) sceneForLayer:(id)layer;
++(id)nodeWithLayer:(id)layer andDelegate:(id)aDelegate;
+
 @end
 
 

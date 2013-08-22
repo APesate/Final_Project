@@ -47,8 +47,6 @@
 		<true/>
 		<key>opengles-2</key>
 		<true/>
-		<key>peer-peer</key>
-		<true/>
 	</dict>
 	<key>UIStatusBarHidden</key>
 	<true/>

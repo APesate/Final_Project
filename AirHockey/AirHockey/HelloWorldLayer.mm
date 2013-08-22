@@ -30,21 +30,28 @@
     b2ContactFilter *contactFilter;
     b2EdgeShape leftBarrier;
     b2ContactFilter *filterbarrier;
-
+    
     NSArray *scoreImagesArray;
+    NSDate* creationDate;
+    NSTimer* timer;
     CCLabelBMFont* centerLabel;
     int playerOneScore;
     int playerTwoScore;
     
+    BOOL isServer;
+    GKPeerPickerController* picker;
 }
--(Game *)localGame;
+@property HelloWorldLayer* layer;
+
 @end
 
 
 @implementation HelloWorldLayer
 
+@synthesize serverID = _serverID;
+@synthesize session = _session;
+@synthesize layer = _layer;
 @synthesize delegate = _delegate;
-@synthesize game = _game;
 
 +(CCScene *) scene
 {
@@ -61,13 +68,10 @@
 	return scene;
 }
 
-+(CCScene *) sceneWithDelegate:(id)sceneDelegate
++(CCScene *) sceneForLayer:(id)layer
 {
 	// 'scene' is an autorelease object.
 	CCScene *scene = [CCScene node];
-    
-	// 'layer' is an autorelease object.
-	HelloWorldLayer *layer = [HelloWorldLayer nodeWithDelegate:sceneDelegate];
     
 	// add layer as a child to scene
 	[scene addChild: layer];
@@ -76,33 +80,11 @@
 	return scene;
 }
 
-+(void)setHelloGame:(Game *)menuGame{
-    HelloWorldLayer* layer = [self alloc];
-    Game* helloGame = [layer localGame];
-    helloGame = menuGame;
-    menuGame.delegate = layer;
-}
-
--(Game *)localGame{
-    return _game;
-}
-
-+(id)nodeWithDelegate:(id)aDelegate{
-    return  [[self alloc]  initWithDelegate:aDelegate];
-}
-
--(id)initWithDelegate:(id)aDelegate{
-    self = [super init];
-    
-    if(self){
-        _delegate = aDelegate;
-        [self initialize];
-    }
-    
-    return self;
-}
-
 #pragma mark - Initialize Instances
+
++(id)nodeWithLayer:(id)layer andDelegate:(id)aDelegate{
+    return [[[self alloc] initWithLayer:layer andDelegate:aDelegate] autorelease];
+}
 
 -(id) init
 {
@@ -112,8 +94,25 @@
 	return self;
 }
 
+-(id) initWithLayer:(id)layer andDelegate:(id)aDelegate{
+	if( (self=[super init])) {
+        picker = [[GKPeerPickerController alloc] init];
+        picker.delegate = self;
+        picker.connectionTypesMask = GKPeerPickerConnectionTypeNearby;
+        _layer = layer;
+        _delegate = aDelegate;
+        [self.delegate retain];
+        [self initialize];
+        [picker show];
+	}
+	return self;
+}
+
 -(void)initialize{
     winSize = [[CCDirector sharedDirector] winSize];
+    isServer = NO;
+    creationDate = [[NSDate date] retain];
+    
     // enable events
     self.touchEnabled = YES;
     self.accelerometerEnabled = YES;
@@ -189,7 +188,17 @@
     [backgroundSprite release];
     puckSprite = nil;
     [puckSprite release];
-    	
+    _delegate = nil;
+    [_delegate release];
+    _layer = nil;
+    [_layer release];
+    [_session disconnectFromAllPeers];
+    _session.available = NO;
+    [_session setDataReceiveHandler: nil withContext: nil];
+    _session.delegate = nil;
+    [_session release];
+    [timer invalidate];
+    timer = nil;
 	[super dealloc];
 }	
 
@@ -293,6 +302,21 @@
     
 }
 
+-(void)puckMovement{
+    if(self.session != nil && isServer){
+        NSNumber* xCoordinateToSend = @(((winSize.width / PTM_RATIO) - (puckBody->GetPosition()).x) / winSize.width);
+        NSNumber* yCoordinateToSend = @(((winSize.height / PTM_RATIO) - (puckBody->GetPosition()).y) / winSize.height);
+        
+        NSDictionary* coordinates = @{@"x": xCoordinateToSend, @"y": yCoordinateToSend, @"DataType": @"DataForPuck"};
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
+        NSError* error = nil;
+        
+        
+        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+            NSLog(@"Error sending data to clients: %@", error);
+        }
+    }
+}
 
 #pragma mark - Update Time Step
 
@@ -327,6 +351,8 @@
         puckBody->SetLinearVelocity(b2Vec2(0, 0));
         puckBody->SetAngularVelocity(0);
     }
+    
+    
 
 #warning In case that we want to allow to throw the paddle
 //    if((paddleOne.position.x > (winSize.width / 2)) && (paddleTwo.position.x < (winSize.width / 2))){
@@ -346,36 +372,135 @@
 	world->Step(dt, 10, 10);
 }
 
-#pragma mark - GameDelegate
+#pragma mark - GKSessionDataHandler
 
-- (void)gameDidBegin:(Game *)game
-{
-//	[self showPlayerLabels];
-//	[self calculateLabelFrames];
-//	[self updateWinsLabels];
+- (void) receiveData:(NSData *)data fromPeer:(NSString *)peer inSession: (GKSession *)session context:(void *)context{
+    
+    NSLog(@"Data Size: %i", [data length]);
+    NSDictionary *dataDictionary = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    NSString* dataType = [dataDictionary objectForKey:@"DataType"];
+        
+    if ([dataType isEqualToString:@"DataForPuck"]) {
+        CGFloat xCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"x"]).floatValue * winSize.width;
+        CGFloat yCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"y"]).floatValue * winSize.height;
+        
+        puckBody->SetTransform(b2Vec2(xCoodinate, yCoodinate), 0.0);
+        
+    }else if([dataType isEqualToString:@"DataForPaddleStartMoving"]){
+
+        [paddleTwo paddleWillStartMoving];
+        
+    }else if([dataType isEqualToString:@"DataForPaddleIsMoving"]){
+        CGPoint coord;
+        [(NSValue*)[dataDictionary objectForKey:@"Coord"] getValue:&coord];
+        
+        CGFloat xCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"x"]).floatValue * winSize.width;
+        CGFloat yCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"y"]).floatValue * winSize.height;
+                
+        paddleTwo.mouseJoint->SetTarget(b2Vec2(xCoodinate, yCoodinate));
+        
+    }else if([dataType isEqualToString:@"DataForPaddleStopMoving"]){
+        [paddleTwo paddleWillStopMoving];
+    
+    }else if([dataType isEqualToString:@"CreationDateData"]){
+        NSDate* peerDate = [dataDictionary objectForKey:@"Date"];
+        if([creationDate compare:peerDate] == NSOrderedAscending){
+            isServer = YES;
+        }
+        NSLog(@"Am I the Server: %i", isServer);
+    }
+    
 }
 
-- (void)game:(Game *)game didQuitWithReason:(QuitReason)reason
-{
-	[self.delegate gameHelloWorld:self didQuitWithReason:reason];
+#pragma mark - GKPeerPickerDelegate
+
+- (void)peerPickerController:(GKPeerPickerController *)_picker didConnectPeer:(NSString *)peerID toSession: (GKSession *) session {
+    // Use a retaining property to take ownership of the session.
+    self.session = session;
+    // Assumes our object will also become the session's delegate.
+    paddleOne.session = session;
+    paddleTwo.session = session;
+    
+    [paddleOne.session setDataReceiveHandler:self withContext:nil];
+    [paddleTwo.session setDataReceiveHandler:self withContext:nil];
+    
+
+    session.delegate = self;
+    [session setDataReceiveHandler: self withContext:nil];
+    // Remove the picker.
+    _picker.delegate = nil;
+    [_picker dismiss];
+    [_picker autorelease];
+    
+    // Start your game.
+    timer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(puckMovement) userInfo:nil repeats:YES];
+    
+    NSDictionary* dataDictionary = @{@"Date": creationDate, @"DataType": @"CreationDateData"};
+    NSData* data = [NSKeyedArchiver archivedDataWithRootObject:dataDictionary];
+    NSError* error = nil;
+    
+    if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+        NSLog(@"Error sending creationDate data to peer: %@", error);
+    }
+    
 }
 
-- (void)gameWaitingForServerReady:(Game *)game
+
+- (void)peerPickerControllerDidCancel:(GKPeerPickerController *)_picker
 {
-	centerLabel.string = NSLocalizedString(@"Waiting for game to start...", @"Status text: waiting for server");
+    _picker.delegate = nil;
+    // The controller dismisses the dialog automatically.
+    [_picker autorelease];
+    [self.delegate goToMenuLayer];
 }
 
-- (void)gameWaitingForClientsReady:(Game *)game
+#pragma mark - GKSessionDelegate
+
+- (void)session:(GKSession *)session peer:(NSString *)peerID didChangeState:(GKPeerConnectionState)state
 {
-	centerLabel.string = NSLocalizedString(@"Waiting for other players...", @"Status text: waiting for clients");
+    switch (state)
+    {
+        case GKPeerStateAvailable:
+            NSLog(@"Available");
+            break;
+        case GKPeerStateConnecting:
+            NSLog(@"Connecting");
+            break;
+        case GKPeerStateConnected:
+            // Record the peerID of the other peer.
+            // Inform your game that a peer has connected.
+            NSLog(@"Connected");
+            NSLog(@"isServer: %c", isServer);
+            break;
+        case GKPeerStateDisconnected:
+            // Inform your game that a peer has left.
+            NSLog(@"Disconnected");
+            [self.delegate goToMenuLayer];
+            break;
+        case GKPeerStateUnavailable:
+            NSLog(@"Unavailable");
+            break;
+        default:
+            NSLog(@"Wrong State");
+    }
 }
 
-- (void)game:(Game *)game playerDidDisconnect:(Player *)disconnectedPlayer
-{
-//	[self hidePlayerLabelsForPlayer:disconnectedPlayer];
-//	[self hideActiveIndicatorForPlayer:disconnectedPlayer];
-//	[self hideSnapIndicatorForPlayer:disconnectedPlayer];
+-(void) session:(GKSession *)session didReceiveConnectionRequestFromPeer:(NSString *)peerID{
+    NSError* error;
+    
+    NSLog(@"Did receive connection request from peer %@", peerID);
+    
+    if(![session acceptConnectionFromPeer:peerID error:&error]){
+        NSLog(@"Session receive connection request error: %@", error);
+    }
 }
 
+-(void)session:(GKSession *)session connectionWithPeerFailed:(NSString *)peerID withError:(NSError *)error{
+    NSLog(@"Connection Failed: %@", error);
+}
+
+-(void)session:(GKSession *)session didFailWithError:(NSError *)error{
+    NSLog(@"Session Failed Error: %@", error);
+}
 
 @end

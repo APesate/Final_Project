@@ -8,7 +8,6 @@
 
 #import "MenuLayer.h"
 #import "HelloWorldLayer.h"
-#import "Game.h"
 
 @implementation MenuLayer
 
@@ -24,10 +23,6 @@
 	
 	// return the scene
 	return scene;
-}
-
--(void)testDelegate{
-    NSLog(@"Funciona");
 }
 
 -(id)init{
@@ -57,6 +52,21 @@
         CCMenu *myMenu = [CCMenu menuWithItems:singlePlayerButton, multiplayerButton, hostGameButton, joinGameButton, nil];
         
         [myMenu alignItemsVertically];
+        
+        CGPoint coord = CGPointMake(2.0545, 1.4343);
+        NSValue* value = [NSValue valueWithCGPoint:coord];
+        NSNumber* number = @(3.4354);
+        NSDictionary* dictionary = @{@"x": value, @"DataType":@"Datafadfad"};
+        NSArray* array = @[value, @"afagfdggd"];
+        NSSet* set = [NSSet setWithObjects:value, @"adfadfadfadgad", nil];
+        
+        NSLog(@"Value size %lu", sizeof(value));
+        NSLog(@"CGpoint size %lu", sizeof(coord));
+        NSLog(@"Number size %lu", sizeof(number));
+        NSLog(@"Dictionary size %lu", sizeof(dictionary));
+        NSLog(@"Array size %lu", sizeof(array));
+        NSLog(@"Set size %lu", sizeof(set));
+
 
         [self addChild:myMenu];
     }
@@ -71,122 +81,24 @@
 
 - (void) playMultiplayerMode: (CCMenuItem  *) menuItem
 {
-    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer scene] ]];
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer scene]]];
 }
 
 - (void) hostGameMode: (CCMenuItem  *) menuItem
 {
-    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HostGameLayer sceneWithDelegate:self]]];
+    HelloWorldLayer* layer = [HelloWorldLayer nodeWithLayer:layer andDelegate:self];
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneForLayer:layer]]];
 }
 
 - (void) joinGameMode: (CCMenuItem  *) menuItem
 {
-    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[JoinGameLayer sceneWithDelegate:self]]];
+
 }
 
-#pragma mark - HostViewControllerDelegate
+#pragma mark HelloWorldLayerDelegate
 
-- (void)hostViewControllerDidCancel:(HostGameLayer *)controller
-{
-    [[CCDirector sharedDirector] popScene];
-}
-
-- (void)hostViewController:(HostGameLayer *)controller didEndSessionWithReason:(QuitReason)reason
-{
-	if (reason == QuitReasonNoNetwork)
-	{
-		[self showNoNetworkAlert];
-	}
-}
-
-- (void)hostViewController:(HostGameLayer *)controller startGameWithSession:(GKSession *)session clients:(NSArray *)clients
-{
-    //[[CCDirector sharedDirector] popScene];
-    
-    [self startGameWithBlock:^(Game *game)
-     {
-         [game startServerGameWithSession:session clients:clients];
-     }];
-    
-}
-
-#pragma mark - JoinViewControllerDelegate
-
-- (void)joinViewControllerDidCancel:(JoinGameLayer *)controller
-{
-    [[CCDirector sharedDirector] popScene];
-}
-
-- (void)joinViewController:(JoinGameLayer *)controller didDisconnectWithReason:(QuitReason)reason
-{
-	if (reason == QuitReasonNoNetwork)
-	{
-		[self showNoNetworkAlert];
-	}
-	else if (reason == QuitReasonConnectionDropped)
-	{
-        [[CCDirector sharedDirector] popScene];
-        [self showDisconnectedAlert];
-	}
-}
-
-- (void)joinViewController:(JoinGameLayer *)controller startGameWithSession:(GKSession *)session server:(NSString *)peerID
-{
-    //[[CCDirector sharedDirector] popScene];
-    
-    [self startGameWithBlock:^(Game *game)
-     {
-         [game startClientGameWithSession:session server:peerID];
-     }];
-}
-
-#pragma mark - GameHelloWorldDelegate
-
-- (void)gameHelloWorld:(HelloWorldLayer *)layer didQuitWithReason:(QuitReason)reason
-{
-	[[CCDirector sharedDirector] popScene];
-    
-    if (reason == QuitReasonConnectionDropped)
-    {
-        [self showDisconnectedAlert];
-    }
-}
-
-#pragma mark - Alerts
-
-- (void)showNoNetworkAlert
-{
-	UIAlertView *alertView = [[UIAlertView alloc]
-                              initWithTitle:NSLocalizedString(@"No Network", @"No network alert title")
-                              message:NSLocalizedString(@"To use multiplayer, please enable Bluetooth or Wi-Fi in your device's Settings.", @"No network alert message")
-                              delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", @"Button: OK")
-                              otherButtonTitles:nil];
-    
-	[alertView show];
-}
-
-- (void)showDisconnectedAlert
-{
-	UIAlertView *alertView = [[UIAlertView alloc]
-                              initWithTitle:NSLocalizedString(@"Disconnected", @"Client disconnected alert title")
-                              message:NSLocalizedString(@"You were disconnected from the game.", @"Client disconnected alert message")
-                              delegate:nil
-                              cancelButtonTitle:NSLocalizedString(@"OK", @"Button: OK")
-                              otherButtonTitles:nil];
-    
-	[alertView show];
-}
-
-#pragma mark - Misc
-
-- (void)startGameWithBlock:(void (^)(Game *))block
-{
-    [[CCDirector sharedDirector] replaceScene:[HelloWorldLayer sceneWithDelegate:self]];
-    
-    Game *game = [[Game alloc] init];
-    [HelloWorldLayer setHelloGame:game];
-    block(game);
+-(void)goToMenuLayer{
+    [[CCDirector sharedDirector] replaceScene:[MenuLayer scene]];
 }
 
 @end

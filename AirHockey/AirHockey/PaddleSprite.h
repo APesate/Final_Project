@@ -22,10 +22,17 @@ typedef enum tagPaddleState{
     PaddleState state;
     @public
     b2World* world;
-    b2Body* body;
-    b2MouseJoint* mouseJoint;
 }
 
+@property b2MouseJoint* mouseJoint;
+@property b2Body* body;
+@property (nonatomic, strong) GKSession* session;
+@property (nonatomic, strong) NSString* myID;
+@property (nonatomic, strong) NSString* firendID;
+
 -(void)createBody;
+-(void)paddleWillStartMoving;
+-(void)movePaddleToX:(CGFloat)xCoordinate andY:(CGFloat)yCoordinate;
+-(void)paddleWillStopMoving;
 
 @end
