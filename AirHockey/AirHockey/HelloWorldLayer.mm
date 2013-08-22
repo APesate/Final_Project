@@ -227,7 +227,7 @@ static GameMode sGameMode;
     float necessaryDistance = necessaryMovement.Length();
     
     necessaryMovement.Normalize();
-    float forceMagnitude = (800>necessaryDistance)? 800:necessaryDistance;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
+    float forceMagnitude = (600>necessaryDistance)? 600:necessaryDistance;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
     b2Vec2 force = forceMagnitude * necessaryMovement;
     
     paddleOne.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
@@ -248,8 +248,8 @@ static GameMode sGameMode;
     CCLOG(@"im Attacking");
     
     b2Vec2 linearVel = paddleOne.body->GetLinearVelocity();
-    linearVel.x *= 0.3;
-    linearVel.y *= 0.3;
+    linearVel.x *= 0.1;
+    linearVel.y *= 0.1;
     b2Vec2 currentPosition = paddleOne.body->GetPosition() + linearVel;
     b2Vec2 desiredPosition = b2Vec2(puckBody->GetPosition().x-20/PTM_RATIO, puckBody->GetPosition().y);
     b2Vec2 necessaryMovement = desiredPosition - currentPosition;
