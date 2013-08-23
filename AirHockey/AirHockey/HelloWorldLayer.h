@@ -29,7 +29,7 @@
 @end
 
 // HelloWorldLayer
-@interface HelloWorldLayer : CCLayer <UIAlertViewDelegate, GKSessionDelegate, GKPeerPickerControllerDelegate>
+@interface HelloWorldLayer : CCLayer <UIAlertViewDelegate, GKSessionDelegate, GKPeerPickerControllerDelegate, CCTouchOneByOneDelegate>
 {
 	b2World* world;					// strong ref
 }
@@ -40,7 +40,7 @@
 
 // returns a CCScene that contains the HelloWorldLayer as the only child
 +(CCScene *) scene;
-+(CCScene *) sceneWithGameMode:(GameMode)mode;
++(CCScene *) sceneWithGameMode:(GameMode)mode andDelegate:(id)aDelegate;
 +(CCScene *) sceneForLayer:(id)layer;
 +(id)nodeWithLayer:(id)layer gameMode:(GameMode)mode andDelegate:(id)aDelegate;
 

@@ -86,14 +86,13 @@
     if(!self.enabled) return NO;
     if (state != kPaddleStateUngrabbed) return NO;
     if(!CGRectContainsPoint(self.boundingBox, touchLocation))return NO;
-    //if ( ![self containsTouchLocation:touch] ) return NO;
     
     if(self.session != nil){
         NSDictionary* coordinates = @{@"DataType": @"DataForPaddleStartMoving"};
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
         NSError* error = nil;
         
-        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataUnreliable error:&error]){
             NSLog(@"Error sending data to clients: %@", error);
         }
     }
@@ -114,14 +113,6 @@
     // in each touchXXX method.
     
     NSAssert(state == kPaddleStateGrabbed, @"Paddle - Unexpected state!");
-
-#warning In case that we want to allow to throw the paddle
-//    if(self.tag == 1 && self.position.x > winSize.width / 2){
-//        return;
-//    }
-//    else if(self.tag == 2 && self.position.x < winSize.width / 2){
-//        return;
-//    }
     
     CGPoint touchLocation = [touch locationInView:[touch view]];
     touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
@@ -137,7 +128,7 @@
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
         NSError* error = nil;
         
-        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataUnreliable error:&error]){
             NSLog(@"Error sending data to clients: %@", error);
         }
     }
@@ -148,14 +139,19 @@
 - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
     NSAssert(state == kPaddleStateGrabbed, @"Paddle - Unexpected state!");
-    
+
+    [self paddleWillStopMoving];
+}
+
+-(void)ccTouchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
+    NSAssert(state == kPaddleStateGrabbed, @"Paddle - Unexpected state!");
     
     if(self.session != nil){
         NSDictionary* coordinates = @{@"DataType": @"DataForPaddleStopMoving"};
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
         NSError* error = nil;
         
-        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataUnreliable error:&error]){
             NSLog(@"Error sending data to clients: %@", error);
         }
     }

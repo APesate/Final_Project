@@ -6,25 +6,23 @@
 //  Copyright Andrés Pesate 2013. All rights reserved.
 //
 
-// Import the interfaces
 #import "HelloWorldLayer.h"
-
-// Not included in "cocos2d.h"
-
-// Needed to obtain the Navigation Controller
 #import "AppDelegate.h"
-
-
 #import "SMStateMachine.h"
 
+#define MAX_PUCK_SPEED 15.0
 
 static GameMode sGameMode;
+
+typedef enum{
+    ScoreAlert,
+    DisconnectAlert
+}AlertType;
 
 
 #pragma mark - HelloWorldLayer
 
 @interface HelloWorldLayer(){
-    CGSize winSize;
     PaddleSprite* paddleOne;
     PaddleSprite* paddleTwo;
     CCSprite* playerOneScoreSprite;
@@ -32,31 +30,24 @@ static GameMode sGameMode;
     CCSprite* backgroundSprite;
     CCSprite* puckSprite;
     b2Body* puckBody;
-    
     b2FixtureDef bodyFixtureDef;
-    
     b2ContactFilter *contactFilter;
+    b2ContactFilter *filterbarrier;
     b2EdgeShape leftBarrier;
     
-    b2ContactFilter *filterbarrier;
-    
+    GKPeerPickerController* picker;
     NSArray *scoreImagesArray;
     NSDate* creationDate;
     NSTimer* timer;
-    CCLabelBMFont* centerLabel;
+    CGSize winSize;
     int playerOneScore;
     int playerTwoScore;
-    
+    BOOL isServer;
 
     // State Machine
     SMStateMachine *sm;
     SMState *attack;
     SMState *deffend;
-    
-
-    BOOL isServer;
-    GKPeerPickerController* picker;
-
 }
 @property HelloWorldLayer* layer;
 
@@ -88,13 +79,13 @@ static GameMode sGameMode;
 	return scene;
 }
 
-+(CCScene *) sceneWithGameMode:(GameMode)mode
++(CCScene *) sceneWithGameMode:(GameMode)mode andDelegate:(id)aDelegate
 {
 	// 'scene' is an autorelease object.
 	CCScene *scene = [CCScene node];
     
 	// 'layer' is an autorelease object.
-	HelloWorldLayer *layer = [HelloWorldLayer nodeWithGameMode:mode];
+	HelloWorldLayer *layer = [HelloWorldLayer nodeWithGameMode:mode andDelegate:aDelegate];
     
 	// add layer as a child to scene
 	[scene addChild: layer];
@@ -122,14 +113,15 @@ static GameMode sGameMode;
     return [[[self alloc] initWithLayer:layer andDelegate:aDelegate] autorelease];
 }
 
-+(id)nodeWithGameMode:(GameMode)mode{
-    return [[[self alloc] initWithGameMode:mode] autorelease];
++(id)nodeWithGameMode:(GameMode)mode andDelegate:(id)aDelegate{
+    return [[[self alloc] initWithGameMode:mode andDelegate:aDelegate] autorelease];
 }
 
--(id) initWithGameMode:(GameMode)mode
+-(id) initWithGameMode:(GameMode)mode andDelegate:(id)aDelegate
 {
 	if( (self=[super init])) {
         sGameMode = mode;
+        self.delegate = aDelegate;
         [self initialize];
 	}
 	return self;
@@ -158,111 +150,6 @@ static GameMode sGameMode;
 	return self;
 }
 
-
-#pragma mark StateMachine Compiler
-
--(void)initStateMachine{
-    //Create structure
-    sm = [[SMStateMachine alloc] init];
-    sm.globalExecuteIn = self; //execute all selectors on self object
-    attack = [sm createState:@"open"];
-    deffend = [sm createState:@"closed"];
-    sm.initialState = deffend;
-    
-    
-    [attack setEntrySelector:@selector(attackMode)];
-    [deffend setEntrySelector:@selector(deffendMode)];
-    
-    [sm transitionFrom:deffend to:attack forEvent:@"toAttack"];
-    [sm transitionFrom:attack to:deffend forEvent:@"toDeffend"];
-    
-    [sm transitionFrom:deffend to:deffend forEvent:@"deffending" withSel:@selector(defending)];
-    [sm transitionFrom:attack to:attack forEvent:@"attacking" withSel:@selector(attacking)];
-    /*
-    [sm transitionFrom:deffend to:opened forEvent:@"coin"];
-    [sm transitionFrom:opened to:closed forEvent:@"pass"];
-    [sm transitionFrom:opened to:closed forEvent:@"timeout"];
-    [sm transitionFrom:opened to:opened forEvent:@"coin" withSel:@selector(returnCoin)];
-    */
-    
-    //Usage
-      [sm validate];  
-   
-}
-
--(void)defending
-{
-//    CCLOG(@"Im defending");
-}
-
--(void)deffendMode
-{
-    b2Vec2 linearVel = paddleOne.body->GetLinearVelocity();
-    linearVel.x *= .2;
-    linearVel.y *= .2;
-    /*if (linearVel.y<.2) {
-        linearVel.y = 0;
-    }
-    if (linearVel.x<.2) {
-        linearVel.x = 0;
-    }*/
-    //CCLOG(@"X: %f Y: %f",linearVel.x,linearVel.y);
-    
-    b2Vec2 currentPosition = paddleOne.body->GetPosition() + linearVel;
-    float puckRatio = (puckBody->GetPosition().y/10);
-    
-    
-    float windowSizeY = winSize.height/PTM_RATIO;
-    float windowSizeX = winSize.width/PTM_RATIO;
-    
-    float positionPaddleY = (puckRatio*5.26)+2.364;
-    float positionPaddleX = sqrtf(powf((windowSizeY/6+60/PTM_RATIO),2)-powf((positionPaddleY-windowSizeY/2),2));
-    
-    //CCLOG(@"X: %f Y: %f",positionPaddleX,positionPaddleY);
-
-   // CCLOG(@"%")
-    
-    b2Vec2 desiredPosition = b2Vec2((positionPaddleX>0)? positionPaddleX:0, positionPaddleY );
-    b2Vec2 necessaryMovement = desiredPosition - currentPosition;
-    float necessaryDistance = necessaryMovement.Length();
-    
-    necessaryMovement.Normalize();
-    float forceMagnitude = (600>necessaryDistance)? 600:necessaryDistance;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
-    b2Vec2 force = forceMagnitude * necessaryMovement;
-    
-    paddleOne.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
-    
-    //paddleOne.body->SetTransform(b2Vec2(90/PTM_RATIO, puckSprite.position.y/PTM_RATIO), 0);
-   // CCLOG(@"im defending");
-    
-}
-
--(void)attacking
-{
-    CCLOG(@"Im Attacking");
-}
-
--(void)attackMode
-{
-    
-    CCLOG(@"im Attacking");
-    
-    b2Vec2 linearVel = paddleOne.body->GetLinearVelocity();
-    linearVel.x *= 0.1;
-    linearVel.y *= 0.1;
-    b2Vec2 currentPosition = paddleOne.body->GetPosition() + linearVel;
-    b2Vec2 desiredPosition = b2Vec2(puckBody->GetPosition().x-20/PTM_RATIO, puckBody->GetPosition().y);
-    b2Vec2 necessaryMovement = desiredPosition - currentPosition;
-    //float necessaryDistance = necessaryMovement.Length();
-    necessaryMovement.Normalize();
-    float forceMagnitude = 1500;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
-    b2Vec2 force = forceMagnitude * necessaryMovement;
-    paddleOne.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
-    
-}
-
-
- // AirHockey/BlutoohConection
 -(void)initialize{
     winSize = [[CCDirector sharedDirector] winSize];
     isServer = NO;
@@ -329,19 +216,99 @@ static GameMode sGameMode;
     
     puckSprite = [[CCSprite alloc] initWithFile:@"Puck.png" rect:CGRectMake(0, 0, 150, 150)];
     puckSprite.position = ccp(winSize.width / 2, winSize.height / 2);
-    puckSprite.scale = 0.48;    
+    puckSprite.scale = 0.48;
     [self addChild:puckSprite];
     
-    centerLabel = [CCLabelTTF labelWithString:@"Host Name" fontName:@"Champagne & Limousines.ttf" fontSize:18];
-    centerLabel.position = ccp(winSize.width / 2, (winSize.height / 2) - 50);
-    centerLabel.color = ccc3(0.0, 0.0, 0.0);
-    [self addChild:centerLabel];
-    
-    // init physics
     [self initPhysics];
-
+    
 }
 
+#pragma mark StateMachine Compiler
+
+-(void)initStateMachine{
+    //Create structure
+    sm = [[SMStateMachine alloc] init];
+    sm.globalExecuteIn = self; //execute all selectors on self object
+    attack = [sm createState:@"open"];
+    deffend = [sm createState:@"closed"];
+    sm.initialState = deffend;
+    
+    
+    [attack setEntrySelector:@selector(attackMode)];
+    [deffend setEntrySelector:@selector(deffendMode)];
+    
+    [sm transitionFrom:deffend to:attack forEvent:@"toAttack"];
+    [sm transitionFrom:attack to:deffend forEvent:@"toDeffend"];
+    
+    [sm transitionFrom:deffend to:deffend forEvent:@"deffending" withSel:@selector(defending)];
+    [sm transitionFrom:attack to:attack forEvent:@"attacking" withSel:@selector(attacking)];
+    //Usage
+      [sm validate];  
+}
+
+-(void)defending
+{
+//    CCLOG(@"Im defending");
+}
+
+-(void)deffendMode
+{
+    b2Vec2 linearVel = paddleOne.body->GetLinearVelocity();
+    linearVel.x *= .2;
+    linearVel.y *= .2;
+    /*if (linearVel.y<.2) {
+        linearVel.y = 0;
+    }
+    if (linearVel.x<.2) {
+        linearVel.x = 0;
+    }*/
+    //CCLOG(@"X: %f Y: %f",linearVel.x,linearVel.y);
+    
+    b2Vec2 currentPosition = paddleOne.body->GetPosition() + linearVel;
+    float puckRatio = (puckBody->GetPosition().y/10);
+    
+    
+    float windowSizeY = winSize.height/PTM_RATIO;
+    float windowSizeX = winSize.width/PTM_RATIO;
+    
+    float positionPaddleY = (puckRatio*5.26)+2.364;
+    float positionPaddleX = sqrtf(powf((windowSizeY/6+60/PTM_RATIO),2)-powf((positionPaddleY-windowSizeY/2),2));
+    
+    //CCLOG(@"X: %f Y: %f",positionPaddleX,positionPaddleY);
+
+   // CCLOG(@"%")
+    
+    b2Vec2 desiredPosition = b2Vec2((positionPaddleX>0)? positionPaddleX:0, positionPaddleY );
+    b2Vec2 necessaryMovement = desiredPosition - currentPosition;
+    float necessaryDistance = necessaryMovement.Length();
+    
+    necessaryMovement.Normalize();
+    float forceMagnitude = (600>necessaryDistance)? 600:necessaryDistance;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
+    b2Vec2 force = forceMagnitude * necessaryMovement;
+    
+    paddleOne.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
+}
+
+-(void)attacking
+{
+    //CCLOG(@"Im Attacking");
+}
+
+-(void)attackMode
+{
+    b2Vec2 linearVel = paddleOne.body->GetLinearVelocity();
+    linearVel.x *= 0.1;
+    linearVel.y *= 0.1;
+    b2Vec2 currentPosition = paddleOne.body->GetPosition() + linearVel;
+    b2Vec2 desiredPosition = b2Vec2(puckBody->GetPosition().x-20/PTM_RATIO, puckBody->GetPosition().y);
+    b2Vec2 necessaryMovement = desiredPosition - currentPosition;
+    //float necessaryDistance = necessaryMovement.Length();
+    necessaryMovement.Normalize();
+    float forceMagnitude = 1500;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
+    b2Vec2 force = forceMagnitude * necessaryMovement;
+    paddleOne.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
+    
+}
 
 -(void) dealloc
 {
@@ -374,7 +341,9 @@ static GameMode sGameMode;
     [timer invalidate];
     timer = nil;
 	[super dealloc];
-}	
+}
+
+#pragma mark - Init Physics
 
 -(void) initPhysics
 {
@@ -391,17 +360,13 @@ static GameMode sGameMode;
     float32 timeStep = 1/60.0;      //the length of time passed to simulate (seconds)
     int32 velocityIterations = 8;   //how strongly to correct velocity
     int32 positionIterations = 3;   //how strongly to correct position
-	gravity.Set(0.0f, 0.0f);
+	
+    gravity.Set(0.0f, 0.0f);
+    
 	world = new b2World(gravity);
-	
-	// Do we want to let bodies sleep?
-	world->SetAllowSleeping(true);
-	
+    world->SetAllowSleeping(true);
 	world->SetContinuousPhysics(true);
     world->Step(timeStep, velocityIterations, positionIterations);
-   // world->SetContactFilter(filterbarrier);
-
-   // filterbarrier->ShouldCollide(bodyFixtureDef, );
     
     paddleOne->world = world;
     paddleTwo->world = world;
@@ -456,7 +421,7 @@ static GameMode sGameMode;
     groundBox.Set(b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO), b2Vec2(winSize.width/PTM_RATIO, 0));
 	groundBody->CreateMyFixture(&groundBox,0); //CreateMyFixture method created in b2Body class
     
-    // Create circle that restricts movement of paddle near the
+    // Create circle that restricts movement of paddle near the area
     
     b2BodyDef semiCircleDef;
     b2FixtureDef semiCircleFixture;
@@ -469,17 +434,6 @@ static GameMode sGameMode;
     
     semiCircleShape.m_radius = ((winSize.height/6)/PTM_RATIO);
     semiCircleBody->CreateMyFixture(&semiCircleShape, 100);
-    
-    /*
-    semiCircleFixture.shape = &semiCircleShape;
-    semiCircleFixture.density = 100.0f;
-    semiCircleFixture.friction = (100 * semiCircleFixture.density);
-    semiCircleFixture.restitution = 0.8f;
-    semiCircleFixture.filter.groupIndex = -1;
-    semiCircleBody->CreateFixture(&semiCircleFixture);
-    semiCircleBody->SetLinearDamping(0.05 * puckBody->GetMass());
-    semiCircleBody->SetAngularDamping(0.05 * puckBody->GetMass());
-     */
 }
 
 
@@ -503,23 +457,6 @@ static GameMode sGameMode;
     puckBody->CreateFixture(&bodyFixtureDef);
     puckBody->SetLinearDamping(0.05 * puckBody->GetMass());
     puckBody->SetAngularDamping(0.05 * puckBody->GetMass());
-    
-}
-
--(void)puckMovement{
-    if(self.session != nil && isServer){
-        NSNumber* xCoordinateToSend = @(((winSize.width / PTM_RATIO) - (puckBody->GetPosition()).x) / winSize.width);
-        NSNumber* yCoordinateToSend = @(((winSize.height / PTM_RATIO) - (puckBody->GetPosition()).y) / winSize.height);
-        
-        NSDictionary* coordinates = @{@"x": xCoordinateToSend, @"y": yCoordinateToSend, @"DataType": @"DataForPuck"};
-        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
-        NSError* error = nil;
-        
-        
-        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
-            NSLog(@"Error sending data to clients: %@", error);
-        }
-    }
 }
 
 #pragma mark - Update Time Step
@@ -530,7 +467,8 @@ static GameMode sGameMode;
 	//of the simulation, however, we are using a variable time step here.
 	//You need to make an informed choice, the following URL is useful
 	//http://gafferongames.com/game-physics/fix-your-timestep/
-//	
+    
+	world->Step(dt, 10, 10);
     for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
     {
         if (b->GetUserData() != NULL) {
@@ -541,50 +479,69 @@ static GameMode sGameMode;
         }
     }
     
-    //Analyse the position of the puck on the screen and replaced if neccesary
+//Set Maxspeed for the puck
+    CGFloat actualPuckSpeed = puckBody->GetLinearVelocity().Normalize();
+    if (actualPuckSpeed > MAX_PUCK_SPEED) {
+        CGFloat angle;
+        CGFloat xSpeed;
+        CGFloat ySpeed;
+        
+        angle = atan2f((puckBody->GetLinearVelocity()).y, (puckBody->GetLinearVelocity()).x);
+        
+        xSpeed = cosf(angle) * MAX_PUCK_SPEED;
+        ySpeed = sinf(angle) * MAX_PUCK_SPEED;
+        
+        puckBody->SetLinearVelocity(b2Vec2(xSpeed, ySpeed));
+    }
+    
+//Analyse the position of the puck on the screen and replaced if neccesary
     if((puckBody->GetPosition()).x > winSize.width / PTM_RATIO){
-        //playerTwoScore++;
-        [playerTwoScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerTwoScore]]];
-        puckBody->SetTransform(b2Vec2(winSize.width / (2 * PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
+        playerOneScore++;
+        NSLog(@"Score: %i - %i", playerOneScore, playerTwoScore);
+        [self showAlertFor:ScoreAlert];
+       // [playerTwoScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerTwoScore]]];
+        puckBody->SetTransform(b2Vec2((winSize.width / (2 * PTM_RATIO)) + (50 / PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
         puckBody->SetLinearVelocity(b2Vec2(0, 0));
         puckBody->SetAngularVelocity(0);
     }else if((puckBody->GetPosition()).x < 0){
-        //playerOneScore++;
-        [playerOneScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerOneScore]]];
-        puckBody->SetTransform(b2Vec2(winSize.width / (2 * PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
+        playerTwoScore++;
+        NSLog(@"Score: %i - %i", playerOneScore, playerTwoScore);
+        [self showAlertFor:ScoreAlert];
+        //[playerOneScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerOneScore]]];
+        puckBody->SetTransform(b2Vec2((winSize.width / (2 * PTM_RATIO)) - (50 / PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
         puckBody->SetLinearVelocity(b2Vec2(0, 0));
         puckBody->SetAngularVelocity(0);
     }
     
+//Change AI Behavior
     if ((puckBody->GetPosition()).x>winSize.width/(2*PTM_RATIO)) {
         [sm post:@"toDeffend"];
         [sm post:@"deffending"];
         //[self defending];
-        //CCLOG(@"im here");
     }
     if ((puckBody->GetPosition()).x<=winSize.width/(2*PTM_RATIO)) {
         [sm post:@"toAttack"];
         [sm post:@"attacking"];
     }
-    
-    world->Step(dt, 10, 10);
+}
 
-#warning In case that we want to allow to throw the paddle
-//    if((paddleOne.position.x > (winSize.width / 2)) && (paddleTwo.position.x < (winSize.width / 2))){
-//        [paddleOne setPosition:ccp(90, winSize.height / 2)];
-//        paddleOne->body->SetTransform(b2Vec2(90 / PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
-//        paddleOne->body->SetLinearVelocity(b2Vec2(0, 0));
-//        paddleOne->body->SetAngularVelocity(0);
-//        
-//        [paddleTwo setPosition:ccp(winSize.width - 90, winSize.height / 2)];
-//        paddleTwo->body->SetTransform(b2Vec2((winSize.width - 90) / PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
-//        paddleTwo->body->SetLinearVelocity(b2Vec2(0, 0));
-//        paddleTwo->body->SetAngularVelocity(0);
-//    }
-    
-	// Instruct the world to perform a single step of simulation. It is
-	// generally best to keep the time step and iterations fixed.
-
+//Send puck coordinates to the client side
+-(void)puckMovement{
+    if(self.session != nil && isServer){
+        NSNumber* xCoordinateToSend = @(((winSize.width / PTM_RATIO) - (puckBody->GetPosition()).x) / winSize.width);
+        NSNumber* yCoordinateToSend = @(((winSize.height / PTM_RATIO) - (puckBody->GetPosition()).y) / winSize.height);
+        
+        NSLog(@"Puck Coordinate Send <%f, %f>", xCoordinateToSend.floatValue, yCoordinateToSend.floatValue);
+        
+        NSDictionary* coordinates = @{@"x": xCoordinateToSend, @"y": yCoordinateToSend, @"DataType": @"DataForPuck"};
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
+        NSError* error = nil;
+        
+        
+        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+            NSLog(@"Error sending data to clients: %@", error);
+        }
+    }
 }
 
 #pragma mark - GKSessionDataHandler
@@ -599,6 +556,8 @@ static GameMode sGameMode;
         CGFloat xCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"x"]).floatValue * winSize.width;
         CGFloat yCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"y"]).floatValue * winSize.height;
         
+        NSLog(@"Puck Coordinate Recived <%f, %f>", xCoodinate, yCoodinate);
+        
         puckBody->SetTransform(b2Vec2(xCoodinate, yCoodinate), 0.0);
         
     }else if([dataType isEqualToString:@"DataForPaddleStartMoving"]){
@@ -606,9 +565,6 @@ static GameMode sGameMode;
         [paddleTwo paddleWillStartMoving];
         
     }else if([dataType isEqualToString:@"DataForPaddleIsMoving"]){
-        CGPoint coord;
-        [(NSValue*)[dataDictionary objectForKey:@"Coord"] getValue:&coord];
-        
         CGFloat xCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"x"]).floatValue * winSize.width;
         CGFloat yCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"y"]).floatValue * winSize.height;
                 
@@ -652,6 +608,7 @@ static GameMode sGameMode;
     [_picker autorelease];
     
     // Start your game.
+#warning Here we start tracking the movement of the puck.
     timer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(puckMovement) userInfo:nil repeats:YES];
     
     NSDictionary* dataDictionary = @{@"Date": creationDate, @"DataType": @"CreationDateData"};
@@ -686,15 +643,12 @@ static GameMode sGameMode;
             NSLog(@"Connecting");
             break;
         case GKPeerStateConnected:
-            // Record the peerID of the other peer.
-            // Inform your game that a peer has connected.
             NSLog(@"Connected");
             NSLog(@"isServer: %c", isServer);
             break;
         case GKPeerStateDisconnected:
-            // Inform your game that a peer has left.
             NSLog(@"Disconnected");
-            [self.delegate goToMenuLayer];
+            [self showAlertFor:DisconnectAlert];
             break;
         case GKPeerStateUnavailable:
             NSLog(@"Unavailable");
@@ -720,6 +674,61 @@ static GameMode sGameMode;
 
 -(void)session:(GKSession *)session didFailWithError:(NSError *)error{
     NSLog(@"Session Failed Error: %@", error);
+}
+
+#pragma mark UIAlerts
+
+-(void)showAlertFor:(AlertType)type{
+    switch (type) {
+        case ScoreAlert:
+            if(playerTwoScore == 7 || playerOneScore == 7){
+                NSString* title = [NSString stringWithFormat:@"Player %@ Wins!", playerOneScore > playerTwoScore?@"One":@"Two"];
+                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Game Over!" message:title delegate:self cancelButtonTitle:@"Exit" otherButtonTitles:@"Rematch", nil];
+                [alert setAlertViewStyle:UIAlertViewStyleDefault];
+                [alert show];
+                [alert release];
+            }
+            break;
+        case DisconnectAlert:{
+            NSString* message = [NSString stringWithFormat:@"The connection with the other device lost."];
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Connection Dropped!" message:message delegate:self cancelButtonTitle:@"Exit" otherButtonTitles:@"Reconnect", nil];
+            [alert setAlertViewStyle:UIAlertViewStyleDefault];
+            [alert show];
+            [alert release];
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    switch (buttonIndex) {
+        case 0:
+            [self.delegate goToMenuLayer];
+            break;
+        case 1:
+            if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Rematch"]) {
+                playerOneScore = 0;
+                playerTwoScore = 0;
+                NSLog(@"%i - %i", playerOneScore, playerTwoScore);
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+
+//To be able to go back to main menu mean while.
+-(void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
+    UITouch* touch = [touches anyObject];
+    CGPoint coord = [touch locationInView:touch.view];
+    coord = [[CCDirector sharedDirector] convertToGL:coord];
+    
+    if (CGRectContainsPoint(playerOneScoreSprite.boundingBox, coord)) {
+        [self.delegate goToMenuLayer];
+    }
 }
 
 @end
