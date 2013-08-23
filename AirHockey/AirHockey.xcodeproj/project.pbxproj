@@ -202,6 +202,9 @@
 		829E051C17BAE5EB0056CD4B /* Paddle.png in Resources */ = {isa = PBXBuildFile; fileRef = 829E051B17BAE5EB0056CD4B /* Paddle.png */; };
 		829E052017BBD8E40056CD4B /* TableBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 829E051F17BBD8E40056CD4B /* TableBackground.png */; };
 		82ED993117C6CEE9008CAA4D /* MenuLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82ED993017C6CEE9008CAA4D /* MenuLayer.mm */; };
+		82ED99BF17C7D869008CAA4D /* MyContactListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82ED99BE17C7D869008CAA4D /* MyContactListener.mm */; };
+		82ED99C617C7F079008CAA4D /* AlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82ED99C417C7F079008CAA4D /* AlertViewController.m */; };
+		82ED99C717C7F079008CAA4D /* AlertViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 82ED99C517C7F079008CAA4D /* AlertViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -609,6 +612,11 @@
 		829E051F17BBD8E40056CD4B /* TableBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TableBackground.png; sourceTree = "<group>"; };
 		82ED992F17C6CEE9008CAA4D /* MenuLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuLayer.h; sourceTree = "<group>"; };
 		82ED993017C6CEE9008CAA4D /* MenuLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuLayer.mm; sourceTree = "<group>"; };
+		82ED99BD17C7D869008CAA4D /* MyContactListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyContactListener.h; sourceTree = "<group>"; };
+		82ED99BE17C7D869008CAA4D /* MyContactListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MyContactListener.mm; sourceTree = "<group>"; };
+		82ED99C317C7F079008CAA4D /* AlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlertViewController.h; sourceTree = "<group>"; };
+		82ED99C417C7F079008CAA4D /* AlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlertViewController.m; sourceTree = "<group>"; };
+		82ED99C517C7F079008CAA4D /* AlertViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlertViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -711,6 +719,9 @@
 				829E02E217BAD0F20056CD4B /* Resources */,
 				829E02FA17BAD0F20056CD4B /* libs */,
 				829E050117BAD0F80056CD4B /* Supporting Files */,
+				82ED99C317C7F079008CAA4D /* AlertViewController.h */,
+				82ED99C417C7F079008CAA4D /* AlertViewController.m */,
+				82ED99C517C7F079008CAA4D /* AlertViewController.xib */,
 			);
 			path = AirHockey;
 			sourceTree = "<group>";
@@ -1096,6 +1107,8 @@
 		829E046E17BAD0F60056CD4B /* Box2D */ = {
 			isa = PBXGroup;
 			children = (
+				82ED99BD17C7D869008CAA4D /* MyContactListener.h */,
+				82ED99BE17C7D869008CAA4D /* MyContactListener.mm */,
 				829E046F17BAD0F60056CD4B /* Box2D.h */,
 				829E047017BAD0F60056CD4B /* Box2DConfig.cmake */,
 				829E047117BAD0F60056CD4B /* CMakeLists.txt */,
@@ -1268,7 +1281,6 @@
 				829E02C617BAD0F10056CD4B /* Sources */,
 				829E02C717BAD0F10056CD4B /* Frameworks */,
 				829E02C817BAD0F10056CD4B /* Resources */,
-				50524F424C454D533F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1326,26 +1338,11 @@
 				829E051C17BAE5EB0056CD4B /* Paddle.png in Resources */,
 				829E052017BBD8E40056CD4B /* TableBackground.png in Resources */,
 				8265262617BC55A000D52B87 /* Puck.png in Resources */,
+				82ED99C717C7F079008CAA4D /* AlertViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		50524F424C454D533F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export CODESIGN_ALLOCATE=/Library/JailCoder/codesign_allocate\nif [ \"${PLATFORM_NAME}\" == \"iphoneos\" ]; then\n/Library/JailCoder/Entitlements/Entitlements.py \"my.company.${PROJECT_NAME}\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\";\ncodesign -f -s \"iPhone Developer\" --entitlements \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\nfi";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		829E02C617BAD0F10056CD4B /* Sources */ = {
@@ -1521,6 +1518,8 @@
 				8248341417C2B83D0050BA27 /* SMStateMachineExecuteContext.m in Sources */,
 				8248341517C2B83D0050BA27 /* SMTransition.m in Sources */,
 				82ED993117C6CEE9008CAA4D /* MenuLayer.mm in Sources */,
+				82ED99BF17C7D869008CAA4D /* MyContactListener.mm in Sources */,
+				82ED99C617C7F079008CAA4D /* AlertViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1571,6 +1570,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Andres Pesate (H82P7J6B3B)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Andres Pesate (H82P7J6B3B)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1589,6 +1590,8 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "710A51DD-A33C-46A1-A0AC-DF08AA564276";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "710A51DD-A33C-46A1-A0AC-DF08AA564276";
 				USER_HEADER_SEARCH_PATHS = "\"AirHockey/libs\"";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1598,6 +1601,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Andres Pesate (H82P7J6B3B)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Andres Pesate (H82P7J6B3B)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AirHockey/Prefix.pch;
@@ -1615,6 +1620,8 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "710A51DD-A33C-46A1-A0AC-DF08AA564276";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "710A51DD-A33C-46A1-A0AC-DF08AA564276";
 				USER_HEADER_SEARCH_PATHS = "\"AirHockey/libs\"";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;

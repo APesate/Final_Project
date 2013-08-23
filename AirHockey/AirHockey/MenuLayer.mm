@@ -51,22 +51,7 @@
         
         CCMenu *myMenu = [CCMenu menuWithItems:singlePlayerButton, multiplayerButton, hostGameButton, joinGameButton, nil];
         
-        [myMenu alignItemsVertically];
-        
-        CGPoint coord = CGPointMake(2.0545, 1.4343);
-        NSValue* value = [NSValue valueWithCGPoint:coord];
-        NSNumber* number = @(3.4354);
-        NSDictionary* dictionary = @{@"x": value, @"DataType":@"Datafadfad"};
-        NSArray* array = @[value, @"afagfdggd"];
-        NSSet* set = [NSSet setWithObjects:value, @"adfadfadfadgad", nil];
-        
-        NSLog(@"Value size %lu", sizeof(value));
-        NSLog(@"CGpoint size %lu", sizeof(coord));
-        NSLog(@"Number size %lu", sizeof(number));
-        NSLog(@"Dictionary size %lu", sizeof(dictionary));
-        NSLog(@"Array size %lu", sizeof(array));
-        NSLog(@"Set size %lu", sizeof(set));
-
+        [myMenu alignItemsVerticallyWithPadding:10];
 
         [self addChild:myMenu];
     }
@@ -76,12 +61,12 @@
 
 - (void) playSinglePlayerMode: (CCMenuItem  *) menuItem
 {
-    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneWithGameMode:SinglePlayerMode]]];
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionSplitRows transitionWithDuration:1.0 scene:[HelloWorldLayer sceneWithGameMode:SinglePlayerMode andDelegate:self]]];
 }
 
 - (void) playMultiplayerMode: (CCMenuItem  *) menuItem
 {
-    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneWithGameMode:MultiplayerMode]]];
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneWithGameMode:MultiplayerMode andDelegate:self]]];
 }
 
 - (void) hostGameMode: (CCMenuItem  *) menuItem
@@ -98,7 +83,7 @@
 #pragma mark HelloWorldLayerDelegate
 
 -(void)goToMenuLayer{
-    [[CCDirector sharedDirector] replaceScene:[MenuLayer scene]];
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionSplitCols transitionWithDuration:1.0 scene:[MenuLayer scene]]];
 }
 
 @end
