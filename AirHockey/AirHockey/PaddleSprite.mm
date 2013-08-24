@@ -47,15 +47,18 @@
     bodyTextureDef.shape = &paddle;
     bodyTextureDef.density = 5.0f;
     bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
-    bodyTextureDef.restitution = 0.8f;
+    bodyTextureDef.restitution = 0.1f;
     bodyTextureDef.filter.groupIndex = 1;
     
     _body->CreateFixture(&bodyTextureDef);
-    _body->SetAngularDamping(0.05* _body->GetMass());
-    _body->SetLinearDamping(0.05 * _body->GetMass());
+    _body->SetFixedRotation(YES);
+    //_body->SetAngularDamping(0.1* _body->GetMass());
+    //_body->SetLinearDamping(0.5 * _body->GetMass());
+
     _body->CreateFixture(&bodyTextureDef);
-    _body->SetAngularDamping(0.01* _body->GetMass());
-    _body->SetLinearDamping(0.01 * _body->GetMass());
+    _body->SetFixedRotation(YES);
+    //_body->SetAngularDamping(0.1* _body->GetMass());
+    //_body->SetLinearDamping(0.5 * _body->GetMass());
 
 }
 
@@ -165,8 +168,8 @@
     md.bodyB = _body;
     md.target = b2Vec2((_body->GetPosition()).x, (_body->GetPosition()).y);
     md.collideConnected = true;
-    md.dampingRatio = 2.0f;
-    md.frequencyHz =  100.0f;
+    md.dampingRatio = 10.0f;
+    md.frequencyHz =  500.0f;
     md.maxForce = 8000.0f * _body->GetMass();
     
     _mouseJoint = (b2MouseJoint *)world->CreateJoint(&md);

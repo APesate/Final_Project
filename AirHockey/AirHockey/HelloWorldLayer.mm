@@ -239,9 +239,10 @@ typedef enum{
     
     [attack setEntrySelector:@selector(attackMode)];
     [deffend setEntrySelector:@selector(deffendMode)];
+    //[deffend setExitSelector:@selector(exitAttack)];
     
-    [sm transitionFrom:deffend to:attack forEvent:@"toAttack"];
-    [sm transitionFrom:attack to:deffend forEvent:@"toDeffend"];
+    [sm transitionFrom:deffend to:attack forEvent:@"toAttack" ];
+    [sm transitionFrom:attack to:deffend forEvent:@"toDeffend" withSel:@selector(exitAttack)];
     
     [sm transitionFrom:deffend to:deffend forEvent:@"deffending" withSel:@selector(defending)];
     [sm transitionFrom:attack to:attack forEvent:@"attacking" withSel:@selector(attacking)];
@@ -256,9 +257,9 @@ typedef enum{
 
 -(void)deffendMode
 {
-    b2Vec2 linearVel = paddleOne.body->GetLinearVelocity();
-    linearVel.x *= .2;
-    linearVel.y *= .2;
+    b2Vec2 linearVel = paddleTwo.body->GetLinearVelocity();
+    linearVel.x *= .1;
+    linearVel.y *= .1;
     /*if (linearVel.y<.2) {
         linearVel.y = 0;
     }
@@ -267,15 +268,14 @@ typedef enum{
     }*/
     //CCLOG(@"X: %f Y: %f",linearVel.x,linearVel.y);
     
-    b2Vec2 currentPosition = paddleOne.body->GetPosition() + linearVel;
+    b2Vec2 currentPosition = paddleTwo.body->GetPosition() + linearVel;
     float puckRatio = (puckBody->GetPosition().y/10);
-    
     
     float windowSizeY = winSize.height/PTM_RATIO;
     float windowSizeX = winSize.width/PTM_RATIO;
     
     float positionPaddleY = (puckRatio*5.26)+2.364;
-    float positionPaddleX = sqrtf(powf((windowSizeY/6+60/PTM_RATIO),2)-powf((positionPaddleY-windowSizeY/2),2));
+    float positionPaddleX = windowSizeX - sqrtf(powf((windowSizeY/6+40/PTM_RATIO),2)-powf((positionPaddleY-windowSizeY/2),2))-1;
     
     //CCLOG(@"X: %f Y: %f",positionPaddleX,positionPaddleY);
 
@@ -286,10 +286,10 @@ typedef enum{
     float necessaryDistance = necessaryMovement.Length();
     
     necessaryMovement.Normalize();
-    float forceMagnitude = (600>necessaryDistance)? 600:necessaryDistance;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
+    float forceMagnitude = (800>necessaryDistance)? 800:necessaryDistance;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
     b2Vec2 force = forceMagnitude * necessaryMovement;
     
-    paddleOne.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
+    paddleTwo.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
 }
 
 -(void)attacking
@@ -299,18 +299,34 @@ typedef enum{
 
 -(void)attackMode
 {
-    b2Vec2 linearVel = paddleOne.body->GetLinearVelocity();
+    b2Vec2 linearVel = paddleTwo.body->GetLinearVelocity();
     linearVel.x *= 0.1;
     linearVel.y *= 0.1;
-    b2Vec2 currentPosition = paddleOne.body->GetPosition() + linearVel;
-    b2Vec2 desiredPosition = b2Vec2(puckBody->GetPosition().x-20/PTM_RATIO, puckBody->GetPosition().y);
+    b2Vec2 currentPosition = paddleTwo.body->GetPosition() + linearVel;
+    b2Vec2 desiredPosition = b2Vec2(puckBody->GetPosition().x+10/PTM_RATIO, puckBody->GetPosition().y);
     b2Vec2 necessaryMovement = desiredPosition - currentPosition;
     //float necessaryDistance = necessaryMovement.Length();
     necessaryMovement.Normalize();
     float forceMagnitude = 1500;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
     b2Vec2 force = forceMagnitude * necessaryMovement;
-    paddleOne.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
+    paddleTwo.body->ApplyForce(force, paddleTwo.body->GetWorldCenter() );
     
+}
+
+-(void)exitAttack
+{
+    CCLOG(@"here");
+    b2Vec2 linearVel = paddleTwo.body->GetLinearVelocity();
+    linearVel.x *= 0.1;
+    linearVel.y *= 0.1;
+    b2Vec2 currentPosition = paddleTwo.body->GetPosition() + linearVel;
+    b2Vec2 desiredPosition = b2Vec2(winSize.width/PTM_RATIO-winSize.width/(6*PTM_RATIO)-30/PTM_RATIO, puckBody->GetPosition().y);
+    b2Vec2 necessaryMovement = desiredPosition - currentPosition;
+    //float necessaryDistance = necessaryMovement.Length();
+    necessaryMovement.Normalize();
+    float forceMagnitude = 3000;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
+    b2Vec2 force = forceMagnitude * necessaryMovement;
+    paddleTwo.body->ApplyForce(force, paddleTwo.body->GetWorldCenter() );
 }
 
 -(void) dealloc
@@ -582,13 +598,15 @@ typedef enum{
         }
     }
     
-    //Change AI Behavior
-    if ((puckBody->GetPosition()).x>winSize.width/(2*PTM_RATIO)) {
+
+
+    if ((puckBody->GetPosition()).x<winSize.width/(2*PTM_RATIO)) {
+
         [sm post:@"toDeffend"];
         [sm post:@"deffending"];
         //[self defending];
     }
-    if ((puckBody->GetPosition()).x<=winSize.width/(2*PTM_RATIO)) {
+    if ((puckBody->GetPosition()).x>=winSize.width/(2*PTM_RATIO)) {
         [sm post:@"toAttack"];
         [sm post:@"attacking"];
     }
