@@ -40,7 +40,6 @@ typedef enum{
     NSMutableArray* coordinatesArray;
     NSArray *scoreImagesArray;
     NSDate* creationDate;
-    NSTimer* timer;
     CGSize winSize;
     int playerOneScore;
     int playerTwoScore;
@@ -162,7 +161,7 @@ typedef enum{
     
     // enable events
     self.touchEnabled = YES;
-    self.accelerometerEnabled = YES;
+    //self.accelerometerEnabled = YES;
     
     playerOneScore = 0;
     playerTwoScore = 0;
@@ -203,8 +202,7 @@ typedef enum{
     
     switch (sGameMode) {
         case SinglePlayerMode:
-            paddleOne.enabled = NO;
-            paddleTwo.enabled = YES;
+            paddleTwo.enabled = NO;
             [self initStateMachine];
             break;
         case MultiplayerMode:
@@ -343,8 +341,6 @@ typedef enum{
     [_session setDataReceiveHandler: nil withContext: nil];
     _session.delegate = nil;
     [_session release];
-    [timer invalidate];
-    timer = nil;
 	[super dealloc];
 }
 
@@ -598,8 +594,7 @@ typedef enum{
     }
 }
 
-//Send puck coordinates to the client side
--(void)puckMovement{
+-(void)puckSpeed{
     if(self.session != nil && isServer){
         
         CGPoint puckSpeed = CGPointMake((puckBody->GetLinearVelocity()).x, (puckBody->GetLinearVelocity()).y);
@@ -622,6 +617,39 @@ typedef enum{
         NSValue* valueToSend = [NSValue valueWithCGPoint:puckCoordinates];
         
         NSDictionary* coordinates = @{@"Coord": valueToSend, @"DataType": @"DataForPuckCoordinates"};
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
+        NSError* error = nil;
+        
+        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+            NSLog(@"Error sending data to clients: %@", error);
+        }
+    }
+}
+
+-(void)paddleSpeed{
+    if(self.session != nil){
+        
+        CGPoint paddleSpeed = CGPointMake((paddleOne.body->GetLinearVelocity()).x, (paddleOne.body->GetLinearVelocity()).y);
+        NSValue* valueToSend = [NSValue valueWithCGPoint:paddleSpeed];
+        
+        NSDictionary* coordinates = @{@"Speed": valueToSend, @"DataType": @"DataForPaddleSpeed"};
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
+        NSError* error = nil;
+        
+        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+            NSLog(@"Error sending data to clients: %@", error);
+        }
+    }
+}
+
+
+-(void)paddleCoordinates{
+    if(self.session != nil){
+        
+        CGPoint paddleCoordinates = CGPointMake((paddleOne.body->GetPosition()).x, (paddleOne.body->GetPosition()).y);
+        NSValue* valueToSend = [NSValue valueWithCGPoint:paddleCoordinates];
+        
+        NSDictionary* coordinates = @{@"Coord": valueToSend, @"DataType": @"DataForPaddleCoordinates"};
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
         NSError* error = nil;
         
@@ -712,6 +740,20 @@ typedef enum{
         
         puckBody->SetTransform(b2Vec2(newCoord.x, newCoord.y), 0.0);
         
+    }else if ([dataType isEqualToString:@"DataForPaddleSpeed"]){
+        NSValue* value = [dataDictionary objectForKey:@"Speed"];
+        CGPoint newSpeed;
+        [value getValue:&newSpeed];
+        
+        paddleTwo.body->SetLinearVelocity(b2Vec2(newSpeed.x, newSpeed.y));
+        
+    }else if ([dataType isEqualToString:@"DataForPaddleCoordinates"]){
+        NSValue* value = [dataDictionary objectForKey:@"Coord"];
+        CGPoint newCoord;
+        [value getValue:&newCoord];
+        
+        paddleTwo.body->SetTransform(b2Vec2((winSize.width / PTM_RATIO) - newCoord.x, (winSize.height / PTM_RATIO) - newCoord.y), 0.0);
+        
     }else if([dataType isEqualToString:@"DataForPaddleStartMoving"]){
 
         [paddleTwo paddleWillStartMoving];
@@ -761,9 +803,10 @@ typedef enum{
     
     // Start your game.
 #warning Here we start tracking the movement of the puck.
-//    timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(puckMovement) userInfo:nil repeats:YES];
-    [self schedule:@selector(puckMovement) interval:0.25];
-    [self schedule:@selector(puckCoordinates) interval:0.5f];
+    [self schedule:@selector(puckSpeed) interval:0.2f];
+    [self schedule:@selector(puckCoordinates) interval:0.35f];
+    [self schedule:@selector(paddleSpeed) interval:1.0f];
+    [self schedule:@selector(paddleCoordinates) interval:1.0f];
     
     NSDictionary* dataDictionary = @{@"Date": creationDate, @"DataType": @"CreationDateData"};
     NSData* data = [NSKeyedArchiver archivedDataWithRootObject:dataDictionary];
