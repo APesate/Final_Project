@@ -35,7 +35,7 @@
 }
 
 @property (nonatomic, strong) GKSession* session;
-@property (nonatomic, strong) NSString* serverID;
+@property (nonatomic, strong) NSMutableArray* peerID;
 @property (nonatomic, retain) id <HelloWorldLayerDelegate> delegate;
 
 // returns a CCScene that contains the HelloWorldLayer as the only child

@@ -15,7 +15,7 @@
 //@synthesize body = _body;
 @synthesize session = _session;
 @synthesize myID = _myID;
-@synthesize firendID = _firendID;
+@synthesize friendID = _friendID;
 
 -(id)initWithFile:(NSString *)filename rect:(CGRect)rect{
     self = [super initWithFile:filename rect:rect];
@@ -47,19 +47,13 @@
     bodyTextureDef.shape = &paddle;
     bodyTextureDef.density = 5.0f;
     bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
-    bodyTextureDef.restitution = 0.1f;
+    bodyTextureDef.restitution = 0.8f;
     bodyTextureDef.filter.groupIndex = 1;
     
     _body->CreateFixture(&bodyTextureDef);
     _body->SetFixedRotation(YES);
-    //_body->SetAngularDamping(0.1* _body->GetMass());
-    //_body->SetLinearDamping(0.5 * _body->GetMass());
-
-    _body->CreateFixture(&bodyTextureDef);
-    _body->SetFixedRotation(YES);
-    //_body->SetAngularDamping(0.1* _body->GetMass());
-    //_body->SetLinearDamping(0.5 * _body->GetMass());
-
+    _body->SetAngularDamping(0.1* _body->GetMass());
+    _body->SetLinearDamping(0.5 * _body->GetMass());
 }
 
 - (CGRect)rectInPixels
@@ -95,7 +89,7 @@
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
         NSError* error = nil;
         
-        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataUnreliable error:&error]){
+        if(![_session sendData:data toPeers:_friendID withDataMode:GKSendDataReliable error:&error]){
             NSLog(@"Error sending data to clients: %@", error);
         }
     }
@@ -131,7 +125,7 @@
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
         NSError* error = nil;
         
-        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataUnreliable error:&error]){
+        if(![_session sendData:data toPeers:_friendID withDataMode:GKSendDataReliable error:&error]){
             NSLog(@"Error sending data to clients: %@", error);
         }
     }
@@ -154,7 +148,7 @@
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
         NSError* error = nil;
         
-        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataUnreliable error:&error]){
+        if(![_session sendData:data toPeers:_friendID withDataMode:GKSendDataReliable error:&error]){
             NSLog(@"Error sending data to clients: %@", error);
         }
     }
