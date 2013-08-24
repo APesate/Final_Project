@@ -9,6 +9,7 @@
 #import "HelloWorldLayer.h"
 #import "AppDelegate.h"
 #import "SMStateMachine.h"
+#import "GLES-Render.h"
 
 #define MAX_PUCK_SPEED 15.0
 
@@ -370,6 +371,9 @@ typedef enum{
     
     paddleOne->world = world;
     paddleTwo->world = world;
+    
+    
+    
 }
 
 -(void)createGround{
@@ -433,7 +437,72 @@ typedef enum{
     b2Body* semiCircleBody = world->CreateBody(&semiCircleDef);
     
     semiCircleShape.m_radius = ((winSize.height/6)/PTM_RATIO);
-    semiCircleBody->CreateMyFixture(&semiCircleShape, 100);
+    semiCircleBody->CreateMyFixture(&semiCircleShape, 5);
+    
+    semiCircleDef.position.Set(winSize.width/PTM_RATIO, winSize.height /(2 * PTM_RATIO));
+    b2Body* semiCircleBody2 = world->CreateBody(&semiCircleDef);
+    
+    semiCircleShape.m_radius = ((winSize.height/6)/PTM_RATIO);
+    semiCircleBody2->CreateMyFixture(&semiCircleShape, 5);
+    
+    // Create rounded corner
+    
+    b2ChainShape roundedCorner;
+    b2BodyDef roundedCornerDef;
+    b2FixtureDef roundedCornerFixture;
+    
+    b2Vec2 vs[5];
+    vs[0].Set(.5f, 0.0f);
+    vs[1].Set(0.05f, 0.01f);
+    vs[2].Set(0.02f, 0.02f);
+    vs[3].Set(0.01f, 0.05f);
+    vs[4].Set(0.0f, 0.5f);
+    
+    roundedCorner.CreateChain(vs, 5);
+    roundedCornerDef.type = b2_staticBody;
+    roundedCornerDef.position.Set(0.1, 0.1);
+    
+    b2Body* roundedCornerBody = world->CreateBody(&roundedCornerDef);
+    roundedCornerBody->CreateFixture(&roundedCorner, 100);
+    
+    CCLOG(@"%f",roundedCornerDef.angle);
+    
+    roundedCornerDef.position.Set(winSize.width/PTM_RATIO-0.1, 0.1);
+    roundedCornerDef.angle = 1.57f;
+    roundedCornerBody = world->CreateBody(&roundedCornerDef);
+    roundedCornerBody->CreateFixture(&roundedCorner, 100);
+    
+    roundedCornerDef.position.Set(winSize.width/PTM_RATIO-0.1, 9.9);
+    roundedCornerDef.angle = 3.14f;
+    roundedCornerBody = world->CreateBody(&roundedCornerDef);
+    roundedCornerBody->CreateFixture(&roundedCorner, 100);
+    
+    roundedCornerDef.position.Set(0.1, 9.9);
+    roundedCornerDef.angle = 4.71f;
+    roundedCornerBody = world->CreateBody(&roundedCornerDef);
+    roundedCornerBody->CreateFixture(&roundedCorner, 100);
+    
+    
+    
+    
+    GLESDebugDraw *debugDraw = new GLESDebugDraw(PTM_RATIO);
+    debugDraw->DrawPolygon(vs, 5, b2Color(100, 100, 100));
+    world->SetDebugDraw(debugDraw);
+    
+    uint32 flags = 0;
+    flags += 0x0001;
+    flags += 0x0002;
+    flags += 0x0010;
+    
+    debugDraw->SetFlags(flags);
+    //debugDraw = new GLESDebugDraw;
+   // debugDraw->GLESDebugDraw(PTM_RATIO);
+    //debugDraw->DrawPolygon(vs, 5,b2Color(30, 30, 30));
+    //world->SetDebugDraw(debugDraw);
+    
+    
+    
+    
 }
 
 
