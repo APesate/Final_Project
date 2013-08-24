@@ -11,7 +11,7 @@
 #import "SMStateMachine.h"
 #import "GLES-Render.h"
 
-#define MAX_PUCK_SPEED 15.0
+#define MAX_PUCK_SPEED 30.0
 
 static GameMode sGameMode;
 
@@ -37,6 +37,7 @@ typedef enum{
     b2EdgeShape leftBarrier;
     
     GKPeerPickerController* picker;
+    NSMutableArray* coordinatesArray;
     NSArray *scoreImagesArray;
     NSDate* creationDate;
     NSTimer* timer;
@@ -44,6 +45,7 @@ typedef enum{
     int playerOneScore;
     int playerTwoScore;
     BOOL isServer;
+    BOOL isInGolArea;
 
     // State Machine
     SMStateMachine *sm;
@@ -155,6 +157,8 @@ typedef enum{
     winSize = [[CCDirector sharedDirector] winSize];
     isServer = NO;
     creationDate = [[NSDate date] retain];
+    
+    coordinatesArray = [[NSMutableArray arrayWithCapacity:25] retain];
     
     // enable events
     self.touchEnabled = YES;
@@ -579,27 +583,29 @@ typedef enum{
         puckBody->SetLinearVelocity(b2Vec2(xSpeed, ySpeed));
     }
     
-//Analyse the position of the puck on the screen and replaced if neccesary
-    if((puckBody->GetPosition()).x > winSize.width / PTM_RATIO){
-        playerOneScore++;
-        NSLog(@"Score: %i - %i", playerOneScore, playerTwoScore);
-        [self showAlertFor:ScoreAlert];
-       // [playerTwoScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerTwoScore]]];
-        puckBody->SetTransform(b2Vec2((winSize.width / (2 * PTM_RATIO)) + (50 / PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
-        puckBody->SetLinearVelocity(b2Vec2(0, 0));
-        puckBody->SetAngularVelocity(0);
-    }else if((puckBody->GetPosition()).x < 0){
-        playerTwoScore++;
-        NSLog(@"Score: %i - %i", playerOneScore, playerTwoScore);
-        [self showAlertFor:ScoreAlert];
-        //[playerOneScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerOneScore]]];
-        puckBody->SetTransform(b2Vec2((winSize.width / (2 * PTM_RATIO)) - (50 / PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
-        puckBody->SetLinearVelocity(b2Vec2(0, 0));
-        puckBody->SetAngularVelocity(0);
+    //Analyse the position of the puck on the screen and replaced if neccesary
+    if(!isInGolArea){
+        if((puckBody->GetPosition()).x > winSize.width / PTM_RATIO){
+            isInGolArea = YES;
+            playerOneScore++;
+            NSLog(@"Score: %i - %i", playerOneScore, playerTwoScore);
+            [self showAlertFor:ScoreAlert];
+            // [playerTwoScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerTwoScore]]];
+            [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(1) afterDelay:1.0];
+        }else if((puckBody->GetPosition()).x < 0){
+            isInGolArea = YES;
+            playerTwoScore++;
+            NSLog(@"Score: %i - %i", playerOneScore, playerTwoScore);
+            [self showAlertFor:ScoreAlert];
+            //[playerOneScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerOneScore]]];
+            [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(2) afterDelay:1.0];
+        }
     }
     
-//Change AI Behavior
+
+
     if ((puckBody->GetPosition()).x<winSize.width/(2*PTM_RATIO)) {
+
         [sm post:@"toDeffend"];
         [sm post:@"deffending"];
         //[self defending];
@@ -613,15 +619,13 @@ typedef enum{
 //Send puck coordinates to the client side
 -(void)puckMovement{
     if(self.session != nil && isServer){
-        NSNumber* xCoordinateToSend = @(((winSize.width / PTM_RATIO) - (puckBody->GetPosition()).x) / winSize.width);
-        NSNumber* yCoordinateToSend = @(((winSize.height / PTM_RATIO) - (puckBody->GetPosition()).y) / winSize.height);
         
-        NSLog(@"Puck Coordinate Send <%f, %f>", xCoordinateToSend.floatValue, yCoordinateToSend.floatValue);
+        CGPoint puckSpeed = CGPointMake((puckBody->GetLinearVelocity()).x, (puckBody->GetLinearVelocity()).y);
+        NSValue* valueToSend = [NSValue valueWithCGPoint:puckSpeed];
         
-        NSDictionary* coordinates = @{@"x": xCoordinateToSend, @"y": yCoordinateToSend, @"DataType": @"DataForPuck"};
+        NSDictionary* coordinates = @{@"Speed": valueToSend, @"DataType": @"DataForPuckSpeed"};
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
         NSError* error = nil;
-        
         
         if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
             NSLog(@"Error sending data to clients: %@", error);
@@ -629,21 +633,102 @@ typedef enum{
     }
 }
 
+-(void)puckCoordinates{
+    if(self.session != nil && isServer){
+        
+        CGPoint puckCoordinates = CGPointMake((puckBody->GetPosition()).x, (puckBody->GetPosition()).y);
+        NSValue* valueToSend = [NSValue valueWithCGPoint:puckCoordinates];
+        
+        NSDictionary* coordinates = @{@"Coord": valueToSend, @"DataType": @"DataForPuckCoordinates"};
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
+        NSError* error = nil;
+        
+        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+            NSLog(@"Error sending data to clients: %@", error);
+        }
+    }
+}
+
+-(void)resetObjectsPositionAfterGoal:(NSNumber *)position{
+    CGPoint puckNewPosition;
+    CGPoint paddleOneNewPosition;
+    CGPoint paddleTwoNewPosition;
+    
+    puckBody->SetLinearVelocity(b2Vec2(0, 0));
+    puckBody->SetAngularVelocity(0);
+    puckBody->SetUserData(nil);
+    
+    paddleOne.body->SetLinearVelocity(b2Vec2(0, 0));
+    paddleOne.body->SetUserData(nil);
+    paddleOne.body->SetTransform(b2Vec2(120 / PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
+
+    paddleTwo.body->SetLinearVelocity(b2Vec2(0, 0));
+    paddleTwo.body->SetUserData(nil);
+    paddleTwo.body->SetTransform(b2Vec2((winSize.width - 120) / PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
+
+    switch (position.integerValue) {
+        case 1:{
+            puckBody->SetTransform(b2Vec2((winSize.width / (2 * PTM_RATIO)) + (50 / PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
+            puckNewPosition = CGPointMake((puckBody->GetPosition()).x * PTM_RATIO, (puckBody->GetPosition()).y * PTM_RATIO);
+            puckNewPosition = [[CCDirector sharedDirector] convertToGL:puckNewPosition];
+            [puckSprite stopAllActions];
+            [puckSprite runAction:[CCJumpTo actionWithDuration:0.7 position:puckNewPosition height:100 jumps:1]];
+            break;
+        }
+        case 2:{
+            puckBody->SetTransform(b2Vec2((winSize.width / (2 * PTM_RATIO)) - (50 / PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
+            puckNewPosition = CGPointMake((puckBody->GetPosition()).x * PTM_RATIO, (puckBody->GetPosition()).y * PTM_RATIO);
+            puckNewPosition = [[CCDirector sharedDirector] convertToGL:puckNewPosition];
+            [puckSprite stopAllActions];
+            [puckSprite runAction:[CCJumpTo actionWithDuration:0.7 position:puckNewPosition height:100 jumps:1]];
+            break;
+        }
+        default:
+            break;
+    }
+    
+    [paddleOne stopAllActions];
+    paddleOneNewPosition = CGPointMake((paddleOne.body->GetPosition()).x * PTM_RATIO, (paddleOne.body->GetPosition()).y * PTM_RATIO);
+    paddleOneNewPosition = [[CCDirector sharedDirector] convertToGL:paddleOneNewPosition];
+    [paddleOne runAction:[CCMoveTo actionWithDuration:0.5 position:paddleOneNewPosition]];
+    
+    [paddleTwo stopAllActions];
+    paddleTwoNewPosition = CGPointMake((paddleTwo.body->GetPosition()).x * PTM_RATIO, (paddleTwo.body->GetPosition()).y * PTM_RATIO);
+    paddleTwoNewPosition = [[CCDirector sharedDirector] convertToGL:paddleTwoNewPosition];
+    
+    [paddleTwo runAction:[CCSequence actions:
+                     [CCMoveTo actionWithDuration:0.5 position:paddleTwoNewPosition],
+                     [CCCallFunc actionWithTarget:self selector:@selector(assignObjectsBodiesAgain)], nil]];
+}
+
+-(void)assignObjectsBodiesAgain{
+    paddleOne.body->SetUserData(paddleOne);
+    paddleTwo.body->SetUserData(paddleTwo);
+    puckBody->SetUserData(puckSprite);
+    isInGolArea = NO;
+}
+
 #pragma mark - GKSessionDataHandler
 
 - (void) receiveData:(NSData *)data fromPeer:(NSString *)peer inSession: (GKSession *)session context:(void *)context{
     
-    NSLog(@"Data Size: %i", [data length]);
     NSDictionary *dataDictionary = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:data];
     NSString* dataType = [dataDictionary objectForKey:@"DataType"];
         
-    if ([dataType isEqualToString:@"DataForPuck"]) {
-        CGFloat xCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"x"]).floatValue * winSize.width;
-        CGFloat yCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"y"]).floatValue * winSize.height;
+    if ([dataType isEqualToString:@"DataForPuckSpeed"]) {
         
-        NSLog(@"Puck Coordinate Recived <%f, %f>", xCoodinate, yCoodinate);
+        NSValue* value = [dataDictionary objectForKey:@"Speed"];
+        CGPoint newSpeed;
+        [value getValue:&newSpeed];
         
-        puckBody->SetTransform(b2Vec2(xCoodinate, yCoodinate), 0.0);
+        puckBody->SetLinearVelocity(b2Vec2(newSpeed.x, newSpeed.y));
+        
+    }else if ([dataType isEqualToString:@"DataForPuckCoordinates"]){
+        NSValue* value = [dataDictionary objectForKey:@"Coord"];
+        CGPoint newCoord;
+        [value getValue:&newCoord];
+        
+        puckBody->SetTransform(b2Vec2(newCoord.x, newCoord.y), 0.0);
         
     }else if([dataType isEqualToString:@"DataForPaddleStartMoving"]){
 
@@ -694,7 +779,9 @@ typedef enum{
     
     // Start your game.
 #warning Here we start tracking the movement of the puck.
-    timer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(puckMovement) userInfo:nil repeats:YES];
+//    timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(puckMovement) userInfo:nil repeats:YES];
+    [self schedule:@selector(puckMovement) interval:0.25];
+    [self schedule:@selector(puckCoordinates) interval:0.5f];
     
     NSDictionary* dataDictionary = @{@"Date": creationDate, @"DataType": @"CreationDateData"};
     NSData* data = [NSKeyedArchiver archivedDataWithRootObject:dataDictionary];
@@ -772,11 +859,13 @@ typedef enum{
                 [alert setAlertViewStyle:UIAlertViewStyleDefault];
                 [alert show];
                 [alert release];
+            }else{
+                
             }
             break;
         case DisconnectAlert:{
-            NSString* message = [NSString stringWithFormat:@"The connection with the other device lost."];
-            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Connection Dropped!" message:message delegate:self cancelButtonTitle:@"Exit" otherButtonTitles:@"Reconnect", nil];
+            NSString* message = [NSString stringWithFormat:@"The connection with the other device was lost."];
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Connection Lost!" message:message delegate:self cancelButtonTitle:@"Exit" otherButtonTitles:@"Reconnect", nil];
             [alert setAlertViewStyle:UIAlertViewStyleDefault];
             [alert show];
             [alert release];
@@ -797,11 +886,26 @@ typedef enum{
                 playerOneScore = 0;
                 playerTwoScore = 0;
                 NSLog(@"%i - %i", playerOneScore, playerTwoScore);
+            }else if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Reconnect"]){
+                [self reconnect];
             }
             break;
         default:
             break;
     }
+}
+
+-(void)reconnect{
+    [_session disconnectFromAllPeers];
+    _session.available = NO;
+    [_session setDataReceiveHandler: nil withContext: nil];
+    _session.delegate = nil;
+    [_session release];
+    
+    picker = [[GKPeerPickerController alloc] init];
+    picker.delegate = self;
+    picker.connectionTypesMask = GKPeerPickerConnectionTypeNearby;
+    [picker show];
 }
 
 
