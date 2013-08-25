@@ -249,7 +249,8 @@ typedef enum{
     [sm transitionFrom:deffend to:deffend forEvent:@"deffending" withSel:@selector(defending)];
     [sm transitionFrom:attack to:attack forEvent:@"attacking" withSel:@selector(attacking)];
     //Usage
-      [sm validate];  
+     // [sm validate];
+
 }
 
 -(void)defending
@@ -445,26 +446,6 @@ typedef enum{
     groundBox.Set(b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO), b2Vec2(winSize.width/PTM_RATIO, 0));
 	groundBody->CreateMyFixture(&groundBox,0); //CreateMyFixture method created in b2Body class
     
-    // Create circle that restricts movement of paddle near the area
-    
-    b2BodyDef semiCircleDef;
-    b2FixtureDef semiCircleFixture;
-    b2CircleShape semiCircleShape;
-    
-    semiCircleDef.type = b2_staticBody;
-    semiCircleDef.position.Set(0, winSize.height /(2 * PTM_RATIO));
-    
-    b2Body* semiCircleBody = world->CreateBody(&semiCircleDef);
-    
-    semiCircleShape.m_radius = ((winSize.height/6)/PTM_RATIO);
-    semiCircleBody->CreateMyFixture(&semiCircleShape, 5);
-    
-    semiCircleDef.position.Set(winSize.width/PTM_RATIO, winSize.height /(2 * PTM_RATIO));
-    b2Body* semiCircleBody2 = world->CreateBody(&semiCircleDef);
-    
-    semiCircleShape.m_radius = ((winSize.height/6)/PTM_RATIO);
-    semiCircleBody2->CreateMyFixture(&semiCircleShape, 5);
-    
     // Create rounded corner
     
     b2ChainShape roundedCorner;
@@ -472,11 +453,11 @@ typedef enum{
     b2FixtureDef roundedCornerFixture;
     
     b2Vec2 vs[5];
-    vs[0].Set(.5f, 0.0f);
+    vs[0].Set(1.0f, 0.0f);
     vs[1].Set(0.05f, 0.01f);
     vs[2].Set(0.02f, 0.02f);
     vs[3].Set(0.01f, 0.05f);
-    vs[4].Set(0.0f, 0.5f);
+    vs[4].Set(0.0f, 1.0f);
     
     roundedCorner.CreateChain(vs, 5);
     roundedCornerDef.type = b2_staticBody;
@@ -603,12 +584,11 @@ typedef enum{
     }
     
 
-
     if ((puckBody->GetPosition()).x<winSize.width/(2*PTM_RATIO)) {
 
         [sm post:@"toDeffend"];
         [sm post:@"deffending"];
-        //[self defending];
+
     }
     if ((puckBody->GetPosition()).x>=winSize.width/(2*PTM_RATIO)) {
         [sm post:@"toAttack"];
