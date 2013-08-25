@@ -1570,8 +1570,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Andres Pesate (H82P7J6B3B)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Andres Pesate (H82P7J6B3B)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1590,8 +1590,8 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "710A51DD-A33C-46A1-A0AC-DF08AA564276";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "710A51DD-A33C-46A1-A0AC-DF08AA564276";
 				USER_HEADER_SEARCH_PATHS = "\"AirHockey/libs\"";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1601,8 +1601,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Andres Pesate (H82P7J6B3B)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Andres Pesate (H82P7J6B3B)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AirHockey/Prefix.pch;
@@ -1620,8 +1620,8 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "710A51DD-A33C-46A1-A0AC-DF08AA564276";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "710A51DD-A33C-46A1-A0AC-DF08AA564276";
 				USER_HEADER_SEARCH_PATHS = "\"AirHockey/libs\"";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;

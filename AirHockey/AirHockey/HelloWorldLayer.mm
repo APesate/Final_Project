@@ -812,6 +812,7 @@ typedef enum{
         CGPoint newCoord;
         [value getValue:&newCoord];
         
+        puckBody->SetLinearVelocity(b2Vec2(0, 0));
         puckBody->SetTransform(b2Vec2(newCoord.x * winSize.width, newCoord.y * winSize.height), 0.0);
         
     }else if ([dataType isEqualToString:@"DataForPaddleSpeed"]){
@@ -851,9 +852,9 @@ typedef enum{
         if([creationDate compare:peerDate] == NSOrderedAscending){
             isServer = YES;
             paddleOne.myID = _session.sessionID;
-            //[self schedule:@selector(puckCoordinates) interval:0.50f];
-            [self schedule:@selector(puckSpeed) interval:0.50f];
-            [self schedule:@selector(lookingForPing) interval:0.10f];
+            [self schedule:@selector(puckCoordinates) interval:0.025f];
+            //[self schedule:@selector(puckSpeed) interval:0.10f];
+            [self schedule:@selector(lookingForPing) interval:0.05f];
         }
         NSLog(@"Am I the Server: %i", isServer);
     }else if([dataType isEqualToString:@"UpdateScore"]){
