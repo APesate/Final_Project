@@ -32,7 +32,7 @@ typedef enum tagPaddleState{
 @property BOOL enabled;
 @property (nonatomic, strong) GKSession* session;
 @property (nonatomic, strong) NSString* myID;
-@property (nonatomic, strong) NSString* firendID;
+@property (nonatomic, strong) NSMutableArray* friendID;
 
 
 -(void)createBody;

@@ -17,3 +17,5 @@ DerivedData
 *.hmap
 /AirHockey/AirHockey.xcodeproj/project.xcworkspace/xcuserdata/AndresP.xcuserdatad/UserInterfaceState.xcuserstate
 /AirHockey/AirHockey.xcodeproj/project.xcworkspace/xcuserdata/Grimi.xcuserdatad/UserInterfaceState.xcuserstate
+
+Breakpoints.xcbkptlist

@@ -18,7 +18,7 @@ static GameMode sGameMode;
 typedef enum{
     ScoreAlert,
     DisconnectAlert
-}AlertType;
+}AlertType; 
 
 
 #pragma mark - HelloWorldLayer
@@ -40,7 +40,6 @@ typedef enum{
     NSMutableArray* coordinatesArray;
     NSArray *scoreImagesArray;
     NSDate* creationDate;
-    NSTimer* timer;
     CGSize winSize;
     int playerOneScore;
     int playerTwoScore;
@@ -62,7 +61,7 @@ typedef enum{
 
 @implementation HelloWorldLayer
 
-@synthesize serverID = _serverID;
+@synthesize peerID = _peerID;
 @synthesize session = _session;
 @synthesize layer = _layer;
 @synthesize delegate = _delegate;
@@ -158,11 +157,12 @@ typedef enum{
     isServer = NO;
     creationDate = [[NSDate date] retain];
     
+    _peerID = [[NSMutableArray arrayWithCapacity:2] retain];
     coordinatesArray = [[NSMutableArray arrayWithCapacity:25] retain];
     
     // enable events
     self.touchEnabled = YES;
-    self.accelerometerEnabled = YES;
+    //self.accelerometerEnabled = YES;
     
     playerOneScore = 0;
     playerTwoScore = 0;
@@ -203,7 +203,6 @@ typedef enum{
     
     switch (sGameMode) {
         case SinglePlayerMode:
-            paddleOne.enabled = YES;
             paddleTwo.enabled = NO;
             [self initStateMachine];
             break;
@@ -360,8 +359,6 @@ typedef enum{
     [_session setDataReceiveHandler: nil withContext: nil];
     _session.delegate = nil;
     [_session release];
-    [timer invalidate];
-    timer = nil;
 	[super dealloc];
 }
 
@@ -573,6 +570,7 @@ typedef enum{
             [self showAlertFor:ScoreAlert];
             // [playerTwoScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerTwoScore]]];
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(1) afterDelay:1.0];
+            [self updateScore:@(1)];
         }else if((puckBody->GetPosition()).x < 0){
             isInGolArea = YES;
             playerTwoScore++;
@@ -580,10 +578,10 @@ typedef enum{
             [self showAlertFor:ScoreAlert];
             //[playerOneScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerOneScore]]];
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(2) afterDelay:1.0];
+            [self updateScore:@(2)];
         }
     }
     
-
     if ((puckBody->GetPosition()).x<winSize.width/(2*PTM_RATIO)) {
 
         [sm post:@"toDeffend"];
@@ -596,10 +594,8 @@ typedef enum{
     }
 }
 
-//Send puck coordinates to the client side
--(void)puckMovement{
+-(void)puckSpeed{
     if(self.session != nil && isServer){
-        
         CGPoint puckSpeed = CGPointMake((puckBody->GetLinearVelocity()).x, (puckBody->GetLinearVelocity()).y);
         NSValue* valueToSend = [NSValue valueWithCGPoint:puckSpeed];
         
@@ -607,7 +603,7 @@ typedef enum{
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
         NSError* error = nil;
         
-        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+        if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
             NSLog(@"Error sending data to clients: %@", error);
         }
     }
@@ -615,7 +611,6 @@ typedef enum{
 
 -(void)puckCoordinates{
     if(self.session != nil && isServer){
-        
         CGPoint puckCoordinates = CGPointMake((puckBody->GetPosition()).x, (puckBody->GetPosition()).y);
         NSValue* valueToSend = [NSValue valueWithCGPoint:puckCoordinates];
         
@@ -623,7 +618,53 @@ typedef enum{
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
         NSError* error = nil;
         
-        if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+        if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
+            NSLog(@"Error sending data to clients: %@", error);
+        }
+    }
+}
+
+-(void)paddleSpeed{
+    if(self.session != nil){
+        CGPoint paddleSpeed = CGPointMake((paddleOne.body->GetLinearVelocity()).x, (paddleOne.body->GetLinearVelocity()).y);
+        NSValue* valueToSend = [NSValue valueWithCGPoint:paddleSpeed];
+        
+        NSDictionary* coordinates = @{@"Speed": valueToSend, @"DataType": @"DataForPaddleSpeed"};
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
+        NSError* error = nil;
+        
+        if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
+            NSLog(@"Error sending data to clients: %@", error);
+        }
+    }
+}
+
+
+-(void)paddleCoordinates{
+    if(self.session != nil){
+        CGPoint paddleCoordinates = CGPointMake((paddleOne.body->GetPosition()).x, (paddleOne.body->GetPosition()).y);
+        NSValue* valueToSend = [NSValue valueWithCGPoint:paddleCoordinates];
+        
+        NSDictionary* coordinates = @{@"Coord": valueToSend, @"DataType": @"DataForPaddleCoordinates"};
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
+        NSError* error = nil;
+        
+        if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
+            NSLog(@"Error sending data to clients: %@", error);
+        }
+    }
+}
+
+-(void)updateScore:(NSNumber *)position{
+    if(self.session != nil){
+        NSNumber* playerOne = @(playerOneScore);
+        NSNumber* playerTwo = @(playerTwoScore);
+        
+        NSDictionary* coordinates = @{@"One": playerOne, @"Two": playerTwo, @"Position": position, @"DataType": @"UpdateScore"};
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
+        NSError* error = nil;
+        
+        if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
             NSLog(@"Error sending data to clients: %@", error);
         }
     }
@@ -670,14 +711,14 @@ typedef enum{
     [paddleOne stopAllActions];
     paddleOneNewPosition = CGPointMake((paddleOne.body->GetPosition()).x * PTM_RATIO, (paddleOne.body->GetPosition()).y * PTM_RATIO);
     paddleOneNewPosition = [[CCDirector sharedDirector] convertToGL:paddleOneNewPosition];
-    [paddleOne runAction:[CCMoveTo actionWithDuration:0.5 position:paddleOneNewPosition]];
+    [paddleOne runAction:[CCMoveTo actionWithDuration:1.0 position:paddleOneNewPosition]];
     
     [paddleTwo stopAllActions];
     paddleTwoNewPosition = CGPointMake((paddleTwo.body->GetPosition()).x * PTM_RATIO, (paddleTwo.body->GetPosition()).y * PTM_RATIO);
     paddleTwoNewPosition = [[CCDirector sharedDirector] convertToGL:paddleTwoNewPosition];
     
     [paddleTwo runAction:[CCSequence actions:
-                     [CCMoveTo actionWithDuration:0.5 position:paddleTwoNewPosition],
+                     [CCMoveTo actionWithDuration:1.0 position:paddleTwoNewPosition],
                      [CCCallFunc actionWithTarget:self selector:@selector(assignObjectsBodiesAgain)], nil]];
 }
 
@@ -710,6 +751,20 @@ typedef enum{
         
         puckBody->SetTransform(b2Vec2(newCoord.x, newCoord.y), 0.0);
         
+    }else if ([dataType isEqualToString:@"DataForPaddleSpeed"]){
+        NSValue* value = [dataDictionary objectForKey:@"Speed"];
+        CGPoint newSpeed;
+        [value getValue:&newSpeed];
+        
+        paddleTwo.body->SetLinearVelocity(b2Vec2(newSpeed.x, newSpeed.y));
+        
+    }else if ([dataType isEqualToString:@"DataForPaddleCoordinates"]){
+        NSValue* value = [dataDictionary objectForKey:@"Coord"];
+        CGPoint newCoord;
+        [value getValue:&newCoord];
+        
+        paddleTwo.body->SetTransform(b2Vec2((winSize.width / PTM_RATIO) - newCoord.x, (winSize.height / PTM_RATIO) - newCoord.y), 0.0);
+        
     }else if([dataType isEqualToString:@"DataForPaddleStartMoving"]){
 
         [paddleTwo paddleWillStartMoving];
@@ -727,8 +782,16 @@ typedef enum{
         NSDate* peerDate = [dataDictionary objectForKey:@"Date"];
         if([creationDate compare:peerDate] == NSOrderedAscending){
             isServer = YES;
+            paddleOne.myID = _session.sessionID;
+            [paddleOne.friendID addObject:[_peerID lastObject]];
         }
         NSLog(@"Am I the Server: %i", isServer);
+    }else if([dataType isEqualToString:@"UpdateScore"]){
+        playerOneScore = ((NSNumber *)[dataDictionary objectForKey:@"One"]).integerValue;
+        playerTwoScore = ((NSNumber *)[dataDictionary objectForKey:@"Two"]).integerValue;
+        NSNumber* position = ((NSNumber *)[dataDictionary objectForKey:@"Position"]);
+        
+        [self resetObjectsPositionAfterGoal:position];
     }
     
 }
@@ -736,13 +799,17 @@ typedef enum{
 #pragma mark - GKPeerPickerDelegate
 
 - (void)peerPickerController:(GKPeerPickerController *)_picker didConnectPeer:(NSString *)peerID toSession: (GKSession *) session {
+    [_peerID addObject:peerID];
+    
     // Use a retaining property to take ownership of the session.
     self.session = session;
     // Assumes our object will also become the session's delegate.
     paddleOne.session = [[GKSession alloc] init];
+    paddleOne.friendID = [[NSMutableArray arrayWithCapacity:1] retain];
     paddleOne.session = session;
 
     paddleTwo.session = [[GKSession alloc] init];
+    paddleTwo.friendID = [[NSMutableArray arrayWithCapacity:1] retain];
     paddleTwo.session = session;
     
     
@@ -759,15 +826,16 @@ typedef enum{
     
     // Start your game.
 #warning Here we start tracking the movement of the puck.
-//    timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(puckMovement) userInfo:nil repeats:YES];
-    [self schedule:@selector(puckMovement) interval:0.25];
-    [self schedule:@selector(puckCoordinates) interval:0.5f];
+    [self schedule:@selector(puckSpeed) interval:0.25f];
+    [self schedule:@selector(puckCoordinates) interval:0.50f];
+//    [self schedule:@selector(paddleSpeed) interval:1.0f];
+//    [self schedule:@selector(paddleCoordinates) interval:1.0f];
     
     NSDictionary* dataDictionary = @{@"Date": creationDate, @"DataType": @"CreationDateData"};
     NSData* data = [NSKeyedArchiver archivedDataWithRootObject:dataDictionary];
     NSError* error = nil;
     
-    if(![_session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:&error]){
+    if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
         NSLog(@"Error sending creationDate data to peer: %@", error);
     }
     
