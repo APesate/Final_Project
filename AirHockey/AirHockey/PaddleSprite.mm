@@ -176,8 +176,25 @@
     _mouseJoint->SetTarget(b2Vec2(xCoordinate, yCoordinate));
 }
 
+-(void)destroyLink
+{
+    CCDirector *director = [CCDirector sharedDirector];
+    
+    [[director touchDispatcher] setDispatchEvents:NO];
+}
+
+-(void)createLink
+{
+    CCDirector *director = [CCDirector sharedDirector];
+    
+    [[director touchDispatcher] setDispatchEvents:YES];
+}
+
 -(void)paddleWillStopMoving{
-    world->DestroyJoint(_mouseJoint);
+    if (_mouseJoint) {
+    world->DestroyJoint(_mouseJoint);   
+    }
+
     _mouseJoint = NULL;
     
     state = kPaddleStateUngrabbed;

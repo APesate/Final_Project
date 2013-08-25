@@ -45,6 +45,7 @@ typedef enum{
     int playerTwoScore;
     BOOL isServer;
     BOOL isInGolArea;
+    BOOL updateComputer;
 
     // State Machine
     SMStateMachine *sm;
@@ -231,6 +232,7 @@ typedef enum{
 
 -(void)initStateMachine{
     //Create structure
+    updateComputer = YES;
     sm = [[SMStateMachine alloc] init];
     sm.globalExecuteIn = self; //execute all selectors on self object
     attack = [sm createState:@"open"];
@@ -260,15 +262,8 @@ typedef enum{
 -(void)deffendMode
 {
     b2Vec2 linearVel = paddleTwo.body->GetLinearVelocity();
-    linearVel.x *= .1;
-    linearVel.y *= .1;
-    /*if (linearVel.y<.2) {
-        linearVel.y = 0;
-    }
-    if (linearVel.x<.2) {
-        linearVel.x = 0;
-    }*/
-    //CCLOG(@"X: %f Y: %f",linearVel.x,linearVel.y);
+    linearVel.x *= .4;
+    linearVel.y *= .4;
     
     b2Vec2 currentPosition = paddleTwo.body->GetPosition() + linearVel;
     float puckRatio = (puckBody->GetPosition().y/10);
@@ -277,7 +272,7 @@ typedef enum{
     float windowSizeX = winSize.width/PTM_RATIO;
     
     float positionPaddleY = (puckRatio*5.26)+2.364;
-    float positionPaddleX = windowSizeX - sqrtf(powf((windowSizeY/6+40/PTM_RATIO),2)-powf((positionPaddleY-windowSizeY/2),2))-1;
+    float positionPaddleX = windowSizeX - sqrtf(powf((windowSizeY/6+40/PTM_RATIO),2)-powf((positionPaddleY-windowSizeY/2),2))+1;
     
     //CCLOG(@"X: %f Y: %f",positionPaddleX,positionPaddleY);
 
@@ -288,7 +283,7 @@ typedef enum{
     float necessaryDistance = necessaryMovement.Length();
     
     necessaryMovement.Normalize();
-    float forceMagnitude = (800>necessaryDistance)? 800:necessaryDistance;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
+    float forceMagnitude = (900>necessaryDistance)? 900:necessaryDistance;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
     b2Vec2 force = forceMagnitude * necessaryMovement;
     
     paddleTwo.body->ApplyForce(force, paddleOne.body->GetWorldCenter() );
@@ -305,11 +300,11 @@ typedef enum{
     linearVel.x *= 0.1;
     linearVel.y *= 0.1;
     b2Vec2 currentPosition = paddleTwo.body->GetPosition() + linearVel;
-    b2Vec2 desiredPosition = b2Vec2(puckBody->GetPosition().x+10/PTM_RATIO, puckBody->GetPosition().y);
+    b2Vec2 desiredPosition = b2Vec2(puckBody->GetPosition().x+20/PTM_RATIO, puckBody->GetPosition().y);
     b2Vec2 necessaryMovement = desiredPosition - currentPosition;
     //float necessaryDistance = necessaryMovement.Length();
     necessaryMovement.Normalize();
-    float forceMagnitude = 1500;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
+    float forceMagnitude = 1800;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
     b2Vec2 force = forceMagnitude * necessaryMovement;
     paddleTwo.body->ApplyForce(force, paddleTwo.body->GetWorldCenter() );
     
@@ -564,14 +559,17 @@ typedef enum{
     //Analyse the position of the puck on the screen and replaced if neccesary
     if(!isInGolArea){
         if((puckBody->GetPosition()).x > winSize.width / PTM_RATIO){
+            updateComputer = NO;
             isInGolArea = YES;
             playerOneScore++;
             NSLog(@"Score: %i - %i", playerOneScore, playerTwoScore);
             [self showAlertFor:ScoreAlert];
+            
             // [playerTwoScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerTwoScore]]];
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(1) afterDelay:1.0];
             [self updateScore:@(1)];
         }else if((puckBody->GetPosition()).x < 0){
+            updateComputer = NO;
             isInGolArea = YES;
             playerTwoScore++;
             NSLog(@"Score: %i - %i", playerOneScore, playerTwoScore);
@@ -582,13 +580,13 @@ typedef enum{
         }
     }
     
-    if ((puckBody->GetPosition()).x<winSize.width/(2*PTM_RATIO)) {
+    if ((puckBody->GetPosition()).x<winSize.width/(2*PTM_RATIO)&&updateComputer) {
 
         [sm post:@"toDeffend"];
         [sm post:@"deffending"];
 
     }
-    if ((puckBody->GetPosition()).x>=winSize.width/(2*PTM_RATIO)) {
+    if ((puckBody->GetPosition()).x>=winSize.width/(2*PTM_RATIO)&&updateComputer) {
         [sm post:@"toAttack"];
         [sm post:@"attacking"];
     }
@@ -671,6 +669,7 @@ typedef enum{
 }
 
 -(void)resetObjectsPositionAfterGoal:(NSNumber *)position{
+
     CGPoint puckNewPosition;
     CGPoint paddleOneNewPosition;
     CGPoint paddleTwoNewPosition;
@@ -681,11 +680,11 @@ typedef enum{
     
     paddleOne.body->SetLinearVelocity(b2Vec2(0, 0));
     paddleOne.body->SetUserData(nil);
-    paddleOne.body->SetTransform(b2Vec2(120 / PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
+    paddleOne.body->SetTransform(b2Vec2(90 / PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
 
     paddleTwo.body->SetLinearVelocity(b2Vec2(0, 0));
     paddleTwo.body->SetUserData(nil);
-    paddleTwo.body->SetTransform(b2Vec2((winSize.width - 120) / PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
+    paddleTwo.body->SetTransform(b2Vec2(winSize.width/PTM_RATIO-winSize.width/(6*PTM_RATIO)+60/PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
 
     switch (position.integerValue) {
         case 1:{
@@ -716,10 +715,18 @@ typedef enum{
     [paddleTwo stopAllActions];
     paddleTwoNewPosition = CGPointMake((paddleTwo.body->GetPosition()).x * PTM_RATIO, (paddleTwo.body->GetPosition()).y * PTM_RATIO);
     paddleTwoNewPosition = [[CCDirector sharedDirector] convertToGL:paddleTwoNewPosition];
-    
+
+    [sm post:@"deffendMode"];
+    [[CCDirector sharedDirector] touchDispatcher].dispatchEvents = YES;
     [paddleTwo runAction:[CCSequence actions:
                      [CCMoveTo actionWithDuration:1.0 position:paddleTwoNewPosition],
                      [CCCallFunc actionWithTarget:self selector:@selector(assignObjectsBodiesAgain)], nil]];
+    [self performSelector:@selector(updateComp) withObject:nil afterDelay:2];
+}
+
+-(void)updateComp
+{
+        updateComputer = YES;
 }
 
 -(void)assignObjectsBodiesAgain{
