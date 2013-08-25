@@ -90,7 +90,7 @@
         NSError* error = nil;
         
         if(![_session sendData:data toPeers:_friendID withDataMode:GKSendDataReliable error:&error]){
-            NSLog(@"Error sending data to clients: %@", error);
+            NSLog(@"Error sending Start Moving data to clients: %@", error);
         }
     }
     [self paddleWillStartMoving];
@@ -126,7 +126,7 @@
         NSError* error = nil;
         
         if(![_session sendData:data toPeers:_friendID withDataMode:GKSendDataReliable error:&error]){
-            NSLog(@"Error sending data to clients: %@", error);
+            NSLog(@"Error sending Is Moving data to clients: %@", error);
         }
     }
     
@@ -137,6 +137,19 @@
 {
     NSAssert(state == kPaddleStateGrabbed, @"Paddle - Unexpected state!");
 
+    if(self.session != nil){
+        NSNumber* xSpeed = @((-1) * (self.body->GetLinearVelocity()).x);
+        NSNumber* ySpeed = @((-1) * (self.body->GetLinearVelocity()).y);
+        
+        NSDictionary* coordinates = @{@"x": xSpeed, @"y": ySpeed,  @"DataType": @"DataForPaddleStopMoving"};
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
+        NSError* error = nil;
+        
+        if(![_session sendData:data toPeers:_friendID withDataMode:GKSendDataReliable error:&error]){
+            NSLog(@"Error sending End Movement data to clients: %@", error);
+        }
+    }
+    
     [self paddleWillStopMoving];
 }
 

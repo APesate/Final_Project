@@ -40,11 +40,16 @@ typedef enum{
     NSMutableArray* coordinatesArray;
     NSArray *scoreImagesArray;
     NSDate* creationDate;
+    NSTimeInterval ping;
     CGSize winSize;
+    CGPoint predictionDistance;
+    CGFloat lastXCoordinate;
+    CGFloat lastYCoordinate;
     int playerOneScore;
     int playerTwoScore;
     BOOL isServer;
     BOOL isInGolArea;
+    BOOL isPuck;
 
     // State Machine
     SMStateMachine *sm;
@@ -155,7 +160,9 @@ typedef enum{
 -(void)initialize{
     winSize = [[CCDirector sharedDirector] winSize];
     isServer = NO;
-    creationDate = [[NSDate date] retain];
+    isPuck = NO;
+    creationDate = [[[NSDate alloc] init] retain];
+    
     
     _peerID = [[NSMutableArray arrayWithCapacity:2] retain];
     coordinatesArray = [[NSMutableArray arrayWithCapacity:25] retain];
@@ -358,6 +365,8 @@ typedef enum{
     [_session setDataReceiveHandler: nil withContext: nil];
     _session.delegate = nil;
     [_session release];
+    creationDate = nil;
+    [creationDate release];
 	[super dealloc];
 }
 
@@ -543,6 +552,10 @@ typedef enum{
     puckBody->CreateFixture(&bodyFixtureDef);
     puckBody->SetLinearDamping(0.05 * puckBody->GetMass());
     puckBody->SetAngularDamping(0.05 * puckBody->GetMass());
+    puckBody->SetFixedRotation(YES);
+    
+    lastXCoordinate = (puckBody->GetPosition()).x;
+    lastYCoordinate = (puckBody->GetPosition()).y;
 }
 
 #pragma mark - Update Time Step
@@ -557,7 +570,15 @@ typedef enum{
 	world->Step(dt, 10, 10);
     for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
     {
-        if (b->GetUserData() != NULL) {
+//        if(_session != nil && !isServer){
+//            if (b == puckBody) {
+//                isPuck = YES;
+//            }else{
+//                isPuck = NO;
+//            }
+//        }
+//        
+        if (b->GetUserData() != NULL && !isPuck) {
             //Synchronize the AtlasSprites position and rotation with the corresponding body
             CCSprite *myActor = (CCSprite*)b->GetUserData();
             myActor.position = CGPointMake( b->GetPosition().x * PTM_RATIO, b->GetPosition().y * PTM_RATIO);
@@ -565,7 +586,7 @@ typedef enum{
         }
     }
     
-//Set Maxspeed for the puck
+    //Set Maxspeed for the puck
     CGFloat actualPuckSpeed = puckBody->GetLinearVelocity().Normalize();
     if (actualPuckSpeed > MAX_PUCK_SPEED) {
         CGFloat angle;
@@ -613,9 +634,30 @@ typedef enum{
     }
 }
 
+#pragma mark - Data Send
+
 -(void)puckSpeed{
     if(self.session != nil && isServer){
-        CGPoint puckSpeed = CGPointMake((puckBody->GetLinearVelocity()).x, (puckBody->GetLinearVelocity()).y);
+        CGFloat xPrediction = (predictionDistance.x / ping);
+        CGFloat yPrediction = (predictionDistance.y / ping);
+        
+        CGFloat xCoordinate = (-1) * (puckBody->GetLinearVelocity()).x;
+        CGFloat yCoordinate = (-1) * (puckBody->GetLinearVelocity()).y;
+        
+        
+        if (lastXCoordinate < xCoordinate) {
+            xCoordinate = xCoordinate + (xPrediction / winSize.width);
+        }else{
+            xCoordinate = xCoordinate - (xPrediction / winSize.width);
+        }
+        
+        if (lastYCoordinate < yCoordinate) {
+            yCoordinate = yCoordinate + (yPrediction / winSize.height);
+        }else{
+            yCoordinate = yCoordinate - (yPrediction / winSize.height);
+        }
+        
+        CGPoint puckSpeed = CGPointMake(xCoordinate, yCoordinate);
         NSValue* valueToSend = [NSValue valueWithCGPoint:puckSpeed];
         
         NSDictionary* coordinates = @{@"Speed": valueToSend, @"DataType": @"DataForPuckSpeed"};
@@ -623,14 +665,36 @@ typedef enum{
         NSError* error = nil;
         
         if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
-            NSLog(@"Error sending data to clients: %@", error);
+            NSLog(@"Error sending Puck Speed data to clients: %@", error);
         }
     }
 }
 
 -(void)puckCoordinates{
     if(self.session != nil && isServer){
-        CGPoint puckCoordinates = CGPointMake((puckBody->GetPosition()).x, (puckBody->GetPosition()).y);
+        CGFloat xPrediction = (puckBody->GetLinearVelocity()).x * ping * puckBody->GetLinearDamping();
+        CGFloat yPrediction = (puckBody->GetLinearVelocity()).y * ping * puckBody->GetLinearDamping();
+        predictionDistance = CGPointMake(xPrediction, yPrediction);
+        
+        CGFloat xCoordinate = ((winSize.width / PTM_RATIO) - (puckBody->GetPosition()).x) / winSize.width;
+        CGFloat yCoordinate = ((winSize.height / PTM_RATIO) - (puckBody->GetPosition()).y) / winSize.height;
+        
+        if (lastXCoordinate < xCoordinate) {
+            xCoordinate = xCoordinate + (xPrediction / winSize.width);
+        }else{
+            xCoordinate = xCoordinate - (xPrediction / winSize.width);
+        }
+        
+        if (lastYCoordinate < yCoordinate) {
+            yCoordinate = yCoordinate + (yPrediction / winSize.height);
+        }else{
+            yCoordinate = yCoordinate - (yPrediction / winSize.height);
+        }
+        
+        lastXCoordinate = xCoordinate;
+        lastYCoordinate = yCoordinate;
+        
+        CGPoint puckCoordinates = CGPointMake(xCoordinate, yCoordinate);
         NSValue* valueToSend = [NSValue valueWithCGPoint:puckCoordinates];
         
         NSDictionary* coordinates = @{@"Coord": valueToSend, @"DataType": @"DataForPuckCoordinates"};
@@ -638,39 +702,21 @@ typedef enum{
         NSError* error = nil;
         
         if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
-            NSLog(@"Error sending data to clients: %@", error);
+            NSLog(@"Error sending Puck Coordinates data to clients: %@", error);
         }
     }
 }
 
--(void)paddleSpeed{
-    if(self.session != nil){
-        CGPoint paddleSpeed = CGPointMake((paddleOne.body->GetLinearVelocity()).x, (paddleOne.body->GetLinearVelocity()).y);
-        NSValue* valueToSend = [NSValue valueWithCGPoint:paddleSpeed];
-        
-        NSDictionary* coordinates = @{@"Speed": valueToSend, @"DataType": @"DataForPaddleSpeed"};
-        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
-        NSError* error = nil;
-        
-        if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
-            NSLog(@"Error sending data to clients: %@", error);
-        }
-    }
-}
-
-
--(void)paddleCoordinates{
-    if(self.session != nil){
-        CGPoint paddleCoordinates = CGPointMake((paddleOne.body->GetPosition()).x, (paddleOne.body->GetPosition()).y);
-        NSValue* valueToSend = [NSValue valueWithCGPoint:paddleCoordinates];
-        
-        NSDictionary* coordinates = @{@"Coord": valueToSend, @"DataType": @"DataForPaddleCoordinates"};
-        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
-        NSError* error = nil;
-        
-        if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
-            NSLog(@"Error sending data to clients: %@", error);
-        }
+-(void)lookingForPing{
+    [creationDate release];
+    creationDate = [[[NSDate alloc] init] retain];
+    
+    NSDictionary* pingData = @{@"DataType": @"DataAskingForPing"};
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:pingData];
+    NSError* error;
+    
+    if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
+        NSLog(@"Error sending Puck Coordinates data to clients: %@", error);
     }
 }
 
@@ -684,10 +730,12 @@ typedef enum{
         NSError* error = nil;
         
         if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
-            NSLog(@"Error sending data to clients: %@", error);
+            NSLog(@"Error sending Score Update data to clients: %@", error);
         }
     }
 }
+
+#pragma mark - On Goal Actions
 
 -(void)resetObjectsPositionAfterGoal:(NSNumber *)position{
     CGPoint puckNewPosition;
@@ -754,13 +802,28 @@ typedef enum{
     
     NSDictionary *dataDictionary = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:data];
     NSString* dataType = [dataDictionary objectForKey:@"DataType"];
+    
+    
+    
+    if([dataType isEqualToString:@"DataForPing"]){
+        NSDate* pingDate = [NSDate date];
+        ping = [pingDate timeIntervalSinceDate:creationDate];
         
-    if ([dataType isEqualToString:@"DataForPuckSpeed"]) {
+    }else if([dataType isEqualToString:@"DataAskingForPing"]){
+        NSDictionary* pingData = @{@"DataType": @"DataForPing"};
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:pingData];
+        NSError* error;
+        
+        if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
+            NSLog(@"Error sending Puck Coordinates data to clients: %@", error);
+        }
+        
+    }else if ([dataType isEqualToString:@"DataForPuckSpeed"]) {
         
         NSValue* value = [dataDictionary objectForKey:@"Speed"];
         CGPoint newSpeed;
         [value getValue:&newSpeed];
-        
+                
         puckBody->SetLinearVelocity(b2Vec2(newSpeed.x, newSpeed.y));
         
     }else if ([dataType isEqualToString:@"DataForPuckCoordinates"]){
@@ -768,7 +831,7 @@ typedef enum{
         CGPoint newCoord;
         [value getValue:&newCoord];
         
-        puckBody->SetTransform(b2Vec2(newCoord.x, newCoord.y), 0.0);
+        puckBody->SetTransform(b2Vec2(newCoord.x * winSize.width, newCoord.y * winSize.height), 0.0);
         
     }else if ([dataType isEqualToString:@"DataForPaddleSpeed"]){
         NSValue* value = [dataDictionary objectForKey:@"Speed"];
@@ -795,6 +858,11 @@ typedef enum{
         paddleTwo.mouseJoint->SetTarget(b2Vec2(xCoodinate, yCoodinate));
         
     }else if([dataType isEqualToString:@"DataForPaddleStopMoving"]){
+        CGFloat xCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"x"]).floatValue;
+        CGFloat yCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"y"]).floatValue;
+
+        paddleTwo.body->ApplyLinearImpulse(b2Vec2(xCoodinate, yCoodinate), paddleTwo.body->GetWorldCenter());
+        
         [paddleTwo paddleWillStopMoving];
     
     }else if([dataType isEqualToString:@"CreationDateData"]){
@@ -802,7 +870,9 @@ typedef enum{
         if([creationDate compare:peerDate] == NSOrderedAscending){
             isServer = YES;
             paddleOne.myID = _session.sessionID;
-            [paddleOne.friendID addObject:[_peerID lastObject]];
+            //[self schedule:@selector(puckCoordinates) interval:0.50f];
+            [self schedule:@selector(puckSpeed) interval:0.50f];
+            [self schedule:@selector(lookingForPing) interval:0.10f];
         }
         NSLog(@"Am I the Server: %i", isServer);
     }else if([dataType isEqualToString:@"UpdateScore"]){
@@ -825,10 +895,12 @@ typedef enum{
     // Assumes our object will also become the session's delegate.
     paddleOne.session = [[GKSession alloc] init];
     paddleOne.friendID = [[NSMutableArray arrayWithCapacity:1] retain];
+    [paddleOne.friendID addObject:peerID];
     paddleOne.session = session;
 
     paddleTwo.session = [[GKSession alloc] init];
     paddleTwo.friendID = [[NSMutableArray arrayWithCapacity:1] retain];
+    [paddleTwo.friendID addObject:peerID];
     paddleTwo.session = session;
     
     
@@ -845,8 +917,6 @@ typedef enum{
     
     // Start your game.
 #warning Here we start tracking the movement of the puck.
-    [self schedule:@selector(puckSpeed) interval:0.25f];
-    [self schedule:@selector(puckCoordinates) interval:0.50f];
 //    [self schedule:@selector(paddleSpeed) interval:1.0f];
 //    [self schedule:@selector(paddleCoordinates) interval:1.0f];
     
@@ -883,7 +953,6 @@ typedef enum{
             break;
         case GKPeerStateConnected:
             NSLog(@"Connected");
-            NSLog(@"isServer: %c", isServer);
             break;
         case GKPeerStateDisconnected:
             NSLog(@"Disconnected");
