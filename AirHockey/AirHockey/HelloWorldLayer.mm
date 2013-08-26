@@ -212,7 +212,7 @@ typedef enum{
     switch (sGameMode) {
         case SinglePlayerMode:
             paddleTwo.enabled = NO;
-            [self initStateMachine];
+            [self performSelector:@selector(initStateMachine) withObject:nil afterDelay:3];
             break;
         case MultiplayerMode:
             paddleTwo.enabled = YES;
