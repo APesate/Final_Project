@@ -55,7 +55,9 @@ typedef enum{
     SMStateMachine *sm;
     SMState *attack;
     SMState *deffend;
+
 }
+
 @property HelloWorldLayer* layer;
 
 -(void)defending;
@@ -160,7 +162,7 @@ typedef enum{
 -(void)initialize{
     winSize = [[CCDirector sharedDirector] winSize];
     isServer = NO;
-    isPuck = NO;
+
     creationDate = [[[NSDate alloc] init] retain];
     
     
@@ -544,16 +546,8 @@ typedef enum{
     
 	world->Step(dt, 10, 10);
     for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
-    {
-//        if(_session != nil && !isServer){
-//            if (b == puckBody) {
-//                isPuck = YES;
-//            }else{
-//                isPuck = NO;
-//            }
-//        }
-//        
-        if (b->GetUserData() != NULL && !isPuck) {
+    {       
+        if (b->GetUserData()) {
             //Synchronize the AtlasSprites position and rotation with the corresponding body
             CCSprite *myActor = (CCSprite*)b->GetUserData();
             myActor.position = CGPointMake( b->GetPosition().x * PTM_RATIO, b->GetPosition().y * PTM_RATIO);
@@ -584,11 +578,12 @@ typedef enum{
             playerOneScore++;
             NSLog(@"Score: %i - %i", playerOneScore, playerTwoScore);
             [self showAlertFor:ScoreAlert];
-            
+            [paddleOne destroyLink];
             // [playerTwoScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerTwoScore]]];
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(1) afterDelay:1.0];
             [self updateScore:@(1)];
         }else if((puckBody->GetPosition()).x < 0){
+            [paddleOne destroyLink];
             updateComputer = NO;
             isInGolArea = YES;
             playerTwoScore++;

@@ -108,29 +108,30 @@
     // Actually, it would be even more complicated since in the Cocos dispatcher
     // you get NSSets instead of 1 UITouch, so you'd need to loop through the set
     // in each touchXXX method.
-    
-    NSAssert(state == kPaddleStateGrabbed, @"Paddle - Unexpected state!");
-    
-    CGPoint touchLocation = [touch locationInView:[touch view]];
-    touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
-    
-    NSNumber* xCoordinate = [NSNumber numberWithFloat:(touchLocation.x / PTM_RATIO)];
-    NSNumber* yCoordinate = [NSNumber numberWithFloat:(touchLocation.y / PTM_RATIO)];
-    
-    if(self.session != nil){
-        NSNumber* xCoordinateToSend = @(((winSize.width / PTM_RATIO) - xCoordinate.floatValue) / winSize.width);
-        NSNumber* yCoordinateToSend = @(((winSize.height / PTM_RATIO) - yCoordinate.floatValue) / winSize.height);
+    if(_mouseJoint){
+        NSAssert(state == kPaddleStateGrabbed, @"Paddle - Unexpected state!");
         
-        NSDictionary* coordinates = @{@"x": xCoordinateToSend, @"y": yCoordinateToSend, @"DataType": @"DataForPaddleIsMoving"};
-        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
-        NSError* error = nil;
+        CGPoint touchLocation = [touch locationInView:[touch view]];
+        touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
         
-        if(![_session sendData:data toPeers:_friendID withDataMode:GKSendDataReliable error:&error]){
-            NSLog(@"Error sending Is Moving data to clients: %@", error);
+        NSNumber* xCoordinate = [NSNumber numberWithFloat:(touchLocation.x / PTM_RATIO)];
+        NSNumber* yCoordinate = [NSNumber numberWithFloat:(touchLocation.y / PTM_RATIO)];
+        
+        if(self.session != nil){
+            NSNumber* xCoordinateToSend = @(((winSize.width / PTM_RATIO) - xCoordinate.floatValue) / winSize.width);
+            NSNumber* yCoordinateToSend = @(((winSize.height / PTM_RATIO) - yCoordinate.floatValue) / winSize.height);
+            
+            NSDictionary* coordinates = @{@"x": xCoordinateToSend, @"y": yCoordinateToSend, @"DataType": @"DataForPaddleIsMoving"};
+            NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
+            NSError* error = nil;
+            
+            if(![_session sendData:data toPeers:_friendID withDataMode:GKSendDataReliable error:&error]){
+                NSLog(@"Error sending Is Moving data to clients: %@", error);
+            }
         }
+        
+        [self movePaddleToX:xCoordinate.floatValue andY:yCoordinate.floatValue];
     }
-    
-    [self movePaddleToX:xCoordinate.floatValue andY:yCoordinate.floatValue];
 }
 
 - (void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
@@ -191,9 +192,9 @@
 
 -(void)destroyLink
 {
-    CCDirector *director = [CCDirector sharedDirector];
-    
-    [[director touchDispatcher] setDispatchEvents:NO];
+    //state = kPaddleStateUngrabbed;
+    world->DestroyJoint(_mouseJoint);
+    _mouseJoint = NULL;
 }
 
 -(void)createLink
