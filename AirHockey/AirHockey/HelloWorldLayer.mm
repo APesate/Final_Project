@@ -697,9 +697,9 @@ typedef enum{
 }
 
 -(void)updateScore:(NSNumber *)position{
-    if(self.session != nil){
-        NSNumber* playerOne = @(playerOneScore);
-        NSNumber* playerTwo = @(playerTwoScore);
+    if(self.session != nil && isServer){
+        NSNumber* playerTwo = @(playerOneScore);
+        NSNumber* playerOne = @(playerTwoScore);
         
         NSDictionary* coordinates = @{@"One": playerOne, @"Two": playerTwo, @"Position": position, @"DataType": @"UpdateScore"};
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:coordinates];
