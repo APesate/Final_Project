@@ -39,5 +39,6 @@ typedef enum tagPaddleState{
 -(void)paddleWillStartMoving;
 -(void)movePaddleToX:(CGFloat)xCoordinate andY:(CGFloat)yCoordinate;
 -(void)paddleWillStopMoving;
+-(void)destroyLink;
 
 @end
