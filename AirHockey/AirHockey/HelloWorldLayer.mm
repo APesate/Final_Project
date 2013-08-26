@@ -49,7 +49,6 @@ typedef enum{
     int playerTwoScore;
     BOOL isServer;
     BOOL isInGolArea;
-    BOOL isPuck;
 
     // State Machine
     SMStateMachine *sm;
@@ -160,9 +159,7 @@ typedef enum{
 -(void)initialize{
     winSize = [[CCDirector sharedDirector] winSize];
     isServer = NO;
-    isPuck = NO;
     creationDate = [[[NSDate alloc] init] retain];
-    
     
     _peerID = [[NSMutableArray arrayWithCapacity:2] retain];
     coordinatesArray = [[NSMutableArray arrayWithCapacity:25] retain];
@@ -551,15 +548,7 @@ typedef enum{
 	world->Step(dt, 10, 10);
     for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
     {
-//        if(_session != nil && !isServer){
-//            if (b == puckBody) {
-//                isPuck = YES;
-//            }else{
-//                isPuck = NO;
-//            }
-//        }
-//        
-        if (b->GetUserData() != NULL && !isPuck) {
+        if (b->GetUserData() != NULL) {
             //Synchronize the AtlasSprites position and rotation with the corresponding body
             CCSprite *myActor = (CCSprite*)b->GetUserData();
             myActor.position = CGPointMake( b->GetPosition().x * PTM_RATIO, b->GetPosition().y * PTM_RATIO);
@@ -591,7 +580,7 @@ typedef enum{
             [self showAlertFor:ScoreAlert];
             // [playerTwoScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerTwoScore]]];
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(1) afterDelay:1.0];
-            [self updateScore:@(1)];
+            [self updateScore:@(2)];
         }else if((puckBody->GetPosition()).x < 0){
             isInGolArea = YES;
             playerTwoScore++;
@@ -599,7 +588,7 @@ typedef enum{
             [self showAlertFor:ScoreAlert];
             //[playerOneScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerOneScore]]];
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(2) afterDelay:1.0];
-            [self updateScore:@(2)];
+            [self updateScore:@(1)];
         }
     }
     
@@ -815,20 +804,6 @@ typedef enum{
         puckBody->SetLinearVelocity(b2Vec2(0, 0));
         puckBody->SetTransform(b2Vec2(newCoord.x * winSize.width, newCoord.y * winSize.height), 0.0);
         
-    }else if ([dataType isEqualToString:@"DataForPaddleSpeed"]){
-        NSValue* value = [dataDictionary objectForKey:@"Speed"];
-        CGPoint newSpeed;
-        [value getValue:&newSpeed];
-        
-        paddleTwo.body->SetLinearVelocity(b2Vec2(newSpeed.x, newSpeed.y));
-        
-    }else if ([dataType isEqualToString:@"DataForPaddleCoordinates"]){
-        NSValue* value = [dataDictionary objectForKey:@"Coord"];
-        CGPoint newCoord;
-        [value getValue:&newCoord];
-        
-        paddleTwo.body->SetTransform(b2Vec2((winSize.width / PTM_RATIO) - newCoord.x, (winSize.height / PTM_RATIO) - newCoord.y), 0.0);
-        
     }else if([dataType isEqualToString:@"DataForPaddleStartMoving"]){
 
         [paddleTwo paddleWillStartMoving];
@@ -862,7 +837,7 @@ typedef enum{
         playerTwoScore = ((NSNumber *)[dataDictionary objectForKey:@"Two"]).integerValue;
         NSNumber* position = ((NSNumber *)[dataDictionary objectForKey:@"Position"]);
         
-        [self resetObjectsPositionAfterGoal:position];
+        [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:position afterDelay:1.0];
     }
     
 }

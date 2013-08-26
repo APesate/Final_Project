@@ -29,27 +29,23 @@
     self = [super init];
     
     if(self){
-        CCMenuItemImage *singlePlayerButton = [CCMenuItemImage itemWithNormalImage:@"myfirstbutton.png"
-                                                            selectedImage: @"myfirstbutton_selected.png"
-                                                                   target:self
-                                                                 selector:@selector(playSinglePlayerMode:)];
+        CCMenuItemFont* singlePlayerButton = [CCMenuItemFont itemWithString:@"Single Player"
+                                                       target:self
+                                                     selector:@selector(playSinglePlayerMode:)];
+        [singlePlayerButton setColor:ccc3(135,206,235)];
         
-        CCMenuItemImage *multiplayerButton = [CCMenuItemImage itemWithNormalImage:@"mysecondbutton.png"
-                                                            selectedImage: @"mysecondbutton_selected.png"
-                                                                   target:self
-                                                                 selector:@selector(playMultiplayerMode:)];
+        CCMenuItemFont* twoPlayersButton = [CCMenuItemFont itemWithString:@"Two Players"
+                                                       target:self
+                                                     selector:@selector(playMultiplayerMode:)];
+        [twoPlayersButton setColor:ccc3(135,206,235)];
         
-        CCMenuItemImage *hostGameButton = [CCMenuItemImage itemWithNormalImage:@"mythirdbutton.png"
-                                                            selectedImage: @"mythirdbutton_selected.png"
-                                                                   target:self
-                                                                 selector:@selector(hostGameMode:)];
+        CCMenuItemFont* multiplayerButton = [CCMenuItemFont itemWithString:@"Multiplayer"
+                                                       target:self
+                                                     selector:@selector(hostGameMode:)];
+        [multiplayerButton setColor:ccc3(135,206,235)];
         
-        CCMenuItemImage *joinGameButton= [CCMenuItemImage itemWithNormalImage:@"mythirdbutton.png"
-                                                                 selectedImage: @"mythirdbutton_selected.png"
-                                                                        target:self
-                                                                      selector:@selector(joinGameMode:)];
         
-        CCMenu *myMenu = [CCMenu menuWithItems:singlePlayerButton, multiplayerButton, hostGameButton, joinGameButton, nil];
+        CCMenu *myMenu = [CCMenu menuWithItems: singlePlayerButton, twoPlayersButton, multiplayerButton, nil];
         
         [myMenu alignItemsVerticallyWithPadding:10];
 
