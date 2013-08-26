@@ -192,9 +192,10 @@
 
 -(void)destroyLink
 {
-    //state = kPaddleStateUngrabbed;
-    world->DestroyJoint(_mouseJoint);
-    _mouseJoint = NULL;
+    if (_mouseJoint != NULL) {
+        world->DestroyJoint(_mouseJoint);
+        _mouseJoint = NULL;
+    }
 }
 
 -(void)createLink

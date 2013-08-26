@@ -575,18 +575,22 @@ typedef enum{
             updateComputer = NO;
             isInGolArea = YES;
             playerOneScore++;
+            
             NSLog(@"Score: %i - %i", playerOneScore, playerTwoScore);
             [self showAlertFor:ScoreAlert];
             [paddleOne destroyLink];
             // [playerTwoScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerTwoScore]]];
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(1) afterDelay:1.0];
             [self updateScore:@(2)];
+        
         }else if((puckBody->GetPosition()).x < 0){
             [paddleOne destroyLink];
             updateComputer = NO;
             isInGolArea = YES;
             playerTwoScore++;
+            
             NSLog(@"Score: %i - %i", playerOneScore, playerTwoScore);
+            
             [self showAlertFor:ScoreAlert];
             //[playerOneScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerOneScore]]];
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(2) afterDelay:1.0];
@@ -744,6 +748,13 @@ typedef enum{
             [puckSprite runAction:[CCJumpTo actionWithDuration:0.7 position:puckNewPosition height:100 jumps:1]];
             break;
         }
+        case 3:
+            puckBody->SetTransform(b2Vec2(winSize.width / (2 * PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
+            puckNewPosition = CGPointMake((puckBody->GetPosition()).x * PTM_RATIO, (puckBody->GetPosition()).y * PTM_RATIO);
+            puckNewPosition = [[CCDirector sharedDirector] convertToGL:puckNewPosition];
+            [puckSprite stopAllActions];
+            [puckSprite runAction:[CCMoveTo actionWithDuration:0.7 position:puckNewPosition]];
+            break;
         default:
             break;
     }
@@ -762,7 +773,6 @@ typedef enum{
     [paddleTwo runAction:[CCSequence actions:
                      [CCMoveTo actionWithDuration:1.0 position:paddleTwoNewPosition],
                      [CCCallFunc actionWithTarget:self selector:@selector(assignObjectsBodiesAgain)], nil]];
-    [self performSelector:@selector(updateComp) withObject:nil afterDelay:2];
 }
 
 -(void)updateComp
@@ -958,13 +968,15 @@ typedef enum{
     switch (type) {
         case ScoreAlert:
             if(playerTwoScore == 7 || playerOneScore == 7){
+                updateComputer = NO;
+                [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(3) afterDelay:1.5];
                 NSString* title = [NSString stringWithFormat:@"Player %@ Wins!", playerOneScore > playerTwoScore?@"One":@"Two"];
                 UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Game Over!" message:title delegate:self cancelButtonTitle:@"Exit" otherButtonTitles:@"Rematch", nil];
                 [alert setAlertViewStyle:UIAlertViewStyleDefault];
                 [alert show];
                 [alert release];
             }else{
-                
+                [self performSelector:@selector(updateComp) withObject:nil afterDelay:2.0];
             }
             break;
         case DisconnectAlert:{
@@ -989,6 +1001,7 @@ typedef enum{
             if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Rematch"]) {
                 playerOneScore = 0;
                 playerTwoScore = 0;
+                [self performSelector:@selector(updateComp) withObject:nil afterDelay:1.0];
                 NSLog(@"%i - %i", playerOneScore, playerTwoScore);
             }else if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Reconnect"]){
                 [self reconnect];
