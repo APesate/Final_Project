@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		822F7CDB17CBEA9B00DE4AE6 /* PauseLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 822F7CDA17CBEA9B00DE4AE6 /* PauseLayer.m */; };
 		8248340D17C2B83D0050BA27 /* SMAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 824833FB17C2B83D0050BA27 /* SMAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		8248340E17C2B83D0050BA27 /* SMDecision.m in Sources */ = {isa = PBXBuildFile; fileRef = 824833FE17C2B83D0050BA27 /* SMDecision.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		8248340F17C2B83D0050BA27 /* SMMonitorNSLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340017C2B83D0050BA27 /* SMMonitorNSLog.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -16,12 +17,6 @@
 		8248341317C2B83D0050BA27 /* SMStateMachineAsync.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340817C2B83D0050BA27 /* SMStateMachineAsync.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		8248341417C2B83D0050BA27 /* SMStateMachineExecuteContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340A17C2B83D0050BA27 /* SMStateMachineExecuteContext.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		8248341517C2B83D0050BA27 /* SMTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340C17C2B83D0050BA27 /* SMTransition.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		8248341C17CAB6AA0050BA27 /* myfirstbutton_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 8248341617CAB6AA0050BA27 /* myfirstbutton_selected.png */; };
-		8248341D17CAB6AA0050BA27 /* myfirstbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 8248341717CAB6AA0050BA27 /* myfirstbutton.png */; };
-		8248341E17CAB6AA0050BA27 /* mysecondbutton_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 8248341817CAB6AA0050BA27 /* mysecondbutton_selected.png */; };
-		8248341F17CAB6AA0050BA27 /* mysecondbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 8248341917CAB6AA0050BA27 /* mysecondbutton.png */; };
-		8248342017CAB6AA0050BA27 /* mythirdbutton_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 8248341A17CAB6AA0050BA27 /* mythirdbutton_selected.png */; };
-		8248342117CAB6AA0050BA27 /* mythirdbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 8248341B17CAB6AA0050BA27 /* mythirdbutton.png */; };
 		8265262617BC55A000D52B87 /* Puck.png in Resources */ = {isa = PBXBuildFile; fileRef = 8265262517BC55A000D52B87 /* Puck.png */; };
 		829E02CE17BAD0F10056CD4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CD17BAD0F10056CD4B /* QuartzCore.framework */; };
 		829E02D017BAD0F10056CD4B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CF17BAD0F10056CD4B /* OpenGLES.framework */; };
@@ -220,6 +215,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		822F7CD917CBEA9B00DE4AE6 /* PauseLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PauseLayer.h; sourceTree = "<group>"; };
+		822F7CDA17CBEA9B00DE4AE6 /* PauseLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PauseLayer.m; sourceTree = "<group>"; };
 		824833FA17C2B83D0050BA27 /* SMAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMAction.h; sourceTree = "<group>"; };
 		824833FB17C2B83D0050BA27 /* SMAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMAction.m; sourceTree = "<group>"; };
 		824833FC17C2B83D0050BA27 /* SMCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMCommon.h; sourceTree = "<group>"; };
@@ -239,12 +236,6 @@
 		8248340A17C2B83D0050BA27 /* SMStateMachineExecuteContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMStateMachineExecuteContext.m; sourceTree = "<group>"; };
 		8248340B17C2B83D0050BA27 /* SMTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTransition.h; sourceTree = "<group>"; };
 		8248340C17C2B83D0050BA27 /* SMTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTransition.m; sourceTree = "<group>"; };
-		8248341617CAB6AA0050BA27 /* myfirstbutton_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = myfirstbutton_selected.png; sourceTree = "<group>"; };
-		8248341717CAB6AA0050BA27 /* myfirstbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = myfirstbutton.png; sourceTree = "<group>"; };
-		8248341817CAB6AA0050BA27 /* mysecondbutton_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mysecondbutton_selected.png; sourceTree = "<group>"; };
-		8248341917CAB6AA0050BA27 /* mysecondbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mysecondbutton.png; sourceTree = "<group>"; };
-		8248341A17CAB6AA0050BA27 /* mythirdbutton_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mythirdbutton_selected.png; sourceTree = "<group>"; };
-		8248341B17CAB6AA0050BA27 /* mythirdbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mythirdbutton.png; sourceTree = "<group>"; };
 		8265262517BC55A000D52B87 /* Puck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Puck.png; path = Resources/Puck.png; sourceTree = "<group>"; };
 		829E02CA17BAD0F10056CD4B /* AirHockey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirHockey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		829E02CD17BAD0F10056CD4B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -734,6 +725,8 @@
 				829E050917BAD0F80056CD4B /* HelloWorldLayer.mm */,
 				82ED992F17C6CEE9008CAA4D /* MenuLayer.h */,
 				82ED993017C6CEE9008CAA4D /* MenuLayer.mm */,
+				822F7CD917CBEA9B00DE4AE6 /* PauseLayer.h */,
+				822F7CDA17CBEA9B00DE4AE6 /* PauseLayer.m */,
 				829E051817BAE1D80056CD4B /* PaddleSprite.h */,
 				829E051917BAE1D80056CD4B /* PaddleSprite.mm */,
 				829E050B17BAD0F80056CD4B /* IntroLayer.h */,
@@ -1573,6 +1566,7 @@
 				82ED993117C6CEE9008CAA4D /* MenuLayer.mm in Sources */,
 				82ED99BF17C7D869008CAA4D /* MyContactListener.mm in Sources */,
 				82ED99C617C7F079008CAA4D /* AlertViewController.m in Sources */,
+				822F7CDB17CBEA9B00DE4AE6 /* PauseLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

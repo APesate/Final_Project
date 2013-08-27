@@ -543,6 +543,8 @@ typedef enum{
 	//You need to make an informed choice, the following URL is useful
 	//http://gafferongames.com/game-physics/fix-your-timestep/
     
+
+    
 	world->Step(dt, 10, 10);
     for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
     {       
