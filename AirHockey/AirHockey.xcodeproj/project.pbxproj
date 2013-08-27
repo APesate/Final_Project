@@ -207,6 +207,12 @@
 		82D150F917CABD0000968787 /* mysecondbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D150F317CABD0000968787 /* mysecondbutton.png */; };
 		82D150FA17CABD0000968787 /* mythirdbutton_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D150F417CABD0000968787 /* mythirdbutton_selected.png */; };
 		82D150FB17CABD0000968787 /* mythirdbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D150F517CABD0000968787 /* mythirdbutton.png */; };
+		82D150FE17CBAC1400968787 /* Lets_go_Digital_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 82D150FD17CBAC1400968787 /* Lets_go_Digital_Regular.ttf */; };
+		82D1510F17CBE8CD00968787 /* Air Hockey Paddle Hit.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 82D1510A17CBE8CD00968787 /* Air Hockey Paddle Hit.mp3 */; };
+		82D1511017CBE8CD00968787 /* Air hockey Goal.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 82D1510B17CBE8CD00968787 /* Air hockey Goal.mp3 */; };
+		82D1511117CBE8CD00968787 /* Air hockey puck set down wobble.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 82D1510C17CBE8CD00968787 /* Air hockey puck set down wobble.mp3 */; };
+		82D1511217CBE8CD00968787 /* Air_hockey_Intro.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 82D1510D17CBE8CD00968787 /* Air_hockey_Intro.mp3 */; };
+		82D1511317CBE8CD00968787 /* Audio Track.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 82D1510E17CBE8CD00968787 /* Audio Track.mp3 */; };
 		82ED993117C6CEE9008CAA4D /* MenuLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82ED993017C6CEE9008CAA4D /* MenuLayer.mm */; };
 		82ED99BF17C7D869008CAA4D /* MyContactListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82ED99BE17C7D869008CAA4D /* MyContactListener.mm */; };
 		82ED99C617C7F079008CAA4D /* AlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82ED99C417C7F079008CAA4D /* AlertViewController.m */; };
@@ -233,7 +239,7 @@
 		8248340A17C2B83D0050BA27 /* SMStateMachineExecuteContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMStateMachineExecuteContext.m; sourceTree = "<group>"; };
 		8248340B17C2B83D0050BA27 /* SMTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTransition.h; sourceTree = "<group>"; };
 		8248340C17C2B83D0050BA27 /* SMTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTransition.m; sourceTree = "<group>"; };
-		8265262517BC55A000D52B87 /* Puck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Puck.png; path = Resources/Puck.png; sourceTree = "<group>"; };
+		8265262517BC55A000D52B87 /* Puck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Puck.png; path = Images/Puck.png; sourceTree = "<group>"; };
 		829E02CA17BAD0F10056CD4B /* AirHockey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirHockey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		829E02CD17BAD0F10056CD4B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		829E02CF17BAD0F10056CD4B /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -614,14 +620,20 @@
 		829E051117BAD0F80056CD4B /* blocks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blocks.png; path = Resources/blocks.png; sourceTree = "<group>"; };
 		829E051817BAE1D80056CD4B /* PaddleSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaddleSprite.h; sourceTree = "<group>"; };
 		829E051917BAE1D80056CD4B /* PaddleSprite.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PaddleSprite.mm; sourceTree = "<group>"; };
-		829E051B17BAE5EB0056CD4B /* Paddle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Paddle.png; path = Resources/Paddle.png; sourceTree = "<group>"; };
-		829E051F17BBD8E40056CD4B /* TableBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TableBackground.png; sourceTree = "<group>"; };
+		829E051B17BAE5EB0056CD4B /* Paddle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Paddle.png; path = Images/Paddle.png; sourceTree = "<group>"; };
+		829E051F17BBD8E40056CD4B /* TableBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = TableBackground.png; path = Images/TableBackground.png; sourceTree = "<group>"; };
 		82D150F017CABD0000968787 /* myfirstbutton_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = myfirstbutton_selected.png; sourceTree = "<group>"; };
 		82D150F117CABD0000968787 /* myfirstbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = myfirstbutton.png; sourceTree = "<group>"; };
 		82D150F217CABD0000968787 /* mysecondbutton_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mysecondbutton_selected.png; sourceTree = "<group>"; };
 		82D150F317CABD0000968787 /* mysecondbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mysecondbutton.png; sourceTree = "<group>"; };
 		82D150F417CABD0000968787 /* mythirdbutton_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mythirdbutton_selected.png; sourceTree = "<group>"; };
 		82D150F517CABD0000968787 /* mythirdbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mythirdbutton.png; sourceTree = "<group>"; };
+		82D150FD17CBAC1400968787 /* Lets_go_Digital_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Lets_go_Digital_Regular.ttf; sourceTree = "<group>"; };
+		82D1510A17CBE8CD00968787 /* Air Hockey Paddle Hit.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Air Hockey Paddle Hit.mp3"; sourceTree = "<group>"; };
+		82D1510B17CBE8CD00968787 /* Air hockey Goal.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Air hockey Goal.mp3"; sourceTree = "<group>"; };
+		82D1510C17CBE8CD00968787 /* Air hockey puck set down wobble.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Air hockey puck set down wobble.mp3"; sourceTree = "<group>"; };
+		82D1510D17CBE8CD00968787 /* Air_hockey_Intro.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Air_hockey_Intro.mp3; sourceTree = "<group>"; };
+		82D1510E17CBE8CD00968787 /* Audio Track.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Audio Track.mp3"; sourceTree = "<group>"; };
 		82ED992F17C6CEE9008CAA4D /* MenuLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuLayer.h; sourceTree = "<group>"; };
 		82ED993017C6CEE9008CAA4D /* MenuLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuLayer.mm; sourceTree = "<group>"; };
 		82ED99BD17C7D869008CAA4D /* MyContactListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyContactListener.h; sourceTree = "<group>"; };
@@ -741,6 +753,12 @@
 		829E02E217BAD0F20056CD4B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				82D1510A17CBE8CD00968787 /* Air Hockey Paddle Hit.mp3 */,
+				82D1510B17CBE8CD00968787 /* Air hockey Goal.mp3 */,
+				82D1510C17CBE8CD00968787 /* Air hockey puck set down wobble.mp3 */,
+				82D1510E17CBE8CD00968787 /* Audio Track.mp3 */,
+				82D1510D17CBE8CD00968787 /* Air_hockey_Intro.mp3 */,
+				82D150FD17CBAC1400968787 /* Lets_go_Digital_Regular.ttf */,
 				82D150F017CABD0000968787 /* myfirstbutton_selected.png */,
 				82D150F117CABD0000968787 /* myfirstbutton.png */,
 				82D150F217CABD0000968787 /* mysecondbutton_selected.png */,
@@ -1363,6 +1381,12 @@
 				82D150F917CABD0000968787 /* mysecondbutton.png in Resources */,
 				82D150FA17CABD0000968787 /* mythirdbutton_selected.png in Resources */,
 				82D150FB17CABD0000968787 /* mythirdbutton.png in Resources */,
+				82D150FE17CBAC1400968787 /* Lets_go_Digital_Regular.ttf in Resources */,
+				82D1510F17CBE8CD00968787 /* Air Hockey Paddle Hit.mp3 in Resources */,
+				82D1511017CBE8CD00968787 /* Air hockey Goal.mp3 in Resources */,
+				82D1511117CBE8CD00968787 /* Air hockey puck set down wobble.mp3 in Resources */,
+				82D1511217CBE8CD00968787 /* Air_hockey_Intro.mp3 in Resources */,
+				82D1511317CBE8CD00968787 /* Audio Track.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

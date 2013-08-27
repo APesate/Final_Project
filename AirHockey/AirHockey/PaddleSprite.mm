@@ -41,11 +41,11 @@
     _body = world->CreateBody(&bodyDef);
     
     b2CircleShape paddle;
-    paddle.m_radius = 31.0/PTM_RATIO;
+    paddle.m_radius = 20.0/PTM_RATIO;
     
     b2FixtureDef bodyTextureDef;
     bodyTextureDef.shape = &paddle;
-    bodyTextureDef.density = 5.0f;
+    bodyTextureDef.density = 10.0f;
     bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
     bodyTextureDef.restitution = 0.8f;
     bodyTextureDef.filter.groupIndex = 1;
@@ -178,7 +178,7 @@
     md.collideConnected = true;
     md.dampingRatio = 10.0f;
     md.frequencyHz =  500.0f;
-    md.maxForce = 8000.0f * _body->GetMass();
+    md.maxForce = 600.0f * _body->GetMass();
     
     _mouseJoint = (b2MouseJoint *)world->CreateJoint(&md);
     _body->SetAwake(true);

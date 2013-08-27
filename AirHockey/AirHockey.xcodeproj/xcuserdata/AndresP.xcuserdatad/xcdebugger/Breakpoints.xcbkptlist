@@ -2,42 +2,20 @@
 <Bucket
    type = "1"
    version = "1.0">
-   <FileBreakpoints>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "Yes"
-         filePath = "AirHockey/HelloWorldLayer.mm"
-         timestampString = "399176894.648563"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "860"
-         endingLineNumber = "860"
-         landmarkName = "-receiveData:fromPeer:inSession:context:"
-         landmarkType = "5">
-         <Actions>
-            <BreakpointActionProxy
-               ActionType = "Xcode.BreakpointAction.DebuggerCommand">
-               <ActionContent
-                  consoleCommand = "p playerOneScore">
-               </ActionContent>
-            </BreakpointActionProxy>
-            <BreakpointActionProxy
-               ActionType = "Xcode.BreakpointAction.DebuggerCommand">
-               <ActionContent
-                  consoleCommand = "p playerTwoScore">
-               </ActionContent>
-            </BreakpointActionProxy>
-         </Actions>
-      </FileBreakpoint>
-   </FileBreakpoints>
    <ExceptionBreakpoints>
       <ExceptionBreakpoint
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         scope = "0"
+         scope = "1"
          stopOnStyle = "0">
+         <Actions>
+            <BreakpointActionProxy
+               ActionType = "Xcode.BreakpointAction.DebuggerCommand">
+               <ActionContent>
+               </ActionContent>
+            </BreakpointActionProxy>
+         </Actions>
       </ExceptionBreakpoint>
    </ExceptionBreakpoints>
 </Bucket>

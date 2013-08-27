@@ -5,10 +5,12 @@
 //  Created by Andrés Pesate on 8/13/13.
 //  Copyright Andrés Pesate 2013. All rights reserved.
 //
-
+#import <AVFoundation/AVFoundation.h>
 #import "HelloWorldLayer.h"
 #import "AppDelegate.h"
 #import "SMStateMachine.h"
+#import "SimpleAudioEngine.h"
+#import "MyContactListener.h"
 #import "GLES-Render.h"
 
 #define MAX_PUCK_SPEED 30.0
@@ -30,12 +32,15 @@ typedef enum{
     CCSprite* playerTwoScoreSprite;
     CCSprite* backgroundSprite;
     CCSprite* puckSprite;
+    CCLabelTTF* playerOneScoreLabel;
+    CCLabelTTF* playerTwoScoreLabel;
     b2Body* puckBody;
     b2FixtureDef bodyFixtureDef;
     b2ContactFilter *contactFilter;
     b2ContactFilter *filterbarrier;
     b2EdgeShape leftBarrier;
-    
+    MyContactListener* _contactListener;
+
     GKPeerPickerController* picker;
     NSMutableArray* coordinatesArray;
     NSArray *scoreImagesArray;
@@ -175,10 +180,6 @@ typedef enum{
     playerOneScore = 0;
     playerTwoScore = 0;
     
-#warning Change this array with the actual images of the score.
-    scoreImagesArray = [NSArray arrayWithObjects:@"Icon.png", @"Puck.png", @"Icon.png", @"Puck.png", @"Icon.png", @"Puck.png", @"Icon.png", nil];
-    [scoreImagesArray retain]; //Because it's no ARC
-    
     [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGB565];
     backgroundSprite = [CCSprite spriteWithFile:@"TableBackground.png"];
     backgroundSprite.position = ccp(winSize.width / 2,winSize.height / 2);
@@ -188,25 +189,26 @@ typedef enum{
     [self addChild:backgroundSprite];
     [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
     
-    playerOneScoreSprite = [CCSprite spriteWithFile:[scoreImagesArray objectAtIndex:playerOneScore] rect:CGRectMake(0, 0, 50, 50)];
-    playerOneScoreSprite.position = ccp((winSize.width / 2) - 28, winSize.height - 34.5);
-    [self addChild:playerOneScoreSprite];
+    playerOneScoreLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Let's go Digital" fontSize:35];
+    playerOneScoreLabel.position = ccp(winSize.width / 2 - 28, winSize.height - 34.5);
+    [playerOneScoreLabel setColor:ccc3(255, 0, 0)];
+    [self addChild:playerOneScoreLabel];
     
-    playerTwoScoreSprite = [CCSprite spriteWithFile:[scoreImagesArray objectAtIndex:playerTwoScore] rect:CGRectMake(0, 0, 50, 50)];
-    playerTwoScoreSprite.position = ccp(winSize.width / 2 + 28, winSize.height - 34.5);
-    playerTwoScoreSprite.rotation = 180;
-    [self addChild:playerTwoScoreSprite];
+    playerTwoScoreLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Let's go Digital" fontSize:35];
+    playerTwoScoreLabel.position = ccp(winSize.width / 2 + 28, winSize.height - 34.5);
+    [playerTwoScoreLabel setColor:ccc3(255, 0, 0)];
+    [self addChild:playerTwoScoreLabel];
     
     paddleOne = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
     paddleOne.position = ccp(90, winSize.height / 2);
-    paddleOne.scale = 0.75;
+    paddleOne.scale = 0.60;
     paddleOne.tag = 1;
     paddleOne.enabled = YES;
     [self addChild:paddleOne];
     
     paddleTwo = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
     paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
-    paddleTwo.scale = 0.75;
+    paddleTwo.scale = 0.60;
     paddleTwo.tag = 2;
     
     switch (sGameMode) {
@@ -228,7 +230,8 @@ typedef enum{
     
     puckSprite = [[CCSprite alloc] initWithFile:@"Puck.png" rect:CGRectMake(0, 0, 150, 150)];
     puckSprite.position = ccp(winSize.width / 2, winSize.height / 2);
-    puckSprite.scale = 0.48;
+    puckSprite.scale = 0.25;
+    puckSprite.tag = 3;
     [self addChild:puckSprite];
     
     [self initPhysics];
@@ -319,7 +322,6 @@ typedef enum{
 
 -(void)exitAttack
 {
-    CCLOG(@"here");
     b2Vec2 linearVel = paddleTwo.body->GetLinearVelocity();
     linearVel.x *= 0.1;
     linearVel.y *= 0.1;
@@ -363,6 +365,7 @@ typedef enum{
     [_session release];
     creationDate = nil;
     [creationDate release];
+    delete _contactListener;
 	[super dealloc];
 }
 
@@ -394,8 +397,14 @@ typedef enum{
     paddleOne->world = world;
     paddleTwo->world = world;
     
+    // Create contact listener
+    _contactListener = new MyContactListener();
+    world->SetContactListener(_contactListener);
     
-    
+    // Preload effect
+    [[SimpleAudioEngine sharedEngine] preloadEffect:@"Air Hockey Paddle Hit.mp3"];
+    [[SimpleAudioEngine sharedEngine] preloadEffect:@"Air hockey Goal.mp3"];
+    [[SimpleAudioEngine sharedEngine] preloadEffect:@"Air hockey puck set down wobble.mp3"];
 }
 
 -(void)createGround{
@@ -517,17 +526,17 @@ typedef enum{
     puckBody = world->CreateBody(&bodyDef);
     
     b2CircleShape paddleTwoShape;
-    paddleTwoShape.m_radius = 27.0/PTM_RATIO;
+    paddleTwoShape.m_radius = 10.0/PTM_RATIO;
     
 
     bodyFixtureDef.shape = &paddleTwoShape;
-    bodyFixtureDef.density = 0.5f;
+    bodyFixtureDef.density = 1.0f;
     bodyFixtureDef.friction = (0.5 * bodyFixtureDef.density);
     bodyFixtureDef.restitution = 0.8f;
     bodyFixtureDef.filter.groupIndex = -1;
     puckBody->CreateFixture(&bodyFixtureDef);
-    puckBody->SetLinearDamping(0.05 * puckBody->GetMass());
-    puckBody->SetAngularDamping(0.05 * puckBody->GetMass());
+    puckBody->SetLinearDamping(0.3 * puckBody->GetMass());
+    puckBody->SetAngularDamping(0.1 * puckBody->GetMass());
     puckBody->SetFixedRotation(YES);
     
     lastXCoordinate = (puckBody->GetPosition()).x;
@@ -543,7 +552,7 @@ typedef enum{
 	//You need to make an informed choice, the following URL is useful
 	//http://gafferongames.com/game-physics/fix-your-timestep/
     
-	world->Step(dt, 10, 10);
+	world->Step(dt, 8, 3);
     for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
     {       
         if (b->GetUserData()) {
@@ -569,30 +578,42 @@ typedef enum{
         puckBody->SetLinearVelocity(b2Vec2(xSpeed, ySpeed));
     }
     
+    CGRect projectileRect = [puckSprite boundingBox];
+    CGRect targetRects = [paddleOne boundingBox];
+    
+//    if (CGRectIntersectsRect(projectileRect, targetRects))
+//    {
+//        NSString *soundFilePath = [NSString stringWithFormat:@"%@/Air Hockey Paddle Hit.mp3", [[NSBundle mainBundle] resourcePath]];
+//        NSURL *soundFileURL = [NSURL fileURLWithPath:soundFilePath];
+//        NSError *error;
+//        
+//        AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:soundFileURL error:&error];
+//        player.numberOfLoops = 0;
+//        
+//        [player play];
+//    }
+    
     //Analyse the position of the puck on the screen and replaced if neccesary
     if(!isInGolArea){
         if((puckBody->GetPosition()).x > winSize.width / PTM_RATIO){
             updateComputer = NO;
             isInGolArea = YES;
             playerOneScore++;
+            playerOneScoreLabel.string = [NSString stringWithFormat:@"%i", playerOneScore];
             
-            NSLog(@"Score: %i - %i", playerOneScore, playerTwoScore);
-            [self showAlertFor:ScoreAlert];
             [paddleOne destroyLink];
-            // [playerTwoScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerTwoScore]]];
+            [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3"];
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(1) afterDelay:1.0];
             [self updateScore:@(2)];
         
         }else if((puckBody->GetPosition()).x < 0){
-            [paddleOne destroyLink];
             updateComputer = NO;
             isInGolArea = YES;
             playerTwoScore++;
+            playerTwoScoreLabel.string = [NSString stringWithFormat:@"%i", playerTwoScore];
             
-            NSLog(@"Score: %i - %i", playerOneScore, playerTwoScore);
-            
-            [self showAlertFor:ScoreAlert];
-            //[playerOneScoreSprite setTexture:[[CCTextureCache sharedTextureCache] addImage:[scoreImagesArray objectAtIndex:playerOneScore]]];
+            [paddleOne destroyLink];
+            [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3"];
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(2) afterDelay:1.0];
             [self updateScore:@(1)];
         }
@@ -607,6 +628,26 @@ typedef enum{
     if ((puckBody->GetPosition()).x>=winSize.width/(2*PTM_RATIO)&&updateComputer) {
         [sm post:@"toAttack"];
         [sm post:@"attacking"];
+    }
+    
+    std::vector<b2Body *>toDestroy;
+    std::vector<MyContact>::iterator pos;
+    for(pos = _contactListener->_contacts.begin();
+        pos != _contactListener->_contacts.end(); ++pos) {
+        MyContact contact = *pos;
+        
+        b2Body *bodyA = contact.fixtureA->GetBody();
+        b2Body *bodyB = contact.fixtureB->GetBody();
+        if (bodyA->GetUserData() != NULL && bodyB->GetUserData() != NULL) {
+            CCSprite *spriteA = (CCSprite *) bodyA->GetUserData();
+            CCSprite *spriteB = (CCSprite *) bodyB->GetUserData();
+            
+            if ((spriteA.tag == 1 || spriteA.tag == 2) && spriteB.tag == 3) {
+                [[SimpleAudioEngine sharedEngine] playEffect:@"Air Hockey Paddle Hit.mp3"];
+            } else if (spriteA.tag == 3 && spriteB.tag == 0) {
+                [[SimpleAudioEngine sharedEngine] playEffect:@"Air Hockey Paddle Hit.mp3"];
+            }
+        }
     }
 }
 
@@ -732,33 +773,49 @@ typedef enum{
     paddleTwo.body->SetTransform(b2Vec2(winSize.width/PTM_RATIO-winSize.width/(6*PTM_RATIO)+60/PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
 
     switch (position.integerValue) {
-        case 1:{
+        case 1:{            
             puckBody->SetTransform(b2Vec2((winSize.width / (2 * PTM_RATIO)) + (50 / PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
             puckNewPosition = CGPointMake((puckBody->GetPosition()).x * PTM_RATIO, (puckBody->GetPosition()).y * PTM_RATIO);
             puckNewPosition = [[CCDirector sharedDirector] convertToGL:puckNewPosition];
             [puckSprite stopAllActions];
-            [puckSprite runAction:[CCJumpTo actionWithDuration:0.7 position:puckNewPosition height:100 jumps:1]];
+            [puckSprite runAction:[CCSequence actionOne:[CCJumpTo actionWithDuration:0.7
+                                                                            position:puckNewPosition
+                                                                              height:100
+                                                                               jumps:1]
+                                                    two:[CCCallFunc actionWithTarget:self selector:@selector(playSound)]]];;
+            [self showAlertFor:ScoreAlert];
             break;
         }
         case 2:{
             puckBody->SetTransform(b2Vec2((winSize.width / (2 * PTM_RATIO)) - (50 / PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
             puckNewPosition = CGPointMake((puckBody->GetPosition()).x * PTM_RATIO, (puckBody->GetPosition()).y * PTM_RATIO);
             puckNewPosition = [[CCDirector sharedDirector] convertToGL:puckNewPosition];
+            
             [puckSprite stopAllActions];
-            [puckSprite runAction:[CCJumpTo actionWithDuration:0.7 position:puckNewPosition height:100 jumps:1]];
+            [puckSprite runAction:[CCSequence actionOne:[CCJumpTo actionWithDuration:0.7
+                                                                            position:puckNewPosition
+                                                                              height:100
+                                                                               jumps:1]
+                                                    two:[CCCallFunc actionWithTarget:self selector:@selector(playSound)]]];
+            [self showAlertFor:ScoreAlert];
             break;
         }
         case 3:
             puckBody->SetTransform(b2Vec2(winSize.width / (2 * PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
             puckNewPosition = CGPointMake((puckBody->GetPosition()).x * PTM_RATIO, (puckBody->GetPosition()).y * PTM_RATIO);
             puckNewPosition = [[CCDirector sharedDirector] convertToGL:puckNewPosition];
+
             [puckSprite stopAllActions];
-            [puckSprite runAction:[CCMoveTo actionWithDuration:0.7 position:puckNewPosition]];
+            [puckSprite runAction:[CCSequence actionOne:[CCJumpTo actionWithDuration:0.7
+                                                                            position:puckNewPosition
+                                                                              height:100
+                                                                               jumps:1]
+                                                    two:[CCCallFunc actionWithTarget:self selector:@selector(playSound)]]];;
             break;
         default:
             break;
     }
-    
+        
     [paddleOne stopAllActions];
     paddleOneNewPosition = CGPointMake((paddleOne.body->GetPosition()).x * PTM_RATIO, (paddleOne.body->GetPosition()).y * PTM_RATIO);
     paddleOneNewPosition = [[CCDirector sharedDirector] convertToGL:paddleOneNewPosition];
@@ -775,6 +832,11 @@ typedef enum{
                      [CCCallFunc actionWithTarget:self selector:@selector(assignObjectsBodiesAgain)], nil]];
 }
 
+-(void)playSound{
+    [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey puck set down wobble.mp3"];
+    puckBody->SetAngularVelocity(10);
+}
+
 -(void)updateComp
 {
         updateComputer = YES;
@@ -784,7 +846,12 @@ typedef enum{
     paddleOne.body->SetUserData(paddleOne);
     paddleTwo.body->SetUserData(paddleTwo);
     puckBody->SetUserData(puckSprite);
-    isInGolArea = NO;
+    
+    if (_session == nil) {
+        isInGolArea = NO;
+    }else if (isServer){
+        isInGolArea = NO;
+    }
 }
 
 #pragma mark - GKSessionDataHandler
@@ -857,6 +924,10 @@ typedef enum{
         playerOneScore = ((NSNumber *)[dataDictionary objectForKey:@"One"]).integerValue;
         playerTwoScore = ((NSNumber *)[dataDictionary objectForKey:@"Two"]).integerValue;
         NSNumber* position = ((NSNumber *)[dataDictionary objectForKey:@"Position"]);
+        
+        playerOneScoreLabel.string = [NSString stringWithFormat:@"%i", playerOneScore];
+        playerTwoScoreLabel.string = [NSString stringWithFormat:@"%i", playerTwoScore];
+        isInGolArea = YES;
         
         [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:position afterDelay:1.0];
     }
@@ -968,10 +1039,18 @@ typedef enum{
     switch (type) {
         case ScoreAlert:
             if(playerTwoScore == 7 || playerOneScore == 7){
-                updateComputer = NO;
-                [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(3) afterDelay:1.5];
+               
                 NSString* title = [NSString stringWithFormat:@"Player %@ Wins!", playerOneScore > playerTwoScore?@"One":@"Two"];
-                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Game Over!" message:title delegate:self cancelButtonTitle:@"Exit" otherButtonTitles:@"Rematch", nil];
+                
+                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Game Over!"
+                                                                message:title
+                                                               delegate:self
+                                                      cancelButtonTitle:@"Exit"
+                                                      otherButtonTitles:@"Rematch", nil];
+
+                 updateComputer = NO;
+                
+                [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(3) afterDelay:1.5];
                 [alert setAlertViewStyle:UIAlertViewStyleDefault];
                 [alert show];
                 [alert release];
@@ -980,8 +1059,15 @@ typedef enum{
             }
             break;
         case DisconnectAlert:{
+            
             NSString* message = [NSString stringWithFormat:@"The connection with the other device was lost."];
-            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Connection Lost!" message:message delegate:self cancelButtonTitle:@"Exit" otherButtonTitles:@"Reconnect", nil];
+            
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Connection Lost!"
+                                                            message:message
+                                                           delegate:self
+                                                  cancelButtonTitle:@"Exit"
+                                                  otherButtonTitles:@"Reconnect", nil];
+            
             [alert setAlertViewStyle:UIAlertViewStyleDefault];
             [alert show];
             [alert release];
@@ -1001,8 +1087,9 @@ typedef enum{
             if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Rematch"]) {
                 playerOneScore = 0;
                 playerTwoScore = 0;
+                
                 [self performSelector:@selector(updateComp) withObject:nil afterDelay:1.0];
-                NSLog(@"%i - %i", playerOneScore, playerTwoScore);
+                
             }else if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Reconnect"]){
                 [self reconnect];
             }
@@ -1032,7 +1119,7 @@ typedef enum{
     CGPoint coord = [touch locationInView:touch.view];
     coord = [[CCDirector sharedDirector] convertToGL:coord];
     
-    if (CGRectContainsPoint(playerOneScoreSprite.boundingBox, coord)) {
+    if (CGRectContainsPoint(playerOneScoreLabel.boundingBox, coord)) {
         [self.delegate goToMenuLayer];
     }
 }

@@ -10,6 +10,9 @@
 
 #import "AppDelegate.h"
 #import "IntroLayer.h"
+#import <AVFoundation/AVFoundation.h>
+#import <AudioToolbox/AudioToolbox.h>
+#import "SimpleAudioEngine.h"
 
 @implementation MyNavigationController
 
@@ -138,7 +141,10 @@
 	
 	// make main window visible
 	[window_ makeKeyAndVisible];
-	
+    
+    [[SimpleAudioEngine sharedEngine] preloadEffect:@"Air_hockey_Intro.mp3"];
+    //[[SimpleAudioEngine sharedEngine] playEffect:@"Air_hockey_Intro.mp3"];
+    
 	return YES;
 }
 

@@ -8,6 +8,7 @@
 
 #import "MenuLayer.h"
 #import "HelloWorldLayer.h"
+#import "SimpleAudioEngine.h"
 
 @implementation MenuLayer
 
@@ -69,11 +70,6 @@
 {
     HelloWorldLayer* layer = [HelloWorldLayer nodeWithLayer:layer gameMode:BluetoothMode andDelegate:self];
     [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneForLayer:layer]]];
-}
-
-- (void) joinGameMode: (CCMenuItem  *) menuItem
-{
-
 }
 
 #pragma mark HelloWorldLayerDelegate
