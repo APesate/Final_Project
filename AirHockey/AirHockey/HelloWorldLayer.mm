@@ -35,6 +35,7 @@ typedef enum{
     CCLabelTTF* playerOneScoreLabel;
     CCLabelTTF* playerTwoScoreLabel;
     b2Body* puckBody;
+    b2Body* groundBody;
     b2FixtureDef bodyFixtureDef;
     b2ContactFilter *contactFilter;
     b2ContactFilter *filterbarrier;
@@ -181,11 +182,9 @@ typedef enum{
     playerTwoScore = 0;
     
     [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGB565];
-    backgroundSprite = [CCSprite spriteWithFile:@"TableBackground.png"];
+    backgroundSprite = [CCSprite spriteWithFile:@"AirHockey_iPhone5.jpg"];
     backgroundSprite.position = ccp(winSize.width / 2,winSize.height / 2);
-    backgroundSprite.rotation = 90;
-    backgroundSprite.scale = 2;
-    backgroundSprite.scaleY = 2.37;
+
     [self addChild:backgroundSprite];
     [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
     
@@ -199,16 +198,16 @@ typedef enum{
     [playerTwoScoreLabel setColor:ccc3(255, 0, 0)];
     [self addChild:playerTwoScoreLabel];
     
-    paddleOne = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
+    paddleOne = [[PaddleSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
     paddleOne.position = ccp(90, winSize.height / 2);
-    paddleOne.scale = 0.60;
+    paddleOne.scale = 0.50;
     paddleOne.tag = 1;
     paddleOne.enabled = YES;
     [self addChild:paddleOne];
     
-    paddleTwo = [[PaddleSprite alloc] initWithFile:@"Paddle.png" rect:CGRectMake(0, 0, 85, 85)];
+    paddleTwo = [[PaddleSprite alloc] initWithFile:@"Paddle_red.gif" rect:CGRectMake(0, 0, 120, 120)];
     paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
-    paddleTwo.scale = 0.60;
+    paddleTwo.scale = 0.50;
     paddleTwo.tag = 2;
     
     switch (sGameMode) {
@@ -228,9 +227,9 @@ typedef enum{
     }
     [self addChild:paddleTwo];
     
-    puckSprite = [[CCSprite alloc] initWithFile:@"Puck.png" rect:CGRectMake(0, 0, 150, 150)];
+    puckSprite = [[CCSprite alloc] initWithFile:@"Puck.gif" rect:CGRectMake(0, 0, 215, 215)];
     puckSprite.position = ccp(winSize.width / 2, winSize.height / 2);
-    puckSprite.scale = 0.25;
+    puckSprite.scale = 0.20;
     puckSprite.tag = 3;
     [self addChild:puckSprite];
     
@@ -314,7 +313,7 @@ typedef enum{
     b2Vec2 necessaryMovement = desiredPosition - currentPosition;
     //float necessaryDistance = necessaryMovement.Length();
     necessaryMovement.Normalize();
-    float forceMagnitude = 1800;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
+    float forceMagnitude = 2000;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
     b2Vec2 force = forceMagnitude * necessaryMovement;
     paddleTwo.body->ApplyForce(force, paddleTwo.body->GetWorldCenter() );
     
@@ -416,7 +415,7 @@ typedef enum{
 	// Call the body factory which allocates memory for the ground body
 	// from a pool and creates the ground box shape (also from a pool).
 	// The body is also added to the world.
-	b2Body* groundBody = world->CreateBody(&groundBodyDef);
+	groundBody = world->CreateBody(&groundBodyDef);
 	paddleOne->world->CreateBody(&groundBodyDef);
     paddleTwo->world->CreateBody(&groundBodyDef);
     
@@ -526,17 +525,17 @@ typedef enum{
     puckBody = world->CreateBody(&bodyDef);
     
     b2CircleShape paddleTwoShape;
-    paddleTwoShape.m_radius = 10.0/PTM_RATIO;
+    paddleTwoShape.m_radius = 21.5/PTM_RATIO;
     
 
     bodyFixtureDef.shape = &paddleTwoShape;
-    bodyFixtureDef.density = 1.0f;
-    bodyFixtureDef.friction = (0.5 * bodyFixtureDef.density);
-    bodyFixtureDef.restitution = 0.8f;
+    bodyFixtureDef.density = 0.8f;
+    bodyFixtureDef.friction = (0.4 * bodyFixtureDef.density);
+    bodyFixtureDef.restitution = 1.2f;
     bodyFixtureDef.filter.groupIndex = -1;
     puckBody->CreateFixture(&bodyFixtureDef);
-    puckBody->SetLinearDamping(0.3 * puckBody->GetMass());
-    puckBody->SetAngularDamping(0.1 * puckBody->GetMass());
+    puckBody->SetLinearDamping(0.4 * puckBody->GetMass());
+    puckBody->SetAngularDamping(0.5 * puckBody->GetMass());
     puckBody->SetFixedRotation(YES);
     
     lastXCoordinate = (puckBody->GetPosition()).x;
@@ -578,21 +577,6 @@ typedef enum{
         puckBody->SetLinearVelocity(b2Vec2(xSpeed, ySpeed));
     }
     
-    CGRect projectileRect = [puckSprite boundingBox];
-    CGRect targetRects = [paddleOne boundingBox];
-    
-//    if (CGRectIntersectsRect(projectileRect, targetRects))
-//    {
-//        NSString *soundFilePath = [NSString stringWithFormat:@"%@/Air Hockey Paddle Hit.mp3", [[NSBundle mainBundle] resourcePath]];
-//        NSURL *soundFileURL = [NSURL fileURLWithPath:soundFilePath];
-//        NSError *error;
-//        
-//        AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:soundFileURL error:&error];
-//        player.numberOfLoops = 0;
-//        
-//        [player play];
-//    }
-    
     //Analyse the position of the puck on the screen and replaced if neccesary
     if(!isInGolArea){
         if((puckBody->GetPosition()).x > winSize.width / PTM_RATIO){
@@ -601,7 +585,7 @@ typedef enum{
             playerOneScore++;
             playerOneScoreLabel.string = [NSString stringWithFormat:@"%i", playerOneScore];
             
-            [paddleOne destroyLink];
+            //[paddleOne destroyLink];
             [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3"];
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(1) afterDelay:1.0];
             [self updateScore:@(2)];
@@ -612,7 +596,7 @@ typedef enum{
             playerTwoScore++;
             playerTwoScoreLabel.string = [NSString stringWithFormat:@"%i", playerTwoScore];
             
-            [paddleOne destroyLink];
+            //[paddleOne destroyLink];
             [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3"];
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(2) afterDelay:1.0];
             [self updateScore:@(1)];
@@ -628,26 +612,6 @@ typedef enum{
     if ((puckBody->GetPosition()).x>=winSize.width/(2*PTM_RATIO)&&updateComputer) {
         [sm post:@"toAttack"];
         [sm post:@"attacking"];
-    }
-    
-    std::vector<b2Body *>toDestroy;
-    std::vector<MyContact>::iterator pos;
-    for(pos = _contactListener->_contacts.begin();
-        pos != _contactListener->_contacts.end(); ++pos) {
-        MyContact contact = *pos;
-        
-        b2Body *bodyA = contact.fixtureA->GetBody();
-        b2Body *bodyB = contact.fixtureB->GetBody();
-        if (bodyA->GetUserData() != NULL && bodyB->GetUserData() != NULL) {
-            CCSprite *spriteA = (CCSprite *) bodyA->GetUserData();
-            CCSprite *spriteB = (CCSprite *) bodyB->GetUserData();
-            
-            if ((spriteA.tag == 1 || spriteA.tag == 2) && spriteB.tag == 3) {
-                [[SimpleAudioEngine sharedEngine] playEffect:@"Air Hockey Paddle Hit.mp3"];
-            } else if (spriteA.tag == 3 && spriteB.tag == 0) {
-                [[SimpleAudioEngine sharedEngine] playEffect:@"Air Hockey Paddle Hit.mp3"];
-            }
-        }
     }
 }
 
@@ -764,13 +728,13 @@ typedef enum{
     puckBody->SetAngularVelocity(0);
     puckBody->SetUserData(nil);
     
-    paddleOne.body->SetLinearVelocity(b2Vec2(0, 0));
-    paddleOne.body->SetUserData(nil);
-    paddleOne.body->SetTransform(b2Vec2(90 / PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
-
-    paddleTwo.body->SetLinearVelocity(b2Vec2(0, 0));
-    paddleTwo.body->SetUserData(nil);
-    paddleTwo.body->SetTransform(b2Vec2(winSize.width/PTM_RATIO-winSize.width/(6*PTM_RATIO)+60/PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
+//    paddleOne.body->SetLinearVelocity(b2Vec2(0, 0));
+//    paddleOne.body->SetUserData(nil);
+//    paddleOne.body->SetTransform(b2Vec2(90 / PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
+//
+//    paddleTwo.body->SetLinearVelocity(b2Vec2(0, 0));
+//    paddleTwo.body->SetUserData(nil);
+//    paddleTwo.body->SetTransform(b2Vec2(winSize.width/PTM_RATIO-winSize.width/(6*PTM_RATIO)+60/PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
 
     switch (position.integerValue) {
         case 1:{            

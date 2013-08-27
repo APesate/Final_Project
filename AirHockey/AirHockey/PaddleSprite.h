@@ -11,7 +11,7 @@
 #import "Box2D.h"
 #import "CCPhysicsSprite.h"
 
-#define PTM_RATIO 32
+#define PTM_RATIO 32.0f
 
 typedef enum tagPaddleState{
     kPaddleStateGrabbed,

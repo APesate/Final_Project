@@ -32,20 +32,20 @@
     bodyDef.type = b2_dynamicBody;
     
     if(self.tag == 1){
-        bodyDef.position.Set(90/PTM_RATIO, [[CCDirector sharedDirector] winSize].height /(2 * PTM_RATIO));
+        bodyDef.position.Set(90/PTM_RATIO, winSize.height /(2 * PTM_RATIO));
     }else{
-        bodyDef.position.Set(([[CCDirector sharedDirector] winSize].width - 90)/PTM_RATIO, [[CCDirector sharedDirector] winSize].height /(2 * PTM_RATIO));
+        bodyDef.position.Set((winSize.width - 90)/PTM_RATIO, winSize.height /(2 * PTM_RATIO));
     }
     
     bodyDef.userData = self;
     _body = world->CreateBody(&bodyDef);
     
     b2CircleShape paddle;
-    paddle.m_radius = 20.0/PTM_RATIO;
+    paddle.m_radius = 30.0/PTM_RATIO;
     
     b2FixtureDef bodyTextureDef;
     bodyTextureDef.shape = &paddle;
-    bodyTextureDef.density = 10.0f;
+    bodyTextureDef.density = 5.0f;
     bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
     bodyTextureDef.restitution = 0.8f;
     bodyTextureDef.filter.groupIndex = 1;
@@ -178,7 +178,7 @@
     md.collideConnected = true;
     md.dampingRatio = 10.0f;
     md.frequencyHz =  500.0f;
-    md.maxForce = 600.0f * _body->GetMass();
+    md.maxForce = 1000.0f * _body->GetMass();
     
     _mouseJoint = (b2MouseJoint *)world->CreateJoint(&md);
     _body->SetAwake(true);
