@@ -17,6 +17,10 @@
 		8248341317C2B83D0050BA27 /* SMStateMachineAsync.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340817C2B83D0050BA27 /* SMStateMachineAsync.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		8248341417C2B83D0050BA27 /* SMStateMachineExecuteContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340A17C2B83D0050BA27 /* SMStateMachineExecuteContext.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		8248341517C2B83D0050BA27 /* SMTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340C17C2B83D0050BA27 /* SMTransition.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+<<<<<<< HEAD
+		8265262617BC55A000D52B87 /* Puck.png in Resources */ = {isa = PBXBuildFile; fileRef = 8265262517BC55A000D52B87 /* Puck.png */; };
+=======
+>>>>>>> f59cd4e16d40cdefa1c1547c885fb1802df1acfc
 		829E02CE17BAD0F10056CD4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CD17BAD0F10056CD4B /* QuartzCore.framework */; };
 		829E02D017BAD0F10056CD4B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CF17BAD0F10056CD4B /* OpenGLES.framework */; };
 		829E02D217BAD0F10056CD4B /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02D117BAD0F10056CD4B /* OpenAL.framework */; };
@@ -239,6 +243,10 @@
 		8248340A17C2B83D0050BA27 /* SMStateMachineExecuteContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMStateMachineExecuteContext.m; sourceTree = "<group>"; };
 		8248340B17C2B83D0050BA27 /* SMTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTransition.h; sourceTree = "<group>"; };
 		8248340C17C2B83D0050BA27 /* SMTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTransition.m; sourceTree = "<group>"; };
+<<<<<<< HEAD
+		8265262517BC55A000D52B87 /* Puck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Puck.png; path = Resources/Puck.png; sourceTree = "<group>"; };
+=======
+>>>>>>> f59cd4e16d40cdefa1c1547c885fb1802df1acfc
 		829E02CA17BAD0F10056CD4B /* AirHockey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirHockey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		829E02CD17BAD0F10056CD4B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		829E02CF17BAD0F10056CD4B /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };

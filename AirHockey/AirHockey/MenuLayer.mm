@@ -8,6 +8,7 @@
 
 #import "MenuLayer.h"
 #import "HelloWorldLayer.h"
+#import "SimpleAudioEngine.h"
 
 @implementation MenuLayer
 
@@ -29,20 +30,52 @@
     self = [super init];
     
     if(self){
+        CGSize winSize = [[CCDirector sharedDirector] winSize];
+        CCLayer* backgroundImage = [[CCLayer alloc] init];
+        CCSprite* backgroundSprite;
+        
+        [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGB565];
+
+        backgroundSprite = [CCSprite spriteWithFile:@"AirHockey_iPhone5.jpg"];
+        backgroundSprite.position = ccp(winSize.width / 2,winSize.height / 2);
+        [backgroundImage addChild:backgroundSprite];
+        
+        [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
+        
+        CCSprite* paddleOne = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
+        paddleOne.position = ccp(90, winSize.height / 2);
+        paddleOne.scale = 0.50;
+        [backgroundImage addChild:paddleOne];
+        
+        CCSprite* paddleTwo = [[CCSprite alloc] initWithFile:@"Paddle_red.gif" rect:CGRectMake(0, 0, 120, 120)];
+        paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
+        paddleTwo.scale = 0.50;
+        [backgroundImage addChild:paddleTwo];
+        
+        CCSprite* puckSprite = [[CCSprite alloc] initWithFile:@"Puck.gif" rect:CGRectMake(0, 0, 215, 215)];
+        puckSprite.position = ccp(winSize.width / 2, winSize.height / 2);
+        puckSprite.scale = 0.20;
+        [backgroundImage addChild:puckSprite];
+        
+        [self addChild:backgroundImage];
+        
+        CCLayerColor* fogLayer = [[CCLayerColor alloc] initWithColor:ccc4(100, 100, 100, 150)];
+        [self addChild:fogLayer];
+        
         CCMenuItemFont* singlePlayerButton = [CCMenuItemFont itemWithString:@"Single Player"
                                                        target:self
                                                      selector:@selector(playSinglePlayerMode:)];
-        [singlePlayerButton setColor:ccc3(135,206,235)];
+        [singlePlayerButton setColor:ccc3(71, 209, 248)];
         
         CCMenuItemFont* twoPlayersButton = [CCMenuItemFont itemWithString:@"Two Players"
                                                        target:self
                                                      selector:@selector(playMultiplayerMode:)];
-        [twoPlayersButton setColor:ccc3(135,206,235)];
+        [twoPlayersButton setColor:ccc3(71, 209, 248)];
         
         CCMenuItemFont* multiplayerButton = [CCMenuItemFont itemWithString:@"Multiplayer"
                                                        target:self
                                                      selector:@selector(hostGameMode:)];
-        [multiplayerButton setColor:ccc3(135,206,235)];
+        [multiplayerButton setColor:ccc3(71, 209, 248)];
         
         
         CCMenu *myMenu = [CCMenu menuWithItems: singlePlayerButton, twoPlayersButton, multiplayerButton, nil];
@@ -57,29 +90,24 @@
 
 - (void) playSinglePlayerMode: (CCMenuItem  *) menuItem
 {
-    [[CCDirector sharedDirector] replaceScene:[CCTransitionSplitRows transitionWithDuration:1.0 scene:[HelloWorldLayer sceneWithGameMode:SinglePlayerMode andDelegate:self]]];
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionCrossFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneWithGameMode:SinglePlayerMode andDelegate:self]]];
 }
 
 - (void) playMultiplayerMode: (CCMenuItem  *) menuItem
 {
-    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneWithGameMode:MultiplayerMode andDelegate:self]]];
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionCrossFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneWithGameMode:MultiplayerMode andDelegate:self]]];
 }
 
 - (void) hostGameMode: (CCMenuItem  *) menuItem
 {
     HelloWorldLayer* layer = [HelloWorldLayer nodeWithLayer:layer gameMode:BluetoothMode andDelegate:self];
-    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneForLayer:layer]]];
-}
-
-- (void) joinGameMode: (CCMenuItem  *) menuItem
-{
-
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionCrossFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneForLayer:layer]]];
 }
 
 #pragma mark HelloWorldLayerDelegate
 
 -(void)goToMenuLayer{
-    [[CCDirector sharedDirector] replaceScene:[CCTransitionSplitCols transitionWithDuration:1.0 scene:[MenuLayer scene]]];
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionCrossFade transitionWithDuration:1.0 scene:[MenuLayer scene]]];
 }
 
 @end

@@ -10,7 +10,8 @@
 // Import the interfaces
 #import "IntroLayer.h"
 #import "MenuLayer.h"
-
+#import <AVFoundation/AVFoundation.h>
+#import <AudioToolbox/AudioToolbox.h>
 
 #pragma mark - IntroLayer
 
@@ -42,7 +43,7 @@
 		CGSize size = [[CCDirector sharedDirector] winSize];
 		
 		CCSprite *background;
-		
+        
 		if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ) {
 			background = [CCSprite spriteWithFile:@"Default.png"];
 			background.rotation = 90;
@@ -53,7 +54,7 @@
 		
 		// add the label as a child to this Layer
 		[self addChild: background];
-	}
+        }
 	
 	return self;
 }
@@ -61,6 +62,6 @@
 -(void) onEnter
 {
 	[super onEnter];
-	[[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[MenuLayer scene] ]];
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[MenuLayer scene] ]];
 }
 @end

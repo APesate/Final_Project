@@ -32,11 +32,12 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.1</string>
+	<string>1.2</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
+		<string>Lets_go_Digital_Regular.ttf</string>
 		<string>Champagne &amp; Limousines.ttf</string>
 	</array>
 	<key>UIPrerenderedIcon</key>
