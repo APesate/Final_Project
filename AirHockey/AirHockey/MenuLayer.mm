@@ -90,8 +90,12 @@
                                                      selector:@selector(hostGameMode:)];
         [multiplayerButton setColor:ccc3(71, 209, 248)];
         
+        CCMenuItemFont* settingsButton = [CCMenuItemFont itemWithString:@"Settings"
+                                                                    target:self
+                                                                  selector:@selector(hostGameMode:)];
+        [multiplayerButton setColor:ccc3(71, 209, 248)];
         
-        CCMenu *myMenu = [CCMenu menuWithItems: singlePlayerButton, twoPlayersButton, multiplayerButton, nil];
+        CCMenu *myMenu = [CCMenu menuWithItems: singlePlayerButton, twoPlayersButton, multiplayerButton, settingsButton, nil];
         
         [myMenu alignItemsVerticallyWithPadding:10];
 
