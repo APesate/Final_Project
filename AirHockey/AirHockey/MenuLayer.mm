@@ -9,6 +9,7 @@
 #import "MenuLayer.h"
 #import "HelloWorldLayer.h"
 #import "SimpleAudioEngine.h"
+#import "SettingsLayer.h"
 
 #define IS_WIDESCREEN ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.width - ( double )568 ) < DBL_EPSILON )
 #define IS_IPHONE ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPhone" ] )
@@ -92,7 +93,7 @@
         
         CCMenuItemFont* settingsButton = [CCMenuItemFont itemWithString:@"Settings"
                                                                     target:self
-                                                                  selector:@selector(hostGameMode:)];
+                                                                  selector:@selector(settingsMode)];
         [multiplayerButton setColor:ccc3(71, 209, 248)];
         
         CCMenu *myMenu = [CCMenu menuWithItems: singlePlayerButton, twoPlayersButton, multiplayerButton, settingsButton, nil];
@@ -119,6 +120,11 @@
 {
     HelloWorldLayer* layer = [HelloWorldLayer nodeWithLayer:layer gameMode:BluetoothMode andDelegate:self];
     [[CCDirector sharedDirector] replaceScene:[CCTransitionCrossFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneForLayer:layer]]];
+}
+
+- (void) settingsMode
+{
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionCrossFade transitionWithDuration:1.0 scene:[SettingsLayer scene]]];
 }
 
 #pragma mark HelloWorldLayerDelegate
