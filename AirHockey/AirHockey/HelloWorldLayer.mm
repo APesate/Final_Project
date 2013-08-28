@@ -444,18 +444,18 @@ typedef enum{
 	
 	// bottom
 	
-	groundBox.Set(b2Vec2(0, 0), b2Vec2(winSize.width/PTM_RATIO, 0));
+	groundBox.Set(b2Vec2(0.5, 0.5), b2Vec2(winSize.width/PTM_RATIO, 0.5));
 	groundBody->CreateFixture(&groundBox,0);
 	
 	// top
-	groundBox.Set(b2Vec2(0, winSize.height/PTM_RATIO), b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO));
+	groundBox.Set(b2Vec2(.5, (winSize.height/PTM_RATIO)-0.5), b2Vec2((winSize.width/PTM_RATIO)-0.5, (winSize.height/PTM_RATIO)-0.5));
 	groundBody->CreateFixture(&groundBox,0);
 	
 	// left
-	groundBox.Set(b2Vec2(0, winSize.height/(3 * PTM_RATIO)), b2Vec2(0, 0));
+	groundBox.Set(b2Vec2(0.5, winSize.height/(3 * PTM_RATIO)), b2Vec2(0.5, 0));
 	groundBody->CreateFixture(&groundBox,0);
     
-    groundBox.Set(b2Vec2(0, 2 * winSize.height/(3 * PTM_RATIO)), b2Vec2(0, winSize.height / PTM_RATIO));
+    groundBox.Set(b2Vec2(0.5, 2 * winSize.height/(3 * PTM_RATIO)), b2Vec2(0.5, winSize.height / PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
     
     // left boundary for paddle
@@ -464,10 +464,10 @@ typedef enum{
 	
     
 	// right
-	groundBox.Set(b2Vec2(winSize.width/ PTM_RATIO, winSize.height/(3 * PTM_RATIO)), b2Vec2(winSize.width/PTM_RATIO, 0));
+	groundBox.Set(b2Vec2((winSize.width/ PTM_RATIO)-0.5, winSize.height/(3 * PTM_RATIO)), b2Vec2((winSize.width/PTM_RATIO)-0.5, 0));
 	groundBody->CreateFixture(&groundBox,0);
     
-	groundBox.Set(b2Vec2(winSize.width/ PTM_RATIO, 2 * winSize.height/(3 * PTM_RATIO)), b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO));
+	groundBox.Set(b2Vec2((winSize.width/ PTM_RATIO)-0.5, 2 * winSize.height/(3 * PTM_RATIO)), b2Vec2((winSize.width/ PTM_RATIO)-0.5, winSize.height/PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
     
     
@@ -481,33 +481,39 @@ typedef enum{
     b2BodyDef roundedCornerDef;
     b2FixtureDef roundedCornerFixture;
     
-    b2Vec2 vs[5];
-    vs[0].Set(1.0f, 0.0f);
+    b2Vec2 vs[11];
+    /*vs[0].Set(1.0f, 0.0f);
     vs[1].Set(0.05f, 0.01f);
     vs[2].Set(0.02f, 0.02f);
     vs[3].Set(0.01f, 0.05f);
-    vs[4].Set(0.0f, 1.0f);
+    vs[4].Set(0.0f, 1.0f);*/
     
-    roundedCorner.CreateChain(vs, 5);
+    for (float points = 0; points <= 1; points += 0.10f) {
+        int index = points*10;
+        float y = 1-sqrt(-(points-2)*points);
+        vs[index].Set(points, y);
+    }
+    
+    roundedCorner.CreateChain(vs, 11);
     roundedCornerDef.type = b2_staticBody;
-    roundedCornerDef.position.Set(0.1, 0.1);
+    roundedCornerDef.position.Set(0.5, 0.5);
     
     b2Body* roundedCornerBody = world->CreateBody(&roundedCornerDef);
     roundedCornerBody->CreateFixture(&roundedCorner, 100);
     
     CCLOG(@"%f",roundedCornerDef.angle);
     
-    roundedCornerDef.position.Set(winSize.width/PTM_RATIO-0.1, 0.1);
+    roundedCornerDef.position.Set(winSize.width/PTM_RATIO-0.5, 0.5);
     roundedCornerDef.angle = 1.57f;
     roundedCornerBody = world->CreateBody(&roundedCornerDef);
     roundedCornerBody->CreateFixture(&roundedCorner, 100);
     
-    roundedCornerDef.position.Set(winSize.width/PTM_RATIO-0.1, 9.9);
+    roundedCornerDef.position.Set(winSize.width/PTM_RATIO-0.5, 9.5);
     roundedCornerDef.angle = 3.14f;
     roundedCornerBody = world->CreateBody(&roundedCornerDef);
     roundedCornerBody->CreateFixture(&roundedCorner, 100);
     
-    roundedCornerDef.position.Set(0.1, 9.9);
+    roundedCornerDef.position.Set(0.5, 9.5);
     roundedCornerDef.angle = 4.71f;
     roundedCornerBody = world->CreateBody(&roundedCornerDef);
     roundedCornerBody->CreateFixture(&roundedCorner, 100);
