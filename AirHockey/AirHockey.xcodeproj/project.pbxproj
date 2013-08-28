@@ -211,6 +211,7 @@
 		82D1511B17CD0B0700968787 /* Paddle_blue.gif in Resources */ = {isa = PBXBuildFile; fileRef = 82D1511817CD0B0700968787 /* Paddle_blue.gif */; };
 		82D1511C17CD0B0700968787 /* Paddle_red.gif in Resources */ = {isa = PBXBuildFile; fileRef = 82D1511917CD0B0700968787 /* Paddle_red.gif */; };
 		82D1511D17CD0B0700968787 /* Puck.gif in Resources */ = {isa = PBXBuildFile; fileRef = 82D1511A17CD0B0700968787 /* Puck.gif */; };
+		82D1511F17CE459D00968787 /* Pause_Button.gif in Resources */ = {isa = PBXBuildFile; fileRef = 82D1511E17CE459D00968787 /* Pause_Button.gif */; };
 		82ED993117C6CEE9008CAA4D /* MenuLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82ED993017C6CEE9008CAA4D /* MenuLayer.mm */; };
 		82ED99BF17C7D869008CAA4D /* MyContactListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82ED99BE17C7D869008CAA4D /* MyContactListener.mm */; };
 		82ED99C617C7F079008CAA4D /* AlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82ED99C417C7F079008CAA4D /* AlertViewController.m */; };
@@ -631,6 +632,7 @@
 		82D1511817CD0B0700968787 /* Paddle_blue.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Paddle_blue.gif; sourceTree = "<group>"; };
 		82D1511917CD0B0700968787 /* Paddle_red.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Paddle_red.gif; sourceTree = "<group>"; };
 		82D1511A17CD0B0700968787 /* Puck.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Puck.gif; sourceTree = "<group>"; };
+		82D1511E17CE459D00968787 /* Pause_Button.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = Pause_Button.gif; path = Images/Pause_Button.gif; sourceTree = "<group>"; };
 		82ED992F17C6CEE9008CAA4D /* MenuLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuLayer.h; sourceTree = "<group>"; };
 		82ED993017C6CEE9008CAA4D /* MenuLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuLayer.mm; sourceTree = "<group>"; };
 		82ED99BD17C7D869008CAA4D /* MyContactListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyContactListener.h; sourceTree = "<group>"; };
@@ -752,6 +754,7 @@
 		829E02E217BAD0F20056CD4B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				82D1511E17CE459D00968787 /* Pause_Button.gif */,
 				82D1511817CD0B0700968787 /* Paddle_blue.gif */,
 				82D1511917CD0B0700968787 /* Paddle_red.gif */,
 				82D1511A17CD0B0700968787 /* Puck.gif */,
@@ -1380,6 +1383,7 @@
 				82D1511B17CD0B0700968787 /* Paddle_blue.gif in Resources */,
 				82D1511C17CD0B0700968787 /* Paddle_red.gif in Resources */,
 				82D1511D17CD0B0700968787 /* Puck.gif in Resources */,
+				82D1511F17CE459D00968787 /* Pause_Button.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
