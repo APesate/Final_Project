@@ -182,7 +182,16 @@ typedef enum{
     playerTwoScore = 0;
     
     [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGB565];
-    backgroundSprite = [CCSprite spriteWithFile:@"AirHockey_iPhone5.jpg"];
+    
+    if( winSize.width == 568 )
+    {
+        backgroundSprite = [CCSprite spriteWithFile:@"AirHockey_iPhone5.jpg"];
+    }
+    else
+    {
+        backgroundSprite = [CCSprite spriteWithFile:@"air_hockey_tabletop.jpg"];
+    }
+    
     backgroundSprite.position = ccp(winSize.width / 2,winSize.height / 2);
 
     [self addChild:backgroundSprite];
@@ -729,14 +738,6 @@ typedef enum{
     puckBody->SetLinearVelocity(b2Vec2(0, 0));
     puckBody->SetAngularVelocity(0);
     puckBody->SetUserData(nil);
-    
-//    paddleOne.body->SetLinearVelocity(b2Vec2(0, 0));
-//    paddleOne.body->SetUserData(nil);
-//    paddleOne.body->SetTransform(b2Vec2(90 / PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
-//
-//    paddleTwo.body->SetLinearVelocity(b2Vec2(0, 0));
-//    paddleTwo.body->SetUserData(nil);
-//    paddleTwo.body->SetTransform(b2Vec2(winSize.width/PTM_RATIO-winSize.width/(6*PTM_RATIO)+60/PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
 
     switch (position.integerValue) {
         case 1:{            
@@ -770,26 +771,37 @@ typedef enum{
             puckBody->SetTransform(b2Vec2(winSize.width / (2 * PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
             puckNewPosition = CGPointMake((puckBody->GetPosition()).x * PTM_RATIO, (puckBody->GetPosition()).y * PTM_RATIO);
             puckNewPosition = [[CCDirector sharedDirector] convertToGL:puckNewPosition];
-
+            
             [puckSprite stopAllActions];
             [puckSprite runAction:[CCSequence actionOne:[CCJumpTo actionWithDuration:0.7
                                                                             position:puckNewPosition
                                                                               height:100
                                                                                jumps:1]
-                                                    two:[CCCallFunc actionWithTarget:self selector:@selector(playSound)]]];;
+                                                    two:[CCCallFunc actionWithTarget:self selector:@selector(playSound)]]];
+            
+            paddleOne.body->SetLinearVelocity(b2Vec2(0, 0));
+            paddleOne.body->SetUserData(nil);
+            paddleOne.body->SetTransform(b2Vec2(90 / PTM_RATIO, winSize.height / (2 * PTM_RATIO)), 0.0);
+            
+            paddleTwo.body->SetLinearVelocity(b2Vec2(0, 0));
+            paddleTwo.body->SetUserData(nil);
+            paddleTwo.body->SetTransform(b2Vec2((winSize.width / PTM_RATIO) - (90 / PTM_RATIO),
+                                                winSize.height / (2 * PTM_RATIO)), 0.0);
+            
+            [paddleOne stopAllActions];
+            paddleOneNewPosition = CGPointMake((paddleOne.body->GetPosition()).x * PTM_RATIO, (paddleOne.body->GetPosition()).y * PTM_RATIO);
+            paddleOneNewPosition = [[CCDirector sharedDirector] convertToGL:paddleOneNewPosition];
+            [paddleOne runAction:[CCMoveTo actionWithDuration:1.0 position:paddleOneNewPosition]];
+            paddleOne.enabled = NO;
+            
+            [paddleTwo stopAllActions];
+            paddleTwoNewPosition = CGPointMake((paddleTwo.body->GetPosition()).x * PTM_RATIO, (paddleTwo.body->GetPosition()).y * PTM_RATIO);
+            paddleTwoNewPosition = [[CCDirector sharedDirector] convertToGL:paddleTwoNewPosition];
+            paddleTwo.enabled = NO;
             break;
         default:
             break;
     }
-        
-    [paddleOne stopAllActions];
-    paddleOneNewPosition = CGPointMake((paddleOne.body->GetPosition()).x * PTM_RATIO, (paddleOne.body->GetPosition()).y * PTM_RATIO);
-    paddleOneNewPosition = [[CCDirector sharedDirector] convertToGL:paddleOneNewPosition];
-    [paddleOne runAction:[CCMoveTo actionWithDuration:1.0 position:paddleOneNewPosition]];
-    
-    [paddleTwo stopAllActions];
-    paddleTwoNewPosition = CGPointMake((paddleTwo.body->GetPosition()).x * PTM_RATIO, (paddleTwo.body->GetPosition()).y * PTM_RATIO);
-    paddleTwoNewPosition = [[CCDirector sharedDirector] convertToGL:paddleTwoNewPosition];
 
     [sm post:@"deffendMode"];
     [[CCDirector sharedDirector] touchDispatcher].dispatchEvents = YES;
@@ -881,9 +893,10 @@ typedef enum{
         if([creationDate compare:peerDate] == NSOrderedAscending){
             isServer = YES;
             paddleOne.myID = _session.sessionID;
+            
             [self schedule:@selector(puckCoordinates) interval:0.025f];
             //[self schedule:@selector(puckSpeed) interval:0.10f];
-            [self schedule:@selector(lookingForPing) interval:0.05f];
+            [self schedule:@selector(lookingForPing) interval:0.10f];
         }
         NSLog(@"Am I the Server: %i", isServer);
     }else if([dataType isEqualToString:@"UpdateScore"]){
@@ -931,10 +944,6 @@ typedef enum{
     [_picker autorelease];
     
     // Start your game.
-#warning Here we start tracking the movement of the puck.
-//    [self schedule:@selector(paddleSpeed) interval:1.0f];
-//    [self schedule:@selector(paddleCoordinates) interval:1.0f];
-    
     NSDictionary* dataDictionary = @{@"Date": creationDate, @"DataType": @"CreationDateData"};
     NSData* data = [NSKeyedArchiver archivedDataWithRootObject:dataDictionary];
     NSError* error = nil;
@@ -1004,7 +1013,7 @@ typedef enum{
 -(void)showAlertFor:(AlertType)type{
     switch (type) {
         case ScoreAlert:
-            if(playerTwoScore == 7 || playerOneScore == 7){
+            if(playerTwoScore == 1 || playerOneScore == 1){
                
                 NSString* title = [NSString stringWithFormat:@"Player %@ Wins!", playerOneScore > playerTwoScore?@"One":@"Two"];
                 
@@ -1054,6 +1063,11 @@ typedef enum{
                 playerOneScore = 0;
                 playerTwoScore = 0;
                 
+                playerOneScoreLabel.string = @"0";
+                playerTwoScoreLabel.string = @"0";
+                
+                paddleOne.enabled = YES;
+                updateComputer ? paddleTwo.enabled = NO : paddleTwo.enabled = YES;
                 [self performSelector:@selector(updateComp) withObject:nil afterDelay:1.0];
                 
             }else if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Reconnect"]){

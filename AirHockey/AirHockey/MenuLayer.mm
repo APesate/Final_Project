@@ -10,6 +10,11 @@
 #import "HelloWorldLayer.h"
 #import "SimpleAudioEngine.h"
 
+#define IS_WIDESCREEN ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.width - ( double )568 ) < DBL_EPSILON )
+#define IS_IPHONE ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPhone" ] )
+#define IS_IPOD   ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPod touch" ] )
+#define IS_IPHONE_5 ( IS_IPHONE && IS_WIDESCREEN )
+
 @implementation MenuLayer
 
 +(CCScene *) scene
@@ -36,7 +41,15 @@
         
         [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGB565];
 
-        backgroundSprite = [CCSprite spriteWithFile:@"AirHockey_iPhone5.jpg"];
+        if( winSize.width == 568 )
+        {
+            backgroundSprite = [CCSprite spriteWithFile:@"AirHockey_iPhone5.jpg"];
+        }
+        else
+        {
+            backgroundSprite = [CCSprite spriteWithFile:@"air_hockey_tabletop.jpg"];
+        }
+        
         backgroundSprite.position = ccp(winSize.width / 2,winSize.height / 2);
         [backgroundImage addChild:backgroundSprite];
         
