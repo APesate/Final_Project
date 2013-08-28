@@ -939,22 +939,22 @@ typedef enum{
     [paddleOne.friendID addObject:peerID];
     paddleOne.session = session;
 
-    paddleTwo.session = [[GKSession alloc] init];
-    paddleTwo.friendID = [[NSMutableArray arrayWithCapacity:1] retain];
-    [paddleTwo.friendID addObject:peerID];
-    paddleTwo.session = session;
+//    paddleTwo.session = [[GKSession alloc] init];
+//    paddleTwo.friendID = [[NSMutableArray arrayWithCapacity:1] retain];
+//    [paddleTwo.friendID addObject:peerID];
+//    paddleTwo.session = session;
     
     
     [paddleOne.session setDataReceiveHandler:self withContext:nil];
-    [paddleTwo.session setDataReceiveHandler:self withContext:nil];
+    //[paddleTwo.session setDataReceiveHandler:self withContext:nil];
     
 
     session.delegate = self;
     [session setDataReceiveHandler: self withContext:nil];
     
     // Remove the picker.
-    _picker.delegate = nil;
     [_picker dismiss];
+    _picker.delegate = nil;
     [_picker autorelease];
     
     // Start your game.
@@ -1055,7 +1055,7 @@ typedef enum{
                                                             message:message
                                                            delegate:self
                                                   cancelButtonTitle:@"Exit"
-                                                  otherButtonTitles:@"Reconnect", nil];
+                                                  otherButtonTitles:nil];
             
             [alert setAlertViewStyle:UIAlertViewStyleDefault];
             [alert show];
@@ -1100,30 +1100,11 @@ typedef enum{
                 }
                 
                 [self performSelector:@selector(updateComp) withObject:nil afterDelay:1.0];
-                
-            }else if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Reconnect"]){
-                [self reconnect];
             }
             break;
         default:
             break;
     }
-}
-
--(void)reconnect{
-    [_session disconnectFromAllPeers];
-    _session.available = NO;
-    [_session setDataReceiveHandler: nil withContext: nil];
-    _session.delegate = nil;
-    [_session release];
-    
-    [paddleOne.session release];
-    [paddleTwo.session release];
-    
-    picker = [[GKPeerPickerController alloc] init];
-    picker.delegate = self;
-    picker.connectionTypesMask = GKPeerPickerConnectionTypeNearby;
-    [picker show];
 }
 
 #pragma mark - Pause Screen
@@ -1134,7 +1115,9 @@ typedef enum{
     coord = [[CCDirector sharedDirector] convertToGL:coord];
     
     if (CGRectContainsPoint(pauseButton.boundingBox, coord)) {
-        [self pauseScreen];
+        if(!isInPauseScreen){
+            [self pauseScreen];
+        }
     }
 }
 
@@ -1156,11 +1139,13 @@ typedef enum{
     switch (sGameMode) {
         case SinglePlayerMode:
             updateComputer = NO;
+            isInPauseScreen = YES;
             paddleOne.enabled = NO;
             [self createMenu];
             break;
         case MultiplayerMode:
             paddleOne.enabled = NO;
+            isInPauseScreen = YES;
             paddleTwo.enabled = NO;
             [self createMenu];
             break;

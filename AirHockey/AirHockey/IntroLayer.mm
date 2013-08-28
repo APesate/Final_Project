@@ -45,10 +45,9 @@
 		CCSprite *background;
         
 		if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ) {
-			background = [CCSprite spriteWithFile:@"Default.png"];
-			background.rotation = 90;
+			background = [CCSprite spriteWithFile:@"AirHockeyLogo.png"];
 		} else {
-			background = [CCSprite spriteWithFile:@"Default-Landscape~ipad.png"];
+			background = [CCSprite spriteWithFile:@"AirHockeyLogo.png"];
 		}
 		background.position = ccp(size.width/2, size.height/2);
 		
@@ -62,6 +61,6 @@
 -(void) onEnter
 {
 	[super onEnter];
-    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5 scene:[MenuLayer scene] ]];
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:5.0 scene:[MenuLayer scene] ]];
 }
 @end
