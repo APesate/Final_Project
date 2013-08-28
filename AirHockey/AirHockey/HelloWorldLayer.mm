@@ -174,7 +174,7 @@ typedef enum{
 -(void)initialize{
     winSize = [[CCDirector sharedDirector] winSize];
     isServer = NO;
-
+    isInPauseScreen = NO;
     creationDate = [[[NSDate alloc] init] retain];
     
     _peerID = [[NSMutableArray arrayWithCapacity:2] retain];
@@ -919,6 +919,9 @@ typedef enum{
     }else if([dataType isEqualToString:@"PauseScreen"]){
         isInPauseScreen = YES;
         [self pauseScreen];
+    }else if([dataType isEqualToString:@"ResumeGame"]){
+        isInPauseScreen = NO;
+        [self resume];
     }
     
 }
@@ -1024,7 +1027,7 @@ typedef enum{
 -(void)showAlertFor:(AlertType)type{
     switch (type) {
         case ScoreAlert:
-            if(playerTwoScore == 7 || playerOneScore == 7){
+            if(playerTwoScore == 1 || playerOneScore == 1){
                
                 NSString* title = [NSString stringWithFormat:@"Player %@ Wins!", playerOneScore > playerTwoScore?@"One":@"Two"];
                 
@@ -1114,14 +1117,17 @@ typedef enum{
     _session.delegate = nil;
     [_session release];
     
+    [paddleOne.session release];
+    [paddleTwo.session release];
+    
     picker = [[GKPeerPickerController alloc] init];
     picker.delegate = self;
     picker.connectionTypesMask = GKPeerPickerConnectionTypeNearby;
     [picker show];
 }
 
+#pragma mark - Pause Screen
 
-//To be able to go back to main menu mean while.
 -(void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
     UITouch* touch = [touches anyObject];
     CGPoint coord = [touch locationInView:touch.view];
@@ -1161,7 +1167,7 @@ typedef enum{
         case BluetoothMode:{
             paddleOne.enabled = NO;
             
-            if (isInPauseScreen) {
+            if (!isInPauseScreen) {
                 [self createMenu];
                 isInPauseScreen = YES;
                 NSDictionary* dataDictionary = @{@"DataType": @"PauseScreen"};
@@ -1202,26 +1208,35 @@ typedef enum{
     switch (sGameMode) {
         case SinglePlayerMode:
             updateComputer = YES;
-            paddleOne.enabled = YES;
             break;
         case MultiplayerMode:
             updateComputer = NO;
-            paddleOne.enabled = YES;
-            paddleTwo.enabled = NO;
+            paddleTwo.enabled = YES;
             break;
-        case BluetoothMode:
-            paddleOne.enabled = YES;
+        case BluetoothMode:{
+            NSDictionary* dataDictionary = @{@"DataType": @"ResumeGame"};
+            NSData* data = [NSKeyedArchiver archivedDataWithRootObject:dataDictionary];
+            NSError* error = nil;
+            
+            if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
+                NSLog(@"Error sending PauseScreen data to peer: %@", error);
+            }
             break;
+        }
         default:
             break;
     }
+    [self resume];
+}
+
+-(void)resume{
     isInPauseScreen = NO;
     isInGolArea = NO;
+    paddleOne.enabled = YES;
     
     puckBody->SetLinearVelocity(b2Vec2(puckSpeedBeforePause.x, puckSpeedBeforePause.y));
     
     [self removeChild:pauseLayer];
-    
 }
 
 -(void)exitButton: (CCMenuItem  *) menuItem{
