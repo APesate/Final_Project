@@ -143,7 +143,7 @@
 	[window_ makeKeyAndVisible];
     
     [[SimpleAudioEngine sharedEngine] preloadEffect:@"Air_hockey_Intro.mp3"];
-    //[[SimpleAudioEngine sharedEngine] playEffect:@"Air_hockey_Intro.mp3"];
+    [[SimpleAudioEngine sharedEngine] playEffect:@"Air_hockey_Intro.mp3"];
     
 	return YES;
 }
@@ -193,12 +193,12 @@
 	[[CCDirector sharedDirector] setNextDeltaTimeZero:YES];
 }
 
-//- (void) dealloc
-//{
-//	[window_ release];
-//	[navController_ release];
-//	
-//	[super dealloc];
-//}
+- (void) dealloc
+{
+	[window_ release];
+	[navController_ release];
+	
+	[super dealloc];
+}
 @end
 
