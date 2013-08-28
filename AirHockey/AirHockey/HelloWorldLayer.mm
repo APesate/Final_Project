@@ -28,10 +28,12 @@ typedef enum{
 @interface HelloWorldLayer(){
     PaddleSprite* paddleOne;
     PaddleSprite* paddleTwo;
+    CCLayerColor* pauseLayer;
     CCSprite* playerOneScoreSprite;
     CCSprite* playerTwoScoreSprite;
     CCSprite* backgroundSprite;
     CCSprite* puckSprite;
+    CCSprite* pauseButton;
     CCLabelTTF* playerOneScoreLabel;
     CCLabelTTF* playerTwoScoreLabel;
     b2Body* puckBody;
@@ -49,6 +51,7 @@ typedef enum{
     NSTimeInterval ping;
     CGSize winSize;
     CGPoint predictionDistance;
+    CGPoint puckSpeedBeforePause;
     CGFloat lastXCoordinate;
     CGFloat lastYCoordinate;
     int playerOneScore;
@@ -56,6 +59,7 @@ typedef enum{
     BOOL isServer;
     BOOL isInGolArea;
     BOOL updateComputer;
+    BOOL isInPauseScreen;
 
     // State Machine
     SMStateMachine *sm;
@@ -137,6 +141,7 @@ typedef enum{
 	if( (self=[super init])) {
         sGameMode = mode;
         self.delegate = aDelegate;
+        
         [self initialize];
 	}
 	return self;
@@ -157,6 +162,7 @@ typedef enum{
         picker.connectionTypesMask = GKPeerPickerConnectionTypeNearby;
         _layer = layer;
         _delegate = aDelegate;
+        
         [self.delegate retain];
         [self initialize];
         [picker show];
@@ -206,6 +212,11 @@ typedef enum{
     playerTwoScoreLabel.position = ccp(winSize.width / 2 + 28, winSize.height - 34.5);
     [playerTwoScoreLabel setColor:ccc3(255, 0, 0)];
     [self addChild:playerTwoScoreLabel];
+    
+    pauseButton = [[CCSprite alloc] initWithFile:@"Pause_Button.gif" rect:CGRectMake(0, 0, 164, 164)];
+    pauseButton.position = ccp(winSize.width - 20, winSize.height - 50);
+    pauseButton.scale = 0.40;
+    [self addChild:pauseButton];
     
     paddleOne = [[PaddleSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
     paddleOne.position = ccp(90, winSize.height / 2);
@@ -501,9 +512,6 @@ typedef enum{
     roundedCornerBody = world->CreateBody(&roundedCornerDef);
     roundedCornerBody->CreateFixture(&roundedCorner, 100);
     
-    
-    
-    
     GLESDebugDraw *debugDraw = new GLESDebugDraw(PTM_RATIO);
     debugDraw->DrawPolygon(vs, 5, b2Color(100, 100, 100));
     world->SetDebugDraw(debugDraw);
@@ -518,10 +526,6 @@ typedef enum{
    // debugDraw->GLESDebugDraw(PTM_RATIO);
     //debugDraw->DrawPolygon(vs, 5,b2Color(30, 30, 30));
     //world->SetDebugDraw(debugDraw);
-    
-    
-    
-    
 }
 
 
@@ -635,7 +639,6 @@ typedef enum{
         
         CGFloat xCoordinate = (-1) * (puckBody->GetLinearVelocity()).x;
         CGFloat yCoordinate = (-1) * (puckBody->GetLinearVelocity()).y;
-        
         
         if (lastXCoordinate < xCoordinate) {
             xCoordinate = xCoordinate + (xPrediction / winSize.width);
@@ -839,8 +842,6 @@ typedef enum{
     NSDictionary *dataDictionary = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:data];
     NSString* dataType = [dataDictionary objectForKey:@"DataType"];
     
-    
-    
     if([dataType isEqualToString:@"DataForPing"]){
         NSDate* pingDate = [NSDate date];
         ping = [pingDate timeIntervalSinceDate:creationDate];
@@ -909,6 +910,9 @@ typedef enum{
         isInGolArea = YES;
         
         [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:position afterDelay:1.0];
+    }else if([dataType isEqualToString:@"PauseScreen"]){
+        isInPauseScreen = YES;
+        [self pauseScreen];
     }
     
 }
@@ -938,6 +942,7 @@ typedef enum{
 
     session.delegate = self;
     [session setDataReceiveHandler: self withContext:nil];
+    
     // Remove the picker.
     _picker.delegate = nil;
     [_picker dismiss];
@@ -1013,7 +1018,7 @@ typedef enum{
 -(void)showAlertFor:(AlertType)type{
     switch (type) {
         case ScoreAlert:
-            if(playerTwoScore == 1 || playerOneScore == 1){
+            if(playerTwoScore == 7 || playerOneScore == 7){
                
                 NSString* title = [NSString stringWithFormat:@"Player %@ Wins!", playerOneScore > playerTwoScore?@"One":@"Two"];
                 
@@ -1067,7 +1072,24 @@ typedef enum{
                 playerTwoScoreLabel.string = @"0";
                 
                 paddleOne.enabled = YES;
-                updateComputer ? paddleTwo.enabled = NO : paddleTwo.enabled = YES;
+
+                switch (sGameMode) {
+                    case SinglePlayerMode:
+                        updateComputer = YES;
+                        paddleOne.enabled = YES;
+                        break;
+                    case MultiplayerMode:
+                        updateComputer = NO;
+                        paddleOne.enabled = YES;
+                        paddleTwo.enabled = NO;
+                        break;
+                    case BluetoothMode:
+                        paddleOne.enabled = YES;
+                        break;
+                    default:
+                        break;
+                }
+                
                 [self performSelector:@selector(updateComp) withObject:nil afterDelay:1.0];
                 
             }else if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Reconnect"]){
@@ -1099,9 +1121,113 @@ typedef enum{
     CGPoint coord = [touch locationInView:touch.view];
     coord = [[CCDirector sharedDirector] convertToGL:coord];
     
-    if (CGRectContainsPoint(playerOneScoreLabel.boundingBox, coord)) {
-        [self.delegate goToMenuLayer];
+    if (CGRectContainsPoint(pauseButton.boundingBox, coord)) {
+        [self pauseScreen];
     }
 }
 
+-(void)pauseScreen{
+    pauseLayer = [[CCLayerColor alloc] initWithColor:ccc4(100, 100, 100, 150)];
+    [self addChild:pauseLayer];
+    
+    paddleOne.body->SetLinearVelocity(b2Vec2(0, 0));
+    paddleTwo.body->SetLinearVelocity(b2Vec2(0, 0));
+    puckSpeedBeforePause = CGPointMake((puckBody->GetLinearVelocity()).x, (puckBody->GetLinearVelocity()).y);
+    puckBody->SetLinearVelocity(b2Vec2(0, 0));
+    
+    if(isInGolArea){
+        puckSpeedBeforePause = CGPointMake(0, 0);
+    }else{
+        isInGolArea = YES;
+    }
+    
+    switch (sGameMode) {
+        case SinglePlayerMode:
+            updateComputer = NO;
+            paddleOne.enabled = NO;
+            [self createMenu];
+            break;
+        case MultiplayerMode:
+            paddleOne.enabled = NO;
+            paddleTwo.enabled = NO;
+            [self createMenu];
+            break;
+        case BluetoothMode:{
+            paddleOne.enabled = NO;
+            
+            if (isInPauseScreen) {
+                [self createMenu];
+                isInPauseScreen = YES;
+                NSDictionary* dataDictionary = @{@"DataType": @"PauseScreen"};
+                NSData* data = [NSKeyedArchiver archivedDataWithRootObject:dataDictionary];
+                NSError* error = nil;
+                
+                if(![_session sendData:data toPeers:_peerID withDataMode:GKSendDataReliable error:&error]){
+                    NSLog(@"Error sending PauseScreen data to peer: %@", error);
+                }
+            }
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+-(void)createMenu{
+    CCMenuItemFont* resumeButton = [CCMenuItemFont itemWithString:@"Resume Game"
+                                                           target:self
+                                                         selector:@selector(resumeGame:)];
+    [resumeButton setColor:ccc3(71, 209, 248)];
+    
+    CCMenuItemFont* exitButton = [CCMenuItemFont itemWithString:@"Quit Game"
+                                                         target:self
+                                                       selector:@selector(exitButton:)];
+    [exitButton setColor:ccc3(71, 209, 248)];
+    
+    CCMenu *pauseMenu = [CCMenu menuWithItems: resumeButton, exitButton, nil];
+    
+    
+    [pauseMenu alignItemsVerticallyWithPadding:30];
+    
+    [pauseLayer addChild:pauseMenu];
+}
+
+-(void)resumeGame: (CCMenuItem  *) menuItem{
+    switch (sGameMode) {
+        case SinglePlayerMode:
+            updateComputer = YES;
+            paddleOne.enabled = YES;
+            break;
+        case MultiplayerMode:
+            updateComputer = NO;
+            paddleOne.enabled = YES;
+            paddleTwo.enabled = NO;
+            break;
+        case BluetoothMode:
+            paddleOne.enabled = YES;
+            break;
+        default:
+            break;
+    }
+    isInPauseScreen = NO;
+    isInGolArea = NO;
+    
+    puckBody->SetLinearVelocity(b2Vec2(puckSpeedBeforePause.x, puckSpeedBeforePause.y));
+    
+    [self removeChild:pauseLayer];
+    
+}
+
+-(void)exitButton: (CCMenuItem  *) menuItem{
+    if(sGameMode == BluetoothMode){
+        [_session disconnectFromAllPeers];
+        _session.available = NO;
+        [_session setDataReceiveHandler: nil withContext: nil];
+        _session.delegate = nil;
+        [_session release];
+    }
+    
+    [self removeChild:pauseLayer];
+    [self.delegate goToMenuLayer];
+}
 @end
