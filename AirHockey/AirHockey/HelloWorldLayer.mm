@@ -290,7 +290,7 @@ typedef enum{
     float windowSizeX = winSize.width/PTM_RATIO;
     
     float positionPaddleY = (puckRatio*5.26)+2.364;
-    float positionPaddleX = windowSizeX - sqrtf(powf((windowSizeY/6+40/PTM_RATIO),2)-powf((positionPaddleY-windowSizeY/2),2))+1;
+    float positionPaddleX = windowSizeX - sqrtf(powf((windowSizeY/6+40/PTM_RATIO),2)-powf((positionPaddleY-windowSizeY/2),2))-.5;
     
     //CCLOG(@"X: %f Y: %f",positionPaddleX,positionPaddleY);
 
