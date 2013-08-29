@@ -72,34 +72,40 @@
         
         [self addChild:backgroundImage];
         
-        CCLayerColor* fogLayer = [[CCLayerColor alloc] initWithColor:ccc4(100, 100, 100, 150)];
+        CCLayerColor* fogLayer = [[CCLayerColor alloc] initWithColor:ccc4(100, 100, 100, 190)];
         [self addChild:fogLayer];
         
         CCMenuItemFont* singlePlayerButton = [CCMenuItemFont itemWithString:@"Single Player"
                                                        target:self
                                                      selector:@selector(playSinglePlayerMode:)];
-        [singlePlayerButton setColor:ccc3(71, 209, 248)];
+        [singlePlayerButton setColor:ccc3(241, 196, 15)];
         
         CCMenuItemFont* twoPlayersButton = [CCMenuItemFont itemWithString:@"Two Players"
                                                        target:self
                                                      selector:@selector(playMultiplayerMode:)];
-        [twoPlayersButton setColor:ccc3(71, 209, 248)];
+        [twoPlayersButton setColor:ccc3(241, 196, 15)];
         
         CCMenuItemFont* multiplayerButton = [CCMenuItemFont itemWithString:@"Multiplayer"
                                                        target:self
                                                      selector:@selector(hostGameMode:)];
-        [multiplayerButton setColor:ccc3(71, 209, 248)];
+        [multiplayerButton setColor:ccc3(241, 196, 15)];
         
         CCMenuItemFont* settingsButton = [CCMenuItemFont itemWithString:@"Settings"
                                                                     target:self
-                                                                  selector:@selector(hostGameMode:)];
-        [multiplayerButton setColor:ccc3(71, 209, 248)];
+                                                                  selector:@selector(settingsMenu:)];
+        [settingsButton setColor:ccc3(241, 196, 15)];
         
         CCMenu *myMenu = [CCMenu menuWithItems: singlePlayerButton, twoPlayersButton, multiplayerButton, settingsButton, nil];
         
         [myMenu alignItemsVerticallyWithPadding:10];
+        myMenu.position = ccp(winSize.width / 2, (winSize.height / 2) - 35);
 
         [self addChild:myMenu];
+        
+        CCSprite* logo = [CCSprite spriteWithFile:@"AirHockeyLogo.png"];
+        logo.position = ccp(winSize.width / 2, winSize.height - 50);
+
+        [self addChild: logo];
     }
     
     return self;
@@ -119,6 +125,11 @@
 {
     HelloWorldLayer* layer = [HelloWorldLayer nodeWithLayer:layer gameMode:BluetoothMode andDelegate:self];
     [[CCDirector sharedDirector] replaceScene:[CCTransitionCrossFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneForLayer:layer]]];
+}
+
+- (void) settingsMenu: (CCMenuItem  *) menuItem
+{
+    
 }
 
 #pragma mark HelloWorldLayerDelegate

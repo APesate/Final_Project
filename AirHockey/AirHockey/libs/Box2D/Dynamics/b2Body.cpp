@@ -201,7 +201,7 @@ b2Fixture* b2Body::CreateMyFixture(const b2Shape* shape, float32 density)
 	b2FixtureDef def;
 	def.shape = shape;
 	def.density = density;
-    def.filter.groupIndex = -1;
+    def.filter.groupIndex = -2;
     
 	return CreateFixture(&def);
 }

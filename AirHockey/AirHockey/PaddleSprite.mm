@@ -8,6 +8,8 @@
 
 #import "PaddleSprite.h"
 
+#define PADDLE_RADIUS 30.0
+
 @implementation PaddleSprite{
     CGSize winSize;
 }
@@ -41,7 +43,7 @@
     _body = world->CreateBody(&bodyDef);
     
     b2CircleShape paddle;
-    paddle.m_radius = 30.0/PTM_RATIO;
+    paddle.m_radius = PADDLE_RADIUS/PTM_RATIO;
     
     b2FixtureDef bodyTextureDef;
     bodyTextureDef.shape = &paddle;
@@ -187,7 +189,10 @@
 }
 
 -(void)movePaddleToX:(CGFloat)xCoordinate andY:(CGFloat)yCoordinate{
-    _mouseJoint->SetTarget(b2Vec2(xCoordinate, yCoordinate));
+    if ((self.tag == 1 && xCoordinate < (winSize.width / (2 * PTM_RATIO)) - PADDLE_RADIUS / PTM_RATIO)
+        || (self.tag == 2 && xCoordinate > (winSize.width / (2 * PTM_RATIO)) + PADDLE_RADIUS / PTM_RATIO)) {
+        _mouseJoint->SetTarget(b2Vec2(xCoordinate, yCoordinate));
+    }
 }
 
 -(void)destroyLink

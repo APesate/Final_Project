@@ -13,7 +13,7 @@
 #import "MyContactListener.h"
 #import "GLES-Render.h"
 
-#define MAX_PUCK_SPEED 30.0
+#define MAX_PUCK_SPEED 25.0
 
 static GameMode sGameMode;
 
@@ -354,40 +354,6 @@ typedef enum{
     paddleTwo.body->ApplyForce(force, paddleTwo.body->GetWorldCenter() );
 }
 
--(void) dealloc
-{
-	delete world;
-	world = NULL;
-    puckBody = NULL;
-    scoreImagesArray = nil;
-    [scoreImagesArray release];
-    paddleOne = nil;
-    [paddleOne release];
-    paddleTwo = nil;
-    [paddleTwo release];
-    playerOneScoreSprite = nil;
-    [playerOneScoreSprite release];
-    playerTwoScoreSprite = nil;
-    [playerTwoScoreSprite release];
-    backgroundSprite = nil;
-    [backgroundSprite release];
-    puckSprite = nil;
-    [puckSprite release];
-    _delegate = nil;
-    [_delegate release];
-    _layer = nil;
-    [_layer release];
-    [_session disconnectFromAllPeers];
-    _session.available = NO;
-    [_session setDataReceiveHandler: nil withContext: nil];
-    _session.delegate = nil;
-    [_session release];
-    creationDate = nil;
-    [creationDate release];
-    delete _contactListener;
-	[super dealloc];
-}
-
 #pragma mark - Init Physics
 
 -(void) initPhysics
@@ -419,7 +385,7 @@ typedef enum{
     // Create contact listener
     _contactListener = new MyContactListener();
     world->SetContactListener(_contactListener);
-    
+
     // Preload effect
     [[SimpleAudioEngine sharedEngine] preloadEffect:@"Air Hockey Paddle Hit.mp3"];
     [[SimpleAudioEngine sharedEngine] preloadEffect:@"Air hockey Goal.mp3"];
@@ -444,35 +410,43 @@ typedef enum{
 	
 	// bottom
 	
-	groundBox.Set(b2Vec2(0.5, 0.5), b2Vec2(winSize.width/PTM_RATIO, 0.5));
+	groundBox.Set(b2Vec2(winSize.height/PTM_RATIO/20, winSize.height/PTM_RATIO/20),
+                  b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO/20));
 	groundBody->CreateFixture(&groundBox,0);
 	
 	// top
-	groundBox.Set(b2Vec2(.5, (winSize.height/PTM_RATIO)-0.5), b2Vec2((winSize.width/PTM_RATIO)-0.5, (winSize.height/PTM_RATIO)-0.5));
+	groundBox.Set(b2Vec2(winSize.height/PTM_RATIO/20, (winSize.height/PTM_RATIO)-winSize.height/PTM_RATIO/20),
+                  b2Vec2((winSize.width/PTM_RATIO)-winSize.height/PTM_RATIO/20, (winSize.height/PTM_RATIO)-winSize.height/PTM_RATIO/20));
 	groundBody->CreateFixture(&groundBox,0);
 	
 	// left
-	groundBox.Set(b2Vec2(0.5, winSize.height/(3 * PTM_RATIO)), b2Vec2(0.5, 0));
+	groundBox.Set(b2Vec2(winSize.height/PTM_RATIO/20, winSize.height/(4 * PTM_RATIO)),
+                  b2Vec2(winSize.height/PTM_RATIO/20, 0));
 	groundBody->CreateFixture(&groundBox,0);
     
-    groundBox.Set(b2Vec2(0.5, 2 * winSize.height/(3 * PTM_RATIO)), b2Vec2(0.5, winSize.height / PTM_RATIO));
+    groundBox.Set(b2Vec2(winSize.height/PTM_RATIO/20, 2.95 * winSize.height/(4 * PTM_RATIO)),
+                  b2Vec2(winSize.height/PTM_RATIO/20, winSize.height / PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
     
     // left boundary for paddle
-    groundBox.Set(b2Vec2(0, winSize.height/PTM_RATIO), b2Vec2(0, 0));
+    groundBox.Set(b2Vec2(0, winSize.height/PTM_RATIO),
+                  b2Vec2(0, 0));
 	groundBody->CreateMyFixture(&groundBox,0); //CreateMyFixture method created in b2Body class
 	
     
 	// right
-	groundBox.Set(b2Vec2((winSize.width/ PTM_RATIO)-0.5, winSize.height/(3 * PTM_RATIO)), b2Vec2((winSize.width/PTM_RATIO)-0.5, 0));
+	groundBox.Set(b2Vec2((winSize.width/ PTM_RATIO)-winSize.height/PTM_RATIO/20, winSize.height/(4 * PTM_RATIO)),
+                  b2Vec2((winSize.width/PTM_RATIO)-winSize.height/PTM_RATIO/20, 0));
 	groundBody->CreateFixture(&groundBox,0);
     
-	groundBox.Set(b2Vec2((winSize.width/ PTM_RATIO)-0.5, 2 * winSize.height/(3 * PTM_RATIO)), b2Vec2((winSize.width/ PTM_RATIO)-0.5, winSize.height/PTM_RATIO));
+	groundBox.Set(b2Vec2((winSize.width/ PTM_RATIO)-winSize.height/PTM_RATIO/20, 2.95 * winSize.height/(4 * PTM_RATIO)),
+                  b2Vec2((winSize.width/ PTM_RATIO)-winSize.height/PTM_RATIO/20, winSize.height/PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
     
     
     // right boundary for paddle   http://www.iforce2d.net/b2dtut/collision-filtering
-    groundBox.Set(b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO), b2Vec2(winSize.width/PTM_RATIO, 0));
+    groundBox.Set(b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO),
+                  b2Vec2(winSize.width/PTM_RATIO, 0));
 	groundBody->CreateMyFixture(&groundBox,0); //CreateMyFixture method created in b2Body class
     
     // Create rounded corner
@@ -527,7 +501,7 @@ typedef enum{
     flags += 0x0002;
     flags += 0x0010;
     
-    debugDraw->SetFlags(flags);
+    //debugDraw->SetFlags(flags);
     //debugDraw = new GLESDebugDraw;
    // debugDraw->GLESDebugDraw(PTM_RATIO);
     //debugDraw->DrawPolygon(vs, 5,b2Color(30, 30, 30));
@@ -549,11 +523,11 @@ typedef enum{
 
     bodyFixtureDef.shape = &paddleTwoShape;
     bodyFixtureDef.density = 0.8f;
-    bodyFixtureDef.friction = (0.4 * bodyFixtureDef.density);
+    bodyFixtureDef.friction = (0.5 * bodyFixtureDef.density);
     bodyFixtureDef.restitution = 1.2f;
-    bodyFixtureDef.filter.groupIndex = -1;
+    bodyFixtureDef.filter.groupIndex = -2;
     puckBody->CreateFixture(&bodyFixtureDef);
-    puckBody->SetLinearDamping(0.4 * puckBody->GetMass());
+    puckBody->SetLinearDamping(0.5 * puckBody->GetMass());
     puckBody->SetAngularDamping(0.5 * puckBody->GetMass());
     puckBody->SetFixedRotation(YES);
     
@@ -834,6 +808,23 @@ typedef enum{
     paddleTwo.body->SetUserData(paddleTwo);
     puckBody->SetUserData(puckSprite);
     
+    switch (sGameMode) {
+        case SinglePlayerMode:
+            [self performSelector:@selector(updateComp) withObject:nil afterDelay:1.0];
+            paddleOne.enabled = YES;
+            break;
+        case MultiplayerMode:
+            updateComputer = NO;
+            paddleOne.enabled = YES;
+            paddleTwo.enabled = YES;
+            break;
+        case BluetoothMode:
+            paddleOne.enabled = YES;
+            break;
+        default:
+            break;
+    }
+    
     if (_session == nil) {
         isInGolArea = NO;
     }else if (isServer){
@@ -905,7 +896,6 @@ typedef enum{
             //[self schedule:@selector(puckSpeed) interval:0.10f];
             [self schedule:@selector(lookingForPing) interval:0.10f];
         }
-        NSLog(@"Am I the Server: %i", isServer);
     }else if([dataType isEqualToString:@"UpdateScore"]){
         playerOneScore = ((NSNumber *)[dataDictionary objectForKey:@"One"]).integerValue;
         playerTwoScore = ((NSNumber *)[dataDictionary objectForKey:@"Two"]).integerValue;
@@ -1027,7 +1017,7 @@ typedef enum{
 -(void)showAlertFor:(AlertType)type{
     switch (type) {
         case ScoreAlert:
-            if(playerTwoScore == 1 || playerOneScore == 1){
+            if(playerTwoScore == 7 || playerOneScore == 7){
                
                 NSString* title = [NSString stringWithFormat:@"Player %@ Wins!", playerOneScore > playerTwoScore?@"One":@"Two"];
                 
@@ -1072,7 +1062,7 @@ typedef enum{
         case 0:
             [self.delegate goToMenuLayer];
             break;
-        case 1:
+        case 1:{
             if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Rematch"]) {
                 playerOneScore = 0;
                 playerTwoScore = 0;
@@ -1080,17 +1070,15 @@ typedef enum{
                 playerOneScoreLabel.string = @"0";
                 playerTwoScoreLabel.string = @"0";
                 
-                paddleOne.enabled = YES;
-
                 switch (sGameMode) {
                     case SinglePlayerMode:
-                        updateComputer = YES;
+                        [self performSelector:@selector(updateComp) withObject:nil afterDelay:1.0];
                         paddleOne.enabled = YES;
                         break;
                     case MultiplayerMode:
                         updateComputer = NO;
                         paddleOne.enabled = YES;
-                        paddleTwo.enabled = NO;
+                        paddleTwo.enabled = YES;
                         break;
                     case BluetoothMode:
                         paddleOne.enabled = YES;
@@ -1098,9 +1086,8 @@ typedef enum{
                     default:
                         break;
                 }
-                
-                [self performSelector:@selector(updateComp) withObject:nil afterDelay:1.0];
             }
+        }
             break;
         default:
             break;
@@ -1122,7 +1109,7 @@ typedef enum{
 }
 
 -(void)pauseScreen{
-    pauseLayer = [[CCLayerColor alloc] initWithColor:ccc4(100, 100, 100, 150)];
+    pauseLayer = [[CCLayerColor alloc] initWithColor:ccc4(100, 100, 100, 190)];
     [self addChild:pauseLayer];
     
     paddleOne.body->SetLinearVelocity(b2Vec2(0, 0));
@@ -1174,12 +1161,12 @@ typedef enum{
     CCMenuItemFont* resumeButton = [CCMenuItemFont itemWithString:@"Resume Game"
                                                            target:self
                                                          selector:@selector(resumeGame:)];
-    [resumeButton setColor:ccc3(71, 209, 248)];
+    [resumeButton setColor:ccc3(241, 196, 15)];
     
     CCMenuItemFont* exitButton = [CCMenuItemFont itemWithString:@"Quit Game"
                                                          target:self
                                                        selector:@selector(exitButton:)];
-    [exitButton setColor:ccc3(71, 209, 248)];
+    [exitButton setColor:ccc3(241, 196, 15)];
     
     CCMenu *pauseMenu = [CCMenu menuWithItems: resumeButton, exitButton, nil];
     
@@ -1235,5 +1222,41 @@ typedef enum{
     
     [self removeChild:pauseLayer];
     [self.delegate goToMenuLayer];
+}
+
+#pragma mark - Memory Management
+
+-(void) dealloc
+{
+	delete world;
+	world = NULL;
+    puckBody = NULL;
+    scoreImagesArray = nil;
+    [scoreImagesArray release];
+    paddleOne = nil;
+    [paddleOne release];
+    paddleTwo = nil;
+    [paddleTwo release];
+    playerOneScoreSprite = nil;
+    [playerOneScoreSprite release];
+    playerTwoScoreSprite = nil;
+    [playerTwoScoreSprite release];
+    backgroundSprite = nil;
+    [backgroundSprite release];
+    puckSprite = nil;
+    [puckSprite release];
+    _delegate = nil;
+    [_delegate release];
+    _layer = nil;
+    [_layer release];
+    [_session disconnectFromAllPeers];
+    _session.available = NO;
+    [_session setDataReceiveHandler: nil withContext: nil];
+    _session.delegate = nil;
+    [_session release];
+    creationDate = nil;
+    [creationDate release];
+    delete _contactListener;
+	[super dealloc];
 }
 @end
