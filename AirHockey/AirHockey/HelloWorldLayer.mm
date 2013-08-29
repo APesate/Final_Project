@@ -799,7 +799,7 @@ typedef enum{
 }
 
 -(void)playSound{
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"]) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] integerValue]) {
         [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey puck set down wobble.mp3"];
     }
     puckBody->SetAngularVelocity(10);
@@ -1191,12 +1191,12 @@ typedef enum{
     CCMenuItemFont* resumeButton = [CCMenuItemFont itemWithString:@"Resume Game"
                                                            target:self
                                                          selector:@selector(resumeGame:)];
-    [resumeButton setColor:ccc3(241, 196, 15)];
+    [resumeButton setColor:ccc3(24, 38, 176)];
     
     CCMenuItemFont* exitButton = [CCMenuItemFont itemWithString:@"Quit Game"
                                                          target:self
                                                        selector:@selector(exitButton:)];
-    [exitButton setColor:ccc3(241, 196, 15)];
+    [exitButton setColor:ccc3(24, 38, 176)];
     
     CCMenu *pauseMenu = [CCMenu menuWithItems: resumeButton, exitButton, nil];
     
