@@ -93,7 +93,7 @@
     //
     
     CCSprite* paddleOne = [[CCSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_One_Color"]] rect:CGRectMake(0, 0, 120, 120)];
-    paddleOne.position = ccp(90, winSize.height / 2);
+    paddleOne.position = ccp(90, winSize.height / 3);
     paddleOne.scale = 0.50;
     [backgroundImage addChild:paddleOne];
     [paddleOne release];
@@ -123,7 +123,7 @@
     [paddleFour release];
     
     CCSprite* paddleTwo = [[CCSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_Two_Color"]] rect:CGRectMake(0, 0, 120, 120)];
-    paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
+    paddleTwo.position = ccp(winSize.width - 90, winSize.height / 3);
     paddleTwo.scale = 0.50;
     [backgroundImage addChild:paddleTwo];
     [paddleTwo release];

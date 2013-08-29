@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		822F7CDB17CBEA9B00DE4AE6 /* PauseLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 822F7CDA17CBEA9B00DE4AE6 /* PauseLayer.m */; };
 		8248340D17C2B83D0050BA27 /* SMAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 824833FB17C2B83D0050BA27 /* SMAction.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		8248340E17C2B83D0050BA27 /* SMDecision.m in Sources */ = {isa = PBXBuildFile; fileRef = 824833FE17C2B83D0050BA27 /* SMDecision.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		8248340F17C2B83D0050BA27 /* SMMonitorNSLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340017C2B83D0050BA27 /* SMMonitorNSLog.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -228,8 +227,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		822F7CD917CBEA9B00DE4AE6 /* PauseLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PauseLayer.h; sourceTree = "<group>"; };
-		822F7CDA17CBEA9B00DE4AE6 /* PauseLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PauseLayer.m; sourceTree = "<group>"; };
 		824833FA17C2B83D0050BA27 /* SMAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMAction.h; sourceTree = "<group>"; };
 		824833FB17C2B83D0050BA27 /* SMAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMAction.m; sourceTree = "<group>"; };
 		824833FC17C2B83D0050BA27 /* SMCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMCommon.h; sourceTree = "<group>"; };
@@ -754,8 +751,6 @@
 				82ED993017C6CEE9008CAA4D /* MenuLayer.mm */,
 				8278015717CE92F800DF35D4 /* SettingsLayer.h */,
 				8278015817CE92F800DF35D4 /* SettingsLayer.m */,
-				822F7CD917CBEA9B00DE4AE6 /* PauseLayer.h */,
-				822F7CDA17CBEA9B00DE4AE6 /* PauseLayer.m */,
 				829E051817BAE1D80056CD4B /* PaddleSprite.h */,
 				829E051917BAE1D80056CD4B /* PaddleSprite.mm */,
 				829E050B17BAD0F80056CD4B /* IntroLayer.h */,
@@ -1642,7 +1637,6 @@
 				82ED993117C6CEE9008CAA4D /* MenuLayer.mm in Sources */,
 				82ED99BF17C7D869008CAA4D /* MyContactListener.mm in Sources */,
 				82ED99C617C7F079008CAA4D /* AlertViewController.m in Sources */,
-				822F7CDB17CBEA9B00DE4AE6 /* PauseLayer.m in Sources */,
 				8278015917CE92F800DF35D4 /* SettingsLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
