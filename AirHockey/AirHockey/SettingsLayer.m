@@ -9,6 +9,9 @@
 #import "SettingsLayer.h"
 
 @implementation SettingsLayer
+{
+    BOOL actualState;
+}
 
 @synthesize delegate = _delegate;
 
@@ -123,6 +126,8 @@
     
     [myMenu alignItemsVerticallyWithPadding:10];
     
+    actualState = [[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] boolValue];
+    
     [self addChild:myMenu];
 }
 
@@ -131,7 +136,6 @@
 }
 
 -(void)gameSoundsState{
-    BOOL actualState = [[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"];
     
     if(actualState){
         actualState = NO;

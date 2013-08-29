@@ -29,7 +29,7 @@
     self = [super init];
     
     if(self){
-        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"firstRun"]) {
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"firstRun"] integerValue]) {
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstRun"];
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"soundsActivated"];
             [[NSUserDefaults standardUserDefaults] synchronize];

@@ -578,7 +578,7 @@ typedef enum{
             playerOneScoreLabel.string = [NSString stringWithFormat:@"%i", playerOneScore];
             
             //[paddleOne destroyLink];
-            if ([[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"]) {
+            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] integerValue]) {
                 [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3"];
             }
             
@@ -592,7 +592,7 @@ typedef enum{
             playerTwoScoreLabel.string = [NSString stringWithFormat:@"%i", playerTwoScore];
             
             //[paddleOne destroyLink];
-            if ([[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"]) {
+            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] integerValue]) {
                 [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3"];
             }
             
