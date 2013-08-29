@@ -35,6 +35,7 @@
     self = [super init];
     
     if(self){
+        
         CGSize winSize = [[CCDirector sharedDirector] winSize];
         CCLayer* backgroundImage = [[CCLayer alloc] init];
         CCSprite* backgroundSprite;
