@@ -66,6 +66,8 @@ typedef enum{
     SMStateMachine *sm;
     SMState *attack;
     SMState *deffend;
+    
+
 
 }
 
@@ -173,6 +175,7 @@ typedef enum{
 }
 
 -(void)initialize{
+
     
     winSize = [[CCDirector sharedDirector] winSize];
     isServer = NO;
@@ -496,20 +499,6 @@ typedef enum{
     roundedCornerBody = world->CreateBody(&roundedCornerDef);
     roundedCornerBody->CreateFixture(&roundedCorner, 100);
     
-    GLESDebugDraw *debugDraw = new GLESDebugDraw(PTM_RATIO);
-    debugDraw->DrawPolygon(vs, 5, b2Color(100, 100, 100));
-    world->SetDebugDraw(debugDraw);
-    
-    uint32 flags = 0;
-    flags += 0x0001;
-    flags += 0x0002;
-    flags += 0x0010;
-    
-    //debugDraw->SetFlags(flags);
-    //debugDraw = new GLESDebugDraw;
-   // debugDraw->GLESDebugDraw(PTM_RATIO);
-    //debugDraw->DrawPolygon(vs, 5,b2Color(30, 30, 30));
-    //world->SetDebugDraw(debugDraw);
 }
 
 
