@@ -88,17 +88,57 @@
     
     [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
     
+    //
+    
     CCSprite* paddleOne = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
-    paddleOne.position = ccp(90, winSize.height / 2);
+    paddleOne.position = ccp(90, winSize.height / 3);
     paddleOne.scale = 0.50;
     [backgroundImage addChild:paddleOne];
     [paddleOne release];
     
+    CCSprite* paddleSeven = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
+    paddleSeven.position = ccp(90, 2*winSize.height / 3);
+    paddleSeven.scale = 0.50;
+    [backgroundImage addChild:paddleSeven];
+    [paddleSeven release];
+    
+    CCSprite* paddleFive = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
+    paddleFive.position = ccp(180, 2*winSize.height / 3);
+    paddleFive.scale = 0.50;
+    [backgroundImage addChild:paddleFive];
+    [paddleFive release];
+    
+    CCSprite* paddleThree = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
+    paddleThree.position = ccp(180, winSize.height / 3);
+    paddleThree.scale = 0.50;
+    [backgroundImage addChild:paddleThree];
+    [paddleThree release];
+    
+    CCSprite* paddleFour = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
+    paddleFour.position = ccp(400, winSize.height / 3);
+    paddleFour.scale = 0.50;
+    [backgroundImage addChild:paddleFour];
+    [paddleFour release];
+    
     CCSprite* paddleTwo = [[CCSprite alloc] initWithFile:@"Paddle_red.gif" rect:CGRectMake(0, 0, 120, 120)];
-    paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
+    paddleTwo.position = ccp(winSize.width - 90, winSize.height / 3);
     paddleTwo.scale = 0.50;
     [backgroundImage addChild:paddleTwo];
     [paddleTwo release];
+    
+    CCSprite* paddleSix = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
+    paddleSix.position = ccp(400, 2*winSize.height / 3);
+    paddleSix.scale = 0.50;
+    [backgroundImage addChild:paddleSix];
+    [paddleSix release];
+    
+    CCSprite* paddleEight = [[CCSprite alloc] initWithFile:@"Paddle_red.gif" rect:CGRectMake(0, 0, 120, 120)];
+    paddleEight.position = ccp(winSize.width - 90, 2*winSize.height / 3);
+    paddleEight.scale = 0.50;
+    [backgroundImage addChild:paddleEight];
+    [paddleEight release];
+    
+    
     CCSprite* puckSprite = [[CCSprite alloc] initWithFile:@"Puck.gif" rect:CGRectMake(0, 0, 215, 215)];
     puckSprite.position = ccp(winSize.width / 2, winSize.height / 2);
     puckSprite.scale = 0.20;
@@ -122,9 +162,8 @@
                                                        selector:@selector(exitScreen:)];
     [exitButton setColor:ccc3(71, 209, 248)];
     
-    CCMenu *myMenu = [CCMenu menuWithItems: selectColorButton, soundsButton, exitButton, nil];
-    
-    [myMenu alignItemsVerticallyWithPadding:10];
+    CCMenu *myMenu = [CCMenu menuWithItems: exitButton, nil];
+    [myMenu setPosition: CGPointMake(winSize.width/7, 3.4*winSize.height/4) ];
     
     actualState = [[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] boolValue];
     
