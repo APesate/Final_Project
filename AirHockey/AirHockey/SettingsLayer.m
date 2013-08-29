@@ -10,7 +10,9 @@
 
 @implementation SettingsLayer
 {
+    CCSprite* speakerIcon;
     BOOL actualState;
+    NSString* soundState;
 }
 
 @synthesize delegate = _delegate;
@@ -148,26 +150,25 @@
     [self addChild:backgroundImage];
     [backgroundImage release];
     
-    CCMenuItemFont* selectColorButton = [CCMenuItemFont itemWithString:@"Choose color:"
-                                                                target:self
-                                                              selector:@selector(selectColor)];
-    [selectColorButton setColor:ccc3(71, 209, 248)];
-    
-    
-    CCMenuItemFont* soundsButton = [CCMenuItemFont itemWithString:@"Game Sounds"
-                                                           target:self
-                                                         selector:@selector(gameSoundsState)];
-    [soundsButton setColor:ccc3(71, 209, 248)];
-    
     CCMenuItemFont* exitButton = [CCMenuItemFont itemWithString:@"Back"
                                                          target:self
                                                        selector:@selector(exitScreen:)];
-    [exitButton setColor:ccc3(71, 209, 248)];
+    [exitButton setColor:ccc3(24, 38, 176)];
     
     CCMenu *myMenu = [CCMenu menuWithItems: exitButton, nil];
     [myMenu setPosition: CGPointMake(winSize.width/7, 3.4*winSize.height/4) ];
     
     actualState = [[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] boolValue];
+    
+    if(actualState){
+        soundState = @"Unmute";
+    }else{
+        soundState = @"Mute";
+    }
+    
+    speakerIcon = [CCSprite spriteWithFile:[NSString stringWithFormat:@"%@_Speaker.png",  soundState] rect:CGRectMake(0, 0, 78, 78)];
+    speakerIcon.position = ccp(winSize.width - 10, 10);
+    [self addChild:speakerIcon];
     
     [self addChild:myMenu];
 }
@@ -176,16 +177,25 @@
     
 }
 
--(void)gameSoundsState{
+-(void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
+    UITouch* touch = [touches anyObject];
+    CGPoint coord = [touch locationInView:touch.view];
+    coord = [[CCDirector sharedDirector] convertToGL:coord];
     
-    if(actualState){
-        actualState = NO;
-    }else{
-        actualState = YES;
+    if (CGRectContainsPoint(speakerIcon.boundingBox, coord)) {
+        
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] integerValue]) {
+            CCTexture2D* tex = [[CCTextureCache sharedTextureCache] addImage:@"Unmute_Speaker.png"];
+            [speakerIcon setTexture: tex];
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"soundsActivated"];
+        }else{
+            CCTexture2D* tex = [[CCTextureCache sharedTextureCache] addImage:@"Mute_Speaker.png"];
+            [speakerIcon setTexture: tex];
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"soundsActivated"];
+        }
+        
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
-    
-    [[NSUserDefaults standardUserDefaults] setBool:actualState forKey:@"soundsActivated"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 -(void)exitScreen: (CCMenuItem *) item{
