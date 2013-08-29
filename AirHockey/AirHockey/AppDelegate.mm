@@ -142,8 +142,7 @@
 	// make main window visible
 	[window_ makeKeyAndVisible];
     
-    [[SimpleAudioEngine sharedEngine] preloadEffect:@"Air_hockey_Intro.mp3"];
-    [[SimpleAudioEngine sharedEngine] playEffect:@"Air_hockey_Intro.mp3"];
+    [[CCDirector sharedDirector] setDisplayStats:NO];
     
 	return YES;
 }
