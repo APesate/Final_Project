@@ -11,6 +11,16 @@
 @implementation SettingsLayer
 {
     CCSprite* speakerIcon;
+    CCSprite* selectionShadowLeft;
+    CCSprite* selectionShadowRight;
+    CCSprite* paddleOne;
+    CCSprite* paddleTwo;
+    CCSprite* paddleThree;
+    CCSprite* paddleFour;
+    CCSprite* paddleFive;
+    CCSprite* paddleSix;
+    CCSprite* paddleSeven;
+    CCSprite* paddleEight;
     BOOL actualState;
     NSString* soundState;
 }
@@ -73,6 +83,7 @@
     CGSize winSize = [[CCDirector sharedDirector] winSize];
     CCLayer* backgroundImage = [[CCLayer alloc] init];
     CCSprite* backgroundSprite;
+    self.touchEnabled = TRUE;
     
     [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGB565];
     
@@ -90,51 +101,73 @@
     
     [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
     
-    //
+    selectionShadowLeft = [CCSprite spriteWithFile:@"Selection_Shadow.png" rect:CGRectMake(0, 0, 145, 145)];
+    selectionShadowLeft.scale = 0.60;
+    [backgroundImage addChild:selectionShadowLeft];
     
-    CCSprite* paddleOne = [[CCSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_One_Color"]] rect:CGRectMake(0, 0, 120, 120)];
+    NSString* paddleOneSelection = [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_One_Color"];
+    
+    //Left Side
+    
+    paddleOne = [[CCSprite alloc] initWithFile:@"Paddle_red.png" rect:CGRectMake(0, 0, 120, 120)];
     paddleOne.position = ccp(90, winSize.height / 3);
     paddleOne.scale = 0.50;
     [backgroundImage addChild:paddleOne];
     [paddleOne release];
     
-    CCSprite* paddleSeven = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
+    paddleSeven = [[CCSprite alloc] initWithFile:@"Paddle_yellow.png" rect:CGRectMake(0, 0, 120, 120)];
     paddleSeven.position = ccp(90, 2*winSize.height / 3);
     paddleSeven.scale = 0.50;
     [backgroundImage addChild:paddleSeven];
     [paddleSeven release];
     
-    CCSprite* paddleFive = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
+    paddleFive = [[CCSprite alloc] initWithFile:@"Paddle_green.png" rect:CGRectMake(0, 0, 120, 120)];
     paddleFive.position = ccp(180, 2*winSize.height / 3);
     paddleFive.scale = 0.50;
     [backgroundImage addChild:paddleFive];
     [paddleFive release];
     
-    CCSprite* paddleThree = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
+    paddleThree = [[CCSprite alloc] initWithFile:@"Paddle_blue.png" rect:CGRectMake(0, 0, 120, 120)];
     paddleThree.position = ccp(180, winSize.height / 3);
     paddleThree.scale = 0.50;
     [backgroundImage addChild:paddleThree];
     [paddleThree release];
     
-    CCSprite* paddleFour = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
-    paddleFour.position = ccp(400, winSize.height / 3);
+    if ([paddleOneSelection isEqualToString:@"red"]) {
+        selectionShadowLeft.position = paddleOne.position;
+    }else if([paddleOneSelection isEqualToString:@"blue"]){
+        selectionShadowLeft.position = paddleThree.position;
+    }else if([paddleOneSelection isEqualToString:@"green"]){
+        selectionShadowLeft.position = paddleFive.position;
+    }else if([paddleOneSelection isEqualToString:@"yellow"]){
+        selectionShadowLeft.position = paddleSeven.position;
+    }
+
+    //Right Side
+    
+    selectionShadowRight = [CCSprite spriteWithFile:@"Selection_Shadow.png" rect:CGRectMake(0, 0, 145, 145)];
+    selectionShadowRight.scale = 0.60;
+    [backgroundImage addChild:selectionShadowRight];
+    
+    paddleFour = [[CCSprite alloc] initWithFile:@"Paddle_red.png" rect:CGRectMake(0, 0, 120, 120)];
+    paddleFour.position = ccp(winSize.width - 180, winSize.height / 3);
     paddleFour.scale = 0.50;
     [backgroundImage addChild:paddleFour];
     [paddleFour release];
     
-    CCSprite* paddleTwo = [[CCSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_Two_Color"]] rect:CGRectMake(0, 0, 120, 120)];
+    paddleTwo = [[CCSprite alloc] initWithFile:@"Paddle_blue.png" rect:CGRectMake(0, 0, 120, 120)];
     paddleTwo.position = ccp(winSize.width - 90, winSize.height / 3);
     paddleTwo.scale = 0.50;
     [backgroundImage addChild:paddleTwo];
     [paddleTwo release];
     
-    CCSprite* paddleSix = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
-    paddleSix.position = ccp(400, 2*winSize.height / 3);
+    paddleSix = [[CCSprite alloc] initWithFile:@"Paddle_green.png" rect:CGRectMake(0, 0, 120, 120)];
+    paddleSix.position = ccp(winSize.width - 180, 2*winSize.height / 3);
     paddleSix.scale = 0.50;
     [backgroundImage addChild:paddleSix];
     [paddleSix release];
     
-    CCSprite* paddleEight = [[CCSprite alloc] initWithFile:@"Paddle_red.gif" rect:CGRectMake(0, 0, 120, 120)];
+    paddleEight = [[CCSprite alloc] initWithFile:@"Paddle_yellow.png" rect:CGRectMake(0, 0, 120, 120)];
     paddleEight.position = ccp(winSize.width - 90, 2*winSize.height / 3);
     paddleEight.scale = 0.50;
     [backgroundImage addChild:paddleEight];
@@ -146,6 +179,18 @@
     puckSprite.scale = 0.20;
     [backgroundImage addChild:puckSprite];
     [puckSprite release];
+    
+    NSString* paddleTwoSelection = [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_Two_Color"];
+    
+    if ([paddleTwoSelection isEqualToString:@"red"]) {
+        selectionShadowRight.position = paddleFour.position;
+    }else if([paddleTwoSelection isEqualToString:@"blue"]){
+        selectionShadowRight.position = paddleTwo.position;
+    }else if([paddleTwoSelection isEqualToString:@"green"]){
+        selectionShadowRight.position = paddleSix.position;
+    }else if([paddleTwoSelection isEqualToString:@"yellow"]){
+        selectionShadowRight.position = paddleEight.position;
+    }
     
     [self addChild:backgroundImage];
     [backgroundImage release];
@@ -194,6 +239,53 @@
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"soundsActivated"];
         }
         
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }else if (CGRectContainsPoint(paddleOne.boundingBox, coord)){ //Left Side
+        [selectionShadowLeft stopAllActions];
+        [selectionShadowLeft runAction:[CCMoveTo actionWithDuration:0.5 position:paddleOne.position]];
+        [[NSUserDefaults standardUserDefaults] setValue:@"red" forKey:@"Paddle_One_Color"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    }else if (CGRectContainsPoint(paddleSeven.boundingBox, coord)){
+        [selectionShadowLeft stopAllActions];
+        [selectionShadowLeft runAction:[CCMoveTo actionWithDuration:0.5 position:paddleSeven.position]];
+        [[NSUserDefaults standardUserDefaults] setValue:@"yellow" forKey:@"Paddle_One_Color"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    }else if (CGRectContainsPoint(paddleFive.boundingBox, coord)){
+        [selectionShadowLeft stopAllActions];
+        [selectionShadowLeft runAction:[CCMoveTo actionWithDuration:0.5 position:paddleFive.position]];
+        [[NSUserDefaults standardUserDefaults] setValue:@"green" forKey:@"Paddle_One_Color"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    }else if (CGRectContainsPoint(paddleThree.boundingBox, coord)){
+        [selectionShadowLeft stopAllActions];
+        [selectionShadowLeft runAction:[CCMoveTo actionWithDuration:0.5 position:paddleThree.position]];
+        [[NSUserDefaults standardUserDefaults] setValue:@"blue" forKey:@"Paddle_One_Color"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    }else if (CGRectContainsPoint(paddleTwo.boundingBox, coord)){ // Right Side
+        [selectionShadowRight stopAllActions];
+        [selectionShadowRight runAction:[CCMoveTo actionWithDuration:0.5 position:paddleTwo.position]];
+        [[NSUserDefaults standardUserDefaults] setValue:@"blue" forKey:@"Paddle_Two_Color"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    }else if (CGRectContainsPoint(paddleFour.boundingBox, coord)){
+        [selectionShadowRight stopAllActions];
+        [selectionShadowRight runAction:[CCMoveTo actionWithDuration:0.5 position:paddleFour.position]];
+        [[NSUserDefaults standardUserDefaults] setValue:@"red" forKey:@"Paddle_Two_Color"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    }else if (CGRectContainsPoint(paddleSix.boundingBox, coord)){
+        [selectionShadowRight stopAllActions];
+        [selectionShadowRight runAction:[CCMoveTo actionWithDuration:0.5 position:paddleSix.position]];
+        [[NSUserDefaults standardUserDefaults] setValue:@"green" forKey:@"Paddle_Two_Color"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    }else if (CGRectContainsPoint(paddleEight.boundingBox, coord)){
+        [selectionShadowRight stopAllActions];
+        [selectionShadowRight runAction:[CCMoveTo actionWithDuration:0.5 position:paddleEight.position]];
+        [[NSUserDefaults standardUserDefaults] setValue:@"yellow" forKey:@"Paddle_Two_Color"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }

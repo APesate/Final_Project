@@ -1115,11 +1115,11 @@ typedef enum{
     }else if (CGRectContainsPoint(speakerIcon.boundingBox, coord)) {
         
         if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] integerValue]) {
-            CCTexture2D* tex = [[CCTextureCache sharedTextureCache] addImage:@"Unmute_Speaker.png"];
+            CCTexture2D* tex = [[CCTextureCache sharedTextureCache] addImage:@"Mute_Speaker.png"];
             [speakerIcon setTexture: tex];
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"soundsActivated"];
         }else{
-            CCTexture2D* tex = [[CCTextureCache sharedTextureCache] addImage:@"Mute_Speaker.png"];
+            CCTexture2D* tex = [[CCTextureCache sharedTextureCache] addImage:@"Unmute_Speaker.png"];
             [speakerIcon setTexture: tex];
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"soundsActivated"];
         }
@@ -1177,9 +1177,9 @@ typedef enum{
     }
     
     if((int)[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"]){
-        soundState = @"Mute";
-    }else{
         soundState = @"Unmute";
+    }else{
+        soundState = @"Mute";
     }
     
     speakerIcon = [CCSprite spriteWithFile:[NSString stringWithFormat:@"%@_Speaker.png",  soundState] rect:CGRectMake(0, 0, 78, 78)];

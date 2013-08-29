@@ -220,6 +220,7 @@
 		82D1518B17CFA9E900968787 /* Paddle_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1518617CFA9E900968787 /* Paddle_yellow.png */; };
 		82D1518E17CFAEF800968787 /* Mute_Speaker.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1518C17CFAEF800968787 /* Mute_Speaker.png */; };
 		82D1518F17CFAEF800968787 /* Unmute_Speaker.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1518D17CFAEF800968787 /* Unmute_Speaker.png */; };
+		82D1519117CFBED500968787 /* Selection_Shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1519017CFBED500968787 /* Selection_Shadow.png */; };
 		82ED993117C6CEE9008CAA4D /* MenuLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82ED993017C6CEE9008CAA4D /* MenuLayer.mm */; };
 		82ED99BF17C7D869008CAA4D /* MyContactListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82ED99BE17C7D869008CAA4D /* MyContactListener.mm */; };
 		82ED99C617C7F079008CAA4D /* AlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82ED99C417C7F079008CAA4D /* AlertViewController.m */; };
@@ -649,6 +650,7 @@
 		82D1518617CFA9E900968787 /* Paddle_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Paddle_yellow.png; sourceTree = "<group>"; };
 		82D1518C17CFAEF800968787 /* Mute_Speaker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Mute_Speaker.png; path = Images/Mute_Speaker.png; sourceTree = "<group>"; };
 		82D1518D17CFAEF800968787 /* Unmute_Speaker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Unmute_Speaker.png; path = Images/Unmute_Speaker.png; sourceTree = "<group>"; };
+		82D1519017CFBED500968787 /* Selection_Shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Selection_Shadow.png; sourceTree = "<group>"; };
 		82ED992F17C6CEE9008CAA4D /* MenuLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuLayer.h; sourceTree = "<group>"; };
 		82ED993017C6CEE9008CAA4D /* MenuLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuLayer.mm; sourceTree = "<group>"; };
 		82ED99BD17C7D869008CAA4D /* MyContactListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyContactListener.h; sourceTree = "<group>"; };
@@ -1327,6 +1329,7 @@
 			children = (
 				82D1518C17CFAEF800968787 /* Mute_Speaker.png */,
 				82D1518D17CFAEF800968787 /* Unmute_Speaker.png */,
+				82D1519017CFBED500968787 /* Selection_Shadow.png */,
 				82D1518217CFA9E900968787 /* Paddle_blue.png */,
 				82D1518317CFA9E900968787 /* Paddle_green.png */,
 				82D1518417CFA9E900968787 /* Paddle_red.png */,
@@ -1456,6 +1459,7 @@
 				82D1518B17CFA9E900968787 /* Paddle_yellow.png in Resources */,
 				82D1518E17CFAEF800968787 /* Mute_Speaker.png in Resources */,
 				82D1518F17CFAEF800968787 /* Unmute_Speaker.png in Resources */,
+				82D1519117CFBED500968787 /* Selection_Shadow.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

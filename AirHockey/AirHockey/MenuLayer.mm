@@ -29,8 +29,8 @@
     self = [super init];
     
     if(self){
-        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"firstRun"] integerValue]) {
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstRun"];
+        if (![[[NSUserDefaults standardUserDefaults] objectForKey:@"firstRun"] integerValue]) {
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstRun"];
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"soundsActivated"];
             [[NSUserDefaults standardUserDefaults] setValue:@"red" forKey:@"Paddle_One_Color"];
             [[NSUserDefaults standardUserDefaults] setValue:@"blue" forKey:@"Paddle_Two_Color"];
