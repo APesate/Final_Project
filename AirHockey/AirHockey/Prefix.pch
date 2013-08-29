@@ -21,6 +21,7 @@ typedef enum
 {
     SinglePlayerMode,
     MultiplayerMode,
-    BluetoothMode
+    BluetoothMode,
+    SettingsMode
 }
 GameMode;

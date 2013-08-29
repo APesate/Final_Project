@@ -7,13 +7,7 @@
 //
 
 #import "MenuLayer.h"
-#import "HelloWorldLayer.h"
 #import "SimpleAudioEngine.h"
-
-#define IS_WIDESCREEN ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.width - ( double )568 ) < DBL_EPSILON )
-#define IS_IPHONE ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPhone" ] )
-#define IS_IPOD   ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPod touch" ] )
-#define IS_IPHONE_5 ( IS_IPHONE && IS_WIDESCREEN )
 
 @implementation MenuLayer
 
@@ -35,7 +29,11 @@
     self = [super init];
     
     if(self){
-        
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"firstRun"]) {
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstRun"];
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"soundsActivated"];
+        }
+
         CGSize winSize = [[CCDirector sharedDirector] winSize];
         CCLayer* backgroundImage = [[CCLayer alloc] init];
         CCSprite* backgroundSprite;
@@ -61,20 +59,28 @@
         paddleOne.scale = 0.50;
         [backgroundImage addChild:paddleOne];
         
+        [paddleOne release];
+        
         CCSprite* paddleTwo = [[CCSprite alloc] initWithFile:@"Paddle_red.gif" rect:CGRectMake(0, 0, 120, 120)];
         paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
         paddleTwo.scale = 0.50;
         [backgroundImage addChild:paddleTwo];
+        
+        [paddleTwo release];
         
         CCSprite* puckSprite = [[CCSprite alloc] initWithFile:@"Puck.gif" rect:CGRectMake(0, 0, 215, 215)];
         puckSprite.position = ccp(winSize.width / 2, winSize.height / 2);
         puckSprite.scale = 0.20;
         [backgroundImage addChild:puckSprite];
         
+        [puckSprite release];
+        
         [self addChild:backgroundImage];
+        [backgroundImage release];
         
         CCLayerColor* fogLayer = [[CCLayerColor alloc] initWithColor:ccc4(100, 100, 100, 190)];
         [self addChild:fogLayer];
+        [fogLayer release];
         
         CCMenuItemFont* singlePlayerButton = [CCMenuItemFont itemWithString:@"Single Player"
                                                        target:self
@@ -93,20 +99,14 @@
         
         CCMenuItemFont* settingsButton = [CCMenuItemFont itemWithString:@"Settings"
                                                                     target:self
-                                                                  selector:@selector(settingsMenu:)];
+                                                               selector:@selector(settingsMode:)];
         [settingsButton setColor:ccc3(241, 196, 15)];
         
         CCMenu *myMenu = [CCMenu menuWithItems: singlePlayerButton, twoPlayersButton, multiplayerButton, settingsButton, nil];
         
         [myMenu alignItemsVerticallyWithPadding:10];
-        myMenu.position = ccp(winSize.width / 2, (winSize.height / 2) - 35);
 
         [self addChild:myMenu];
-        
-        CCSprite* logo = [CCSprite spriteWithFile:@"AirHockeyLogo.png"];
-        logo.position = ccp(winSize.width / 2, winSize.height - 50);
-
-        [self addChild: logo];
     }
     
     return self;
@@ -128,15 +128,20 @@
     [[CCDirector sharedDirector] replaceScene:[CCTransitionCrossFade transitionWithDuration:1.0 scene:[HelloWorldLayer sceneForLayer:layer]]];
 }
 
-- (void) settingsMenu: (CCMenuItem  *) menuItem
+- (void) settingsMode: (CCMenuItem  *) menuItem
 {
-    
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionCrossFade transitionWithDuration:1.0 scene:[SettingsLayer sceneWithDelegate:self]]];
 }
 
 #pragma mark HelloWorldLayerDelegate
 
 -(void)goToMenuLayer{
     [[CCDirector sharedDirector] replaceScene:[CCTransitionCrossFade transitionWithDuration:1.0 scene:[MenuLayer scene]]];
+}
+
+- (void)dealloc
+{
+    [super dealloc];
 }
 
 @end

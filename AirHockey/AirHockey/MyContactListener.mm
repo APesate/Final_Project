@@ -19,32 +19,37 @@ MyContactListener::~MyContactListener() {
 void MyContactListener::BeginContact(b2Contact* contact) {
     // We need to copy out the data because the b2Contact passed in
     // is reused.
-    MyContact myContact = { contact->GetFixtureA(), contact->GetFixtureB() };
-    _contacts.push_back(myContact);
-    
-    b2Body *bodyA = contact->GetFixtureA()->GetBody();
-    b2Body *bodyB = contact->GetFixtureB()->GetBody();
-    
-    CCSprite* spriteA = (CCSprite *)bodyA->GetUserData();
-    CCSprite* spriteB = (CCSprite *)bodyB->GetUserData();
-    
-    if (bodyA->GetUserData() != NULL && bodyB->GetUserData() != NULL) {
-        if ((spriteA.tag == 1 || spriteA.tag == 2) && spriteB.tag == 3) {
-            [[SimpleAudioEngine sharedEngine] playEffect:@"Air Hockey Paddle Hit.mp3"];
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"]) {
+        MyContact myContact = { contact->GetFixtureA(), contact->GetFixtureB() };
+        _contacts.push_back(myContact);
+        
+        b2Body *bodyA = contact->GetFixtureA()->GetBody();
+        b2Body *bodyB = contact->GetFixtureB()->GetBody();
+        
+        CCSprite* spriteA = (CCSprite *)bodyA->GetUserData();
+        CCSprite* spriteB = (CCSprite *)bodyB->GetUserData();
+        
+        if (bodyA->GetUserData() != NULL && bodyB->GetUserData() != NULL) {
+            if ((spriteA.tag == 1 || spriteA.tag == 2) && spriteB.tag == 3) {
+                [[SimpleAudioEngine sharedEngine] playEffect:@"Air Hockey Paddle Hit.mp3"];
+            }
+        }else if (spriteA.tag != 1 || spriteA.tag != 2){
+            [[SimpleAudioEngine sharedEngine] playEffect:@"Air_hockey_wall_hit.mp3"];
         }
-    }else if (spriteA.tag != 1 || spriteA.tag != 2){
-        [[SimpleAudioEngine sharedEngine] playEffect:@"Air_hockey_wall_hit.mp3"];
+        
     }
-    
+
     
 }
 
 void MyContactListener::EndContact(b2Contact* contact) {
-    MyContact myContact = { contact->GetFixtureA(), contact->GetFixtureB() };
-    std::vector<MyContact>::iterator pos;
-    pos = std::find(_contacts.begin(), _contacts.end(), myContact);
-    if (pos != _contacts.end()) {
-        _contacts.erase(pos);
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"]) {
+        MyContact myContact = { contact->GetFixtureA(), contact->GetFixtureB() };
+        std::vector<MyContact>::iterator pos;
+        pos = std::find(_contacts.begin(), _contacts.end(), myContact);
+        if (pos != _contacts.end()) {
+            _contacts.erase(pos);
+        }
     }
 }
 

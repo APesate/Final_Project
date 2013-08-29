@@ -17,6 +17,7 @@
 		8248341317C2B83D0050BA27 /* SMStateMachineAsync.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340817C2B83D0050BA27 /* SMStateMachineAsync.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		8248341417C2B83D0050BA27 /* SMStateMachineExecuteContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340A17C2B83D0050BA27 /* SMStateMachineExecuteContext.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		8248341517C2B83D0050BA27 /* SMTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340C17C2B83D0050BA27 /* SMTransition.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		8278015917CE92F800DF35D4 /* SettingsLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8278015817CE92F800DF35D4 /* SettingsLayer.m */; };
 		829E02CE17BAD0F10056CD4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CD17BAD0F10056CD4B /* QuartzCore.framework */; };
 		829E02D017BAD0F10056CD4B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CF17BAD0F10056CD4B /* OpenGLES.framework */; };
 		829E02D217BAD0F10056CD4B /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02D117BAD0F10056CD4B /* OpenAL.framework */; };
@@ -244,6 +245,8 @@
 		8248340A17C2B83D0050BA27 /* SMStateMachineExecuteContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMStateMachineExecuteContext.m; sourceTree = "<group>"; };
 		8248340B17C2B83D0050BA27 /* SMTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTransition.h; sourceTree = "<group>"; };
 		8248340C17C2B83D0050BA27 /* SMTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTransition.m; sourceTree = "<group>"; };
+		8278015717CE92F800DF35D4 /* SettingsLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsLayer.h; sourceTree = "<group>"; };
+		8278015817CE92F800DF35D4 /* SettingsLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsLayer.m; sourceTree = "<group>"; };
 		829E02CA17BAD0F10056CD4B /* AirHockey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirHockey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		829E02CD17BAD0F10056CD4B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		829E02CF17BAD0F10056CD4B /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -741,6 +744,8 @@
 				829E050917BAD0F80056CD4B /* HelloWorldLayer.mm */,
 				82ED992F17C6CEE9008CAA4D /* MenuLayer.h */,
 				82ED993017C6CEE9008CAA4D /* MenuLayer.mm */,
+				8278015717CE92F800DF35D4 /* SettingsLayer.h */,
+				8278015817CE92F800DF35D4 /* SettingsLayer.m */,
 				822F7CD917CBEA9B00DE4AE6 /* PauseLayer.h */,
 				822F7CDA17CBEA9B00DE4AE6 /* PauseLayer.m */,
 				829E051817BAE1D80056CD4B /* PaddleSprite.h */,
@@ -1622,6 +1627,7 @@
 				82ED99BF17C7D869008CAA4D /* MyContactListener.mm in Sources */,
 				82ED99C617C7F079008CAA4D /* AlertViewController.m in Sources */,
 				822F7CDB17CBEA9B00DE4AE6 /* PauseLayer.m in Sources */,
+				8278015917CE92F800DF35D4 /* SettingsLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

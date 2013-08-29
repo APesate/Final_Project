@@ -9,8 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
 #import "HelloWorldLayer.h"
+#import "SettingsLayer.h"
 
-@interface MenuLayer : CCLayer <HelloWorldLayerDelegate>
+
+@interface MenuLayer : CCLayer <HelloWorldLayerDelegate, SettingsLayerDelegate>
 +(CCScene *) scene;
 
 @end

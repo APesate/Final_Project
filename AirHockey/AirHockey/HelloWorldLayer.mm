@@ -60,6 +60,7 @@ typedef enum{
     BOOL isInGolArea;
     BOOL updateComputer;
     BOOL isInPauseScreen;
+    BOOL soundActivated;
 
     // State Machine
     SMStateMachine *sm;
@@ -172,6 +173,7 @@ typedef enum{
 }
 
 -(void)initialize{
+    
     winSize = [[CCDirector sharedDirector] winSize];
     isServer = NO;
     isInPauseScreen = NO;
@@ -245,6 +247,7 @@ typedef enum{
         default:
             break;
     }
+    
     [self addChild:paddleTwo];
     
     puckSprite = [[CCSprite alloc] initWithFile:@"Puck.gif" rect:CGRectMake(0, 0, 215, 215)];
@@ -352,6 +355,41 @@ typedef enum{
     float forceMagnitude = 3000;  //b2Min(, <#T b#>)  //b2Min(2000, necessaryDistance); //b2Min(2000, necessaryDistance);
     b2Vec2 force = forceMagnitude * necessaryMovement;
     paddleTwo.body->ApplyForce(force, paddleTwo.body->GetWorldCenter() );
+}
+
+-(void) dealloc
+{
+	delete world;
+	world = NULL;
+    puckBody = NULL;
+    scoreImagesArray = nil;
+    [scoreImagesArray release];
+    paddleOne = nil;
+    [paddleOne release];
+    paddleTwo = nil;
+    [paddleTwo release];
+    playerOneScoreSprite = nil;
+    [playerOneScoreSprite release];
+    playerTwoScoreSprite = nil;
+    [playerTwoScoreSprite release];
+    backgroundSprite = nil;
+    [backgroundSprite release];
+    puckSprite = nil;
+    [puckSprite release];
+    _delegate = nil;
+    [_delegate release];
+    _layer = nil;
+    [_layer release];
+    [_session disconnectFromAllPeers];
+    _session.available = NO;
+    [_session setDataReceiveHandler: nil withContext: nil];
+    _session.delegate = nil;
+    [_session release];
+    creationDate = nil;
+    [creationDate release];
+    [self release];
+    delete _contactListener;
+	[super dealloc];
 }
 
 #pragma mark - Init Physics
