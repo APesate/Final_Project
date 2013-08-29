@@ -32,6 +32,7 @@
 @interface HelloWorldLayer : CCLayer <UIAlertViewDelegate, GKSessionDelegate, GKPeerPickerControllerDelegate, CCTouchOneByOneDelegate>
 {
 	b2World* world;					// strong ref
+    BOOL stateOfMusic;
 }
 
 @property (nonatomic, strong) GKSession* session;

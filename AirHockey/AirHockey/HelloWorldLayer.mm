@@ -60,6 +60,7 @@ typedef enum{
     BOOL isInGolArea;
     BOOL updateComputer;
     BOOL isInPauseScreen;
+    BOOL soundActivated;
 
     // State Machine
     SMStateMachine *sm;
@@ -172,6 +173,7 @@ typedef enum{
 }
 
 -(void)initialize{
+    
     winSize = [[CCDirector sharedDirector] winSize];
     isServer = NO;
     isInPauseScreen = NO;
@@ -245,6 +247,7 @@ typedef enum{
         default:
             break;
     }
+    
     [self addChild:paddleTwo];
     
     puckSprite = [[CCSprite alloc] initWithFile:@"Puck.gif" rect:CGRectMake(0, 0, 215, 215)];
@@ -384,6 +387,7 @@ typedef enum{
     [_session release];
     creationDate = nil;
     [creationDate release];
+    [self release];
     delete _contactListener;
 	[super dealloc];
 }

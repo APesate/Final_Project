@@ -10,7 +10,19 @@
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
 
-@interface SettingsLayer : CCLayerColor
+@class SettingsLayer;
+
+@protocol SettingsLayerDelegate <NSObject>
+
+-(void)goToMenuLayer;
+
+@end
+
+@interface SettingsLayer : CCLayer
+
+@property (nonatomic, retain) id <SettingsLayerDelegate> delegate;
 
 +(CCScene *) scene;
++(CCScene *) sceneWithDelegate:(id)aDelegate;
+
 @end
