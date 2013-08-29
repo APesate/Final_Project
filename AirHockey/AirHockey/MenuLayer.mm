@@ -32,8 +32,12 @@
         if ([[NSUserDefaults standardUserDefaults] objectForKey:@"firstRun"]) {
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstRun"];
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"soundsActivated"];
+            [[NSUserDefaults standardUserDefaults] setValue:@"red" forKey:@"Paddle_One_Color"];
+            [[NSUserDefaults standardUserDefaults] setValue:@"blue" forKey:@"Paddle_Two_Color"];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
+        
+        
 
         CGSize winSize = [[CCDirector sharedDirector] winSize];
         CCLayer* backgroundImage = [[CCLayer alloc] init];
@@ -56,14 +60,14 @@
         [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
         
         
-        CCSprite* paddleOne = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
+        CCSprite* paddleOne = [[CCSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_One_Color"]] rect:CGRectMake(0, 0, 120, 120)];
         paddleOne.position = ccp(90, winSize.height / 2);
         paddleOne.scale = 0.50;
         [backgroundImage addChild:paddleOne];
         
         [paddleOne release];
         
-        CCSprite* paddleTwo = [[CCSprite alloc] initWithFile:@"Paddle_red.gif" rect:CGRectMake(0, 0, 120, 120)];
+        CCSprite* paddleTwo = [[CCSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_Two_Color"]] rect:CGRectMake(0, 0, 120, 120)];
         paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
         paddleTwo.scale = 0.50;
         [backgroundImage addChild:paddleTwo];

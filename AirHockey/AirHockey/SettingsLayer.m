@@ -85,24 +85,27 @@
     
     [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
     
-    CCSprite* paddleOne = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
+    CCSprite* paddleOne = [[CCSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_One_Color"]] rect:CGRectMake(0, 0, 120, 120)];
     paddleOne.position = ccp(90, winSize.height / 2);
     paddleOne.scale = 0.50;
     [backgroundImage addChild:paddleOne];
     [paddleOne release];
     
-    CCSprite* paddleTwo = [[CCSprite alloc] initWithFile:@"Paddle_red.gif" rect:CGRectMake(0, 0, 120, 120)];
+    CCSprite* paddleTwo = [[CCSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_Two_Color"]] rect:CGRectMake(0, 0, 120, 120)];
     paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
     paddleTwo.scale = 0.50;
     [backgroundImage addChild:paddleTwo];
     [paddleTwo release];
+    
     CCSprite* puckSprite = [[CCSprite alloc] initWithFile:@"Puck.gif" rect:CGRectMake(0, 0, 215, 215)];
     puckSprite.position = ccp(winSize.width / 2, winSize.height / 2);
     puckSprite.scale = 0.20;
     [backgroundImage addChild:puckSprite];
     [puckSprite release];
+    
     [self addChild:backgroundImage];
     [backgroundImage release];
+    
     CCMenuItemFont* selectColorButton = [CCMenuItemFont itemWithString:@"Choose color:"
                                                                 target:self
                                                               selector:@selector(selectColor)];

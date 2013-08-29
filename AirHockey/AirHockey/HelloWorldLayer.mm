@@ -34,6 +34,7 @@ typedef enum{
     CCSprite* backgroundSprite;
     CCSprite* puckSprite;
     CCSprite* pauseButton;
+    CCSprite* speakerIcon;
     CCLabelTTF* playerOneScoreLabel;
     CCLabelTTF* playerTwoScoreLabel;
     b2Body* puckBody;
@@ -49,6 +50,7 @@ typedef enum{
     NSArray *scoreImagesArray;
     NSDate* creationDate;
     NSTimeInterval ping;
+    NSString* soundState;
     CGSize winSize;
     CGPoint predictionDistance;
     CGPoint puckSpeedBeforePause;
@@ -220,14 +222,14 @@ typedef enum{
     pauseButton.scale = 0.40;
     [self addChild:pauseButton];
     
-    paddleOne = [[PaddleSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
+    paddleOne = [[PaddleSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_One_Color"]] rect:CGRectMake(0, 0, 120, 120)];
     paddleOne.position = ccp(90, winSize.height / 2);
     paddleOne.scale = 0.50;
     paddleOne.tag = 1;
     paddleOne.enabled = YES;
     [self addChild:paddleOne];
     
-    paddleTwo = [[PaddleSprite alloc] initWithFile:@"Paddle_red.gif" rect:CGRectMake(0, 0, 120, 120)];
+    paddleTwo = [[PaddleSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_Two_Color"]] rect:CGRectMake(0, 0, 120, 120)];
     paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
     paddleTwo.scale = 0.50;
     paddleTwo.tag = 2;
@@ -1121,11 +1123,24 @@ typedef enum{
         if(!isInPauseScreen){
             [self pauseScreen];
         }
+    }else if (CGRectContainsPoint(speakerIcon.boundingBox, coord)) {
+        
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] integerValue]) {
+            CCTexture2D* tex = [[CCTextureCache sharedTextureCache] addImage:@"Unmute_Speaker.png"];
+            [speakerIcon setTexture: tex];
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"soundsActivated"];
+        }else{
+            CCTexture2D* tex = [[CCTextureCache sharedTextureCache] addImage:@"Mute_Speaker.png"];
+            [speakerIcon setTexture: tex];
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"soundsActivated"];
+        }
+        
+    [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }
 
 -(void)pauseScreen{
-    pauseLayer = [[CCLayerColor alloc] initWithColor:ccc4(100, 100, 100, 190)];
+    pauseLayer = [[CCLayerColor alloc] initWithColor:ccc4(255, 255, 255, 120)];
     [self addChild:pauseLayer];
     
     paddleOne.body->SetLinearVelocity(b2Vec2(0, 0));
@@ -1171,6 +1186,16 @@ typedef enum{
         default:
             break;
     }
+    
+    if((int)[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"]){
+        soundState = @"Mute";
+    }else{
+        soundState = @"Unmute";
+    }
+    
+    speakerIcon = [CCSprite spriteWithFile:[NSString stringWithFormat:@"%@_Speaker.png",  soundState] rect:CGRectMake(0, 0, 78, 78)];
+    speakerIcon.position = ccp(winSize.width - 10, 10);
+    [pauseLayer addChild:speakerIcon];
 }
 
 -(void)createMenu{

@@ -203,10 +203,7 @@
 		82D1516117CEB0B900968787 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1515717CEB0B900968787 /* Icon@2x.png */; };
 		82D1516217CEB0B900968787 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1515817CEB0B900968787 /* iTunesArtwork.png */; };
 		82D1516317CEB0B900968787 /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1515917CEB0B900968787 /* iTunesArtwork@2x.png */; };
-		82D1516917CEB0CA00968787 /* Paddle_blue.gif in Resources */ = {isa = PBXBuildFile; fileRef = 82D1516417CEB0CA00968787 /* Paddle_blue.gif */; };
-		82D1516A17CEB0CA00968787 /* Paddle_red.gif in Resources */ = {isa = PBXBuildFile; fileRef = 82D1516517CEB0CA00968787 /* Paddle_red.gif */; };
 		82D1516B17CEB0CA00968787 /* Puck.gif in Resources */ = {isa = PBXBuildFile; fileRef = 82D1516617CEB0CA00968787 /* Puck.gif */; };
-		82D1516C17CEB0CA00968787 /* Puck.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1516717CEB0CA00968787 /* Puck.png */; };
 		82D1517317CEB0E000968787 /* Air hockey Goal.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 82D1516E17CEB0E000968787 /* Air hockey Goal.mp3 */; };
 		82D1517417CEB0E000968787 /* Air Hockey Paddle Hit.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 82D1516F17CEB0E000968787 /* Air Hockey Paddle Hit.mp3 */; };
 		82D1517517CEB0E000968787 /* Air hockey puck set down wobble.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 82D1517017CEB0E000968787 /* Air hockey puck set down wobble.mp3 */; };
@@ -217,6 +214,13 @@
 		82D1517D17CEB10100968787 /* AirHockeyLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1517A17CEB10100968787 /* AirHockeyLogo@2x.png */; };
 		82D1518017CEB12300968787 /* air_hockey_tabletop.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 82D1517E17CEB12300968787 /* air_hockey_tabletop.jpg */; };
 		82D1518117CEB12300968787 /* AirHockey_iPhone5.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 82D1517F17CEB12300968787 /* AirHockey_iPhone5.jpg */; };
+		82D1518717CFA9E900968787 /* Paddle_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1518217CFA9E900968787 /* Paddle_blue.png */; };
+		82D1518817CFA9E900968787 /* Paddle_green.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1518317CFA9E900968787 /* Paddle_green.png */; };
+		82D1518917CFA9E900968787 /* Paddle_red.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1518417CFA9E900968787 /* Paddle_red.png */; };
+		82D1518A17CFA9E900968787 /* Paddle_turquoise.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1518517CFA9E900968787 /* Paddle_turquoise.png */; };
+		82D1518B17CFA9E900968787 /* Paddle_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1518617CFA9E900968787 /* Paddle_yellow.png */; };
+		82D1518E17CFAEF800968787 /* Mute_Speaker.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1518C17CFAEF800968787 /* Mute_Speaker.png */; };
+		82D1518F17CFAEF800968787 /* Unmute_Speaker.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1518D17CFAEF800968787 /* Unmute_Speaker.png */; };
 		82ED993117C6CEE9008CAA4D /* MenuLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82ED993017C6CEE9008CAA4D /* MenuLayer.mm */; };
 		82ED99BF17C7D869008CAA4D /* MyContactListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82ED99BE17C7D869008CAA4D /* MyContactListener.mm */; };
 		82ED99C617C7F079008CAA4D /* AlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82ED99C417C7F079008CAA4D /* AlertViewController.m */; };
@@ -630,10 +634,7 @@
 		82D1515717CEB0B900968787 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "Artwork/Icon@2x.png"; sourceTree = "<group>"; };
 		82D1515817CEB0B900968787 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = Artwork/iTunesArtwork.png; sourceTree = "<group>"; };
 		82D1515917CEB0B900968787 /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iTunesArtwork@2x.png"; path = "Artwork/iTunesArtwork@2x.png"; sourceTree = "<group>"; };
-		82D1516417CEB0CA00968787 /* Paddle_blue.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = Paddle_blue.gif; path = Images/Paddle_blue.gif; sourceTree = "<group>"; };
-		82D1516517CEB0CA00968787 /* Paddle_red.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = Paddle_red.gif; path = Images/Paddle_red.gif; sourceTree = "<group>"; };
 		82D1516617CEB0CA00968787 /* Puck.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = Puck.gif; path = Images/Puck.gif; sourceTree = "<group>"; };
-		82D1516717CEB0CA00968787 /* Puck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Puck.png; path = Images/Puck.png; sourceTree = "<group>"; };
 		82D1516E17CEB0E000968787 /* Air hockey Goal.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "Air hockey Goal.mp3"; path = "Sounds/Air hockey Goal.mp3"; sourceTree = "<group>"; };
 		82D1516F17CEB0E000968787 /* Air Hockey Paddle Hit.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "Air Hockey Paddle Hit.mp3"; path = "Sounds/Air Hockey Paddle Hit.mp3"; sourceTree = "<group>"; };
 		82D1517017CEB0E000968787 /* Air hockey puck set down wobble.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "Air hockey puck set down wobble.mp3"; path = "Sounds/Air hockey puck set down wobble.mp3"; sourceTree = "<group>"; };
@@ -644,6 +645,13 @@
 		82D1517A17CEB10100968787 /* AirHockeyLogo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "AirHockeyLogo@2x.png"; path = "Images/AirHockeyLogo@2x.png"; sourceTree = "<group>"; };
 		82D1517E17CEB12300968787 /* air_hockey_tabletop.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = air_hockey_tabletop.jpg; path = Images/air_hockey_tabletop.jpg; sourceTree = "<group>"; };
 		82D1517F17CEB12300968787 /* AirHockey_iPhone5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = AirHockey_iPhone5.jpg; path = Images/AirHockey_iPhone5.jpg; sourceTree = "<group>"; };
+		82D1518217CFA9E900968787 /* Paddle_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Paddle_blue.png; sourceTree = "<group>"; };
+		82D1518317CFA9E900968787 /* Paddle_green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Paddle_green.png; sourceTree = "<group>"; };
+		82D1518417CFA9E900968787 /* Paddle_red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Paddle_red.png; sourceTree = "<group>"; };
+		82D1518517CFA9E900968787 /* Paddle_turquoise.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Paddle_turquoise.png; sourceTree = "<group>"; };
+		82D1518617CFA9E900968787 /* Paddle_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Paddle_yellow.png; sourceTree = "<group>"; };
+		82D1518C17CFAEF800968787 /* Mute_Speaker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Mute_Speaker.png; path = Images/Mute_Speaker.png; sourceTree = "<group>"; };
+		82D1518D17CFAEF800968787 /* Unmute_Speaker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Unmute_Speaker.png; path = Images/Unmute_Speaker.png; sourceTree = "<group>"; };
 		82ED992F17C6CEE9008CAA4D /* MenuLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuLayer.h; sourceTree = "<group>"; };
 		82ED993017C6CEE9008CAA4D /* MenuLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuLayer.mm; sourceTree = "<group>"; };
 		82ED99BD17C7D869008CAA4D /* MyContactListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyContactListener.h; sourceTree = "<group>"; };
@@ -1322,12 +1330,16 @@
 		82D1513917CEA56900968787 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				82D1518C17CFAEF800968787 /* Mute_Speaker.png */,
+				82D1518D17CFAEF800968787 /* Unmute_Speaker.png */,
+				82D1518217CFA9E900968787 /* Paddle_blue.png */,
+				82D1518317CFA9E900968787 /* Paddle_green.png */,
+				82D1518417CFA9E900968787 /* Paddle_red.png */,
+				82D1518517CFA9E900968787 /* Paddle_turquoise.png */,
+				82D1518617CFA9E900968787 /* Paddle_yellow.png */,
 				82D1517E17CEB12300968787 /* air_hockey_tabletop.jpg */,
 				82D1517F17CEB12300968787 /* AirHockey_iPhone5.jpg */,
-				82D1516417CEB0CA00968787 /* Paddle_blue.gif */,
-				82D1516517CEB0CA00968787 /* Paddle_red.gif */,
 				82D1516617CEB0CA00968787 /* Puck.gif */,
-				82D1516717CEB0CA00968787 /* Puck.png */,
 				82D1511E17CE459D00968787 /* Pause_Button.gif */,
 			);
 			name = Images;
@@ -1431,10 +1443,7 @@
 				82D1516117CEB0B900968787 /* Icon@2x.png in Resources */,
 				82D1516217CEB0B900968787 /* iTunesArtwork.png in Resources */,
 				82D1516317CEB0B900968787 /* iTunesArtwork@2x.png in Resources */,
-				82D1516917CEB0CA00968787 /* Paddle_blue.gif in Resources */,
-				82D1516A17CEB0CA00968787 /* Paddle_red.gif in Resources */,
 				82D1516B17CEB0CA00968787 /* Puck.gif in Resources */,
-				82D1516C17CEB0CA00968787 /* Puck.png in Resources */,
 				82D1517317CEB0E000968787 /* Air hockey Goal.mp3 in Resources */,
 				82D1517417CEB0E000968787 /* Air Hockey Paddle Hit.mp3 in Resources */,
 				82D1517517CEB0E000968787 /* Air hockey puck set down wobble.mp3 in Resources */,
@@ -1445,6 +1454,13 @@
 				82D1517D17CEB10100968787 /* AirHockeyLogo@2x.png in Resources */,
 				82D1518017CEB12300968787 /* air_hockey_tabletop.jpg in Resources */,
 				82D1518117CEB12300968787 /* AirHockey_iPhone5.jpg in Resources */,
+				82D1518717CFA9E900968787 /* Paddle_blue.png in Resources */,
+				82D1518817CFA9E900968787 /* Paddle_green.png in Resources */,
+				82D1518917CFA9E900968787 /* Paddle_red.png in Resources */,
+				82D1518A17CFA9E900968787 /* Paddle_turquoise.png in Resources */,
+				82D1518B17CFA9E900968787 /* Paddle_yellow.png in Resources */,
+				82D1518E17CFAEF800968787 /* Mute_Speaker.png in Resources */,
+				82D1518F17CFAEF800968787 /* Unmute_Speaker.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
