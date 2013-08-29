@@ -9,11 +9,6 @@
 #import "MenuLayer.h"
 #import "SimpleAudioEngine.h"
 
-#define IS_WIDESCREEN ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.width - ( double )568 ) < DBL_EPSILON )
-#define IS_IPHONE ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPhone" ] )
-#define IS_IPOD   ( [ [ [ UIDevice currentDevice ] model ] isEqualToString: @"iPod touch" ] )
-#define IS_IPHONE_5 ( IS_IPHONE && IS_WIDESCREEN )
-
 @implementation MenuLayer
 
 +(CCScene *) scene
@@ -39,8 +34,6 @@
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"soundsActivated"];
         }
 
-        
-        
         CGSize winSize = [[CCDirector sharedDirector] winSize];
         CCLayer* backgroundImage = [[CCLayer alloc] init];
         CCSprite* backgroundSprite;
@@ -85,29 +78,29 @@
         [self addChild:backgroundImage];
         [backgroundImage release];
         
-        CCLayerColor* fogLayer = [[CCLayerColor alloc] initWithColor:ccc4(100, 100, 100, 150)];
+        CCLayerColor* fogLayer = [[CCLayerColor alloc] initWithColor:ccc4(100, 100, 100, 190)];
         [self addChild:fogLayer];
         [fogLayer release];
         
         CCMenuItemFont* singlePlayerButton = [CCMenuItemFont itemWithString:@"Single Player"
                                                        target:self
                                                      selector:@selector(playSinglePlayerMode:)];
-        [singlePlayerButton setColor:ccc3(71, 209, 248)];
+        [singlePlayerButton setColor:ccc3(241, 196, 15)];
         
         CCMenuItemFont* twoPlayersButton = [CCMenuItemFont itemWithString:@"Two Players"
                                                        target:self
                                                      selector:@selector(playMultiplayerMode:)];
-        [twoPlayersButton setColor:ccc3(71, 209, 248)];
+        [twoPlayersButton setColor:ccc3(241, 196, 15)];
         
         CCMenuItemFont* multiplayerButton = [CCMenuItemFont itemWithString:@"Multiplayer"
                                                        target:self
                                                      selector:@selector(hostGameMode:)];
-        [multiplayerButton setColor:ccc3(71, 209, 248)];
+        [multiplayerButton setColor:ccc3(241, 196, 15)];
         
         CCMenuItemFont* settingsButton = [CCMenuItemFont itemWithString:@"Settings"
                                                                     target:self
                                                                selector:@selector(settingsMode:)];
-        [settingsButton setColor:ccc3(71, 209, 248)];
+        [settingsButton setColor:ccc3(241, 196, 15)];
         
         CCMenu *myMenu = [CCMenu menuWithItems: singlePlayerButton, twoPlayersButton, multiplayerButton, settingsButton, nil];
         
