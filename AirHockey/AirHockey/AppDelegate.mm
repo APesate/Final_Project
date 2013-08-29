@@ -143,6 +143,8 @@
 	[window_ makeKeyAndVisible];
     
     [[CCDirector sharedDirector] setDisplayStats:NO];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstRun"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     
 	return YES;
 }

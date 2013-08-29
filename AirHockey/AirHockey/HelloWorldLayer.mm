@@ -20,7 +20,7 @@ static GameMode sGameMode;
 typedef enum{
     ScoreAlert,
     DisconnectAlert
-}AlertType; 
+}AlertType;
 
 
 #pragma mark - HelloWorldLayer
@@ -43,7 +43,7 @@ typedef enum{
     b2ContactFilter *filterbarrier;
     b2EdgeShape leftBarrier;
     MyContactListener* _contactListener;
-
+    
     GKPeerPickerController* picker;
     NSMutableArray* coordinatesArray;
     NSArray *scoreImagesArray;
@@ -61,12 +61,12 @@ typedef enum{
     BOOL updateComputer;
     BOOL isInPauseScreen;
     BOOL soundActivated;
-
+    
     // State Machine
     SMStateMachine *sm;
     SMState *attack;
     SMState *deffend;
-
+    
 }
 
 @property HelloWorldLayer* layer;
@@ -167,7 +167,7 @@ typedef enum{
         [self.delegate retain];
         [self initialize];
         [picker show];
-
+        
 	}
 	return self;
 }
@@ -201,7 +201,7 @@ typedef enum{
     }
     
     backgroundSprite.position = ccp(winSize.width / 2,winSize.height / 2);
-
+    
     [self addChild:backgroundSprite];
     [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
     
@@ -282,13 +282,13 @@ typedef enum{
     [sm transitionFrom:deffend to:deffend forEvent:@"deffending" withSel:@selector(defending)];
     [sm transitionFrom:attack to:attack forEvent:@"attacking" withSel:@selector(attacking)];
     //Usage
-     // [sm validate];
-
+    // [sm validate];
+    
 }
 
 -(void)defending
 {
-//    CCLOG(@"Im defending");
+    //    CCLOG(@"Im defending");
 }
 
 -(void)deffendMode
@@ -307,8 +307,8 @@ typedef enum{
     float positionPaddleX = windowSizeX - sqrtf(powf((windowSizeY/6+40/PTM_RATIO),2)-powf((positionPaddleY-windowSizeY/2),2))-.5;
     
     //CCLOG(@"X: %f Y: %f",positionPaddleX,positionPaddleY);
-
-   // CCLOG(@"%")
+    
+    // CCLOG(@"%")
     
     b2Vec2 desiredPosition = b2Vec2((positionPaddleX>0)? positionPaddleX:0, positionPaddleY );
     b2Vec2 necessaryMovement = desiredPosition - currentPosition;
@@ -389,7 +389,7 @@ typedef enum{
     // Create contact listener
     _contactListener = new MyContactListener();
     world->SetContactListener(_contactListener);
-
+    
     // Preload effect
     [[SimpleAudioEngine sharedEngine] preloadEffect:@"Air Hockey Paddle Hit.mp3"];
     [[SimpleAudioEngine sharedEngine] preloadEffect:@"Air hockey Goal.mp3"];
@@ -397,7 +397,7 @@ typedef enum{
 }
 
 -(void)createGround{
-
+    
     // Define the ground body.
 	b2BodyDef groundBodyDef;
 	groundBodyDef.position.Set(0, 0); // bottom-left corner
@@ -414,44 +414,48 @@ typedef enum{
 	
 	// bottom
 	
-	groundBox.Set(b2Vec2(winSize.height/PTM_RATIO/20, winSize.height/PTM_RATIO/20),
-                  b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO/20));
+	groundBox.Set(b2Vec2(winSize.height/(PTM_RATIO * 20), winSize.height/(PTM_RATIO * 20)),
+                  b2Vec2(winSize.width/PTM_RATIO, winSize.height/(PTM_RATIO * 20)));
 	groundBody->CreateFixture(&groundBox,0);
 	
 	// top
-	groundBox.Set(b2Vec2(winSize.height/PTM_RATIO/20, (winSize.height/PTM_RATIO)-winSize.height/PTM_RATIO/20),
-                  b2Vec2((winSize.width/PTM_RATIO)-winSize.height/PTM_RATIO/20, (winSize.height/PTM_RATIO)-winSize.height/PTM_RATIO/20));
+	groundBox.Set(b2Vec2(winSize.height/(PTM_RATIO * 20), (winSize.height/PTM_RATIO)-winSize.height/(PTM_RATIO * 20)),
+                  b2Vec2((winSize.width/PTM_RATIO)-winSize.height/(PTM_RATIO * 20), (winSize.height/PTM_RATIO)-winSize.height/(PTM_RATIO * 20)));
 	groundBody->CreateFixture(&groundBox,0);
 	
 	// left
-	groundBox.Set(b2Vec2(winSize.height/PTM_RATIO/20, winSize.height/(4 * PTM_RATIO)),
-                  b2Vec2(winSize.height/PTM_RATIO/20, 0));
+	groundBox.Set(b2Vec2(winSize.height/(PTM_RATIO * 20), winSize.height/(4 * PTM_RATIO)),
+                  b2Vec2(winSize.height/(PTM_RATIO * 20), 0));
 	groundBody->CreateFixture(&groundBox,0);
     
-    groundBox.Set(b2Vec2(winSize.height/PTM_RATIO/20, 2.95 * winSize.height/(4 * PTM_RATIO)),
-                  b2Vec2(winSize.height/PTM_RATIO/20, winSize.height / PTM_RATIO));
+    groundBox.Set(b2Vec2(winSize.height/(PTM_RATIO * 20), 2.95 * winSize.height/(4 * PTM_RATIO)),
+                  b2Vec2(winSize.height/(PTM_RATIO * 20), winSize.height / PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
     
     // left boundary for paddle
-    groundBox.Set(b2Vec2(0, winSize.height/PTM_RATIO),
-                  b2Vec2(0, 0));
-	groundBody->CreateMyFixture(&groundBox,0); //CreateMyFixture method created in b2Body class
+    b2EdgeShape paddleLeftBox;
+    
+    paddleLeftBox.Set(b2Vec2(0, 0),
+                  b2Vec2(0, winSize.height/PTM_RATIO));
+	groundBody->CreateMyFixture(&paddleLeftBox,0); //CreateMyFixture method created in b2Body class
 	
     
 	// right
-	groundBox.Set(b2Vec2((winSize.width/ PTM_RATIO)-winSize.height/PTM_RATIO/20, winSize.height/(4 * PTM_RATIO)),
+	groundBox.Set(b2Vec2((winSize.width/ PTM_RATIO)-winSize.height/(PTM_RATIO * 20), winSize.height/(4 * PTM_RATIO)),
                   b2Vec2((winSize.width/PTM_RATIO)-winSize.height/PTM_RATIO/20, 0));
 	groundBody->CreateFixture(&groundBox,0);
     
-	groundBox.Set(b2Vec2((winSize.width/ PTM_RATIO)-winSize.height/PTM_RATIO/20, 2.95 * winSize.height/(4 * PTM_RATIO)),
-                  b2Vec2((winSize.width/ PTM_RATIO)-winSize.height/PTM_RATIO/20, winSize.height/PTM_RATIO));
+	groundBox.Set(b2Vec2((winSize.width/ PTM_RATIO)-winSize.height/(PTM_RATIO * 20), 2.95 * winSize.height/(4 * PTM_RATIO)),
+                  b2Vec2((winSize.width/ PTM_RATIO)-winSize.height/(PTM_RATIO * 20), winSize.height/PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
     
     
     // right boundary for paddle   http://www.iforce2d.net/b2dtut/collision-filtering
-    groundBox.Set(b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO),
+    b2EdgeShape paddleRightBox;
+    
+    paddleRightBox.Set(b2Vec2(winSize.width/PTM_RATIO, winSize.height/PTM_RATIO),
                   b2Vec2(winSize.width/PTM_RATIO, 0));
-	groundBody->CreateMyFixture(&groundBox,0); //CreateMyFixture method created in b2Body class
+	groundBody->CreateMyFixture(&paddleRightBox,0); //CreateMyFixture method created in b2Body class
     
     // Create rounded corner
     
@@ -461,10 +465,10 @@ typedef enum{
     
     b2Vec2 vs[11];
     /*vs[0].Set(1.0f, 0.0f);
-    vs[1].Set(0.05f, 0.01f);
-    vs[2].Set(0.02f, 0.02f);
-    vs[3].Set(0.01f, 0.05f);
-    vs[4].Set(0.0f, 1.0f);*/
+     vs[1].Set(0.05f, 0.01f);
+     vs[2].Set(0.02f, 0.02f);
+     vs[3].Set(0.01f, 0.05f);
+     vs[4].Set(0.0f, 1.0f);*/
     
     for (float points = 0; points <= 1; points += 0.10f) {
         int index = points*10;
@@ -507,7 +511,7 @@ typedef enum{
     
     //debugDraw->SetFlags(flags);
     //debugDraw = new GLESDebugDraw;
-   // debugDraw->GLESDebugDraw(PTM_RATIO);
+    // debugDraw->GLESDebugDraw(PTM_RATIO);
     //debugDraw->DrawPolygon(vs, 5,b2Color(30, 30, 30));
     //world->SetDebugDraw(debugDraw);
 }
@@ -524,7 +528,7 @@ typedef enum{
     b2CircleShape paddleTwoShape;
     paddleTwoShape.m_radius = 21.5/PTM_RATIO;
     
-
+    
     bodyFixtureDef.shape = &paddleTwoShape;
     bodyFixtureDef.density = 0.8f;
     bodyFixtureDef.friction = (0.5 * bodyFixtureDef.density);
@@ -548,11 +552,11 @@ typedef enum{
 	//You need to make an informed choice, the following URL is useful
 	//http://gafferongames.com/game-physics/fix-your-timestep/
     
-
+    
     
 	world->Step(dt, 8, 3);
     for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
-    {       
+    {
         if (b->GetUserData()) {
             //Synchronize the AtlasSprites position and rotation with the corresponding body
             CCSprite *myActor = (CCSprite*)b->GetUserData();
@@ -585,10 +589,13 @@ typedef enum{
             playerOneScoreLabel.string = [NSString stringWithFormat:@"%i", playerOneScore];
             
             //[paddleOne destroyLink];
-            [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3"];
+            if ([[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"]) {
+                [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3"];
+            }
+            
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(1) afterDelay:1.0];
             [self updateScore:@(2)];
-        
+            
         }else if((puckBody->GetPosition()).x < 0){
             updateComputer = NO;
             isInGolArea = YES;
@@ -596,17 +603,20 @@ typedef enum{
             playerTwoScoreLabel.string = [NSString stringWithFormat:@"%i", playerTwoScore];
             
             //[paddleOne destroyLink];
-            [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3"];
+            if ([[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"]) {
+                [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3"];
+            }
+            
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(2) afterDelay:1.0];
             [self updateScore:@(1)];
         }
     }
     
     if ((puckBody->GetPosition()).x<winSize.width/(2*PTM_RATIO)&&updateComputer) {
-
+        
         [sm post:@"toDeffend"];
         [sm post:@"deffending"];
-
+        
     }
     if ((puckBody->GetPosition()).x>=winSize.width/(2*PTM_RATIO)&&updateComputer) {
         [sm post:@"toAttack"];
@@ -717,7 +727,7 @@ typedef enum{
 #pragma mark - On Goal Actions
 
 -(void)resetObjectsPositionAfterGoal:(NSNumber *)position{
-
+    
     CGPoint puckNewPosition;
     CGPoint paddleOneNewPosition;
     CGPoint paddleTwoNewPosition;
@@ -725,9 +735,9 @@ typedef enum{
     puckBody->SetLinearVelocity(b2Vec2(0, 0));
     puckBody->SetAngularVelocity(0);
     puckBody->SetUserData(nil);
-
+    
     switch (position.integerValue) {
-        case 1:{            
+        case 1:{
             puckBody->SetTransform(b2Vec2((winSize.width / (2 * PTM_RATIO)) + (50 / PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
             puckNewPosition = CGPointMake((puckBody->GetPosition()).x * PTM_RATIO, (puckBody->GetPosition()).y * PTM_RATIO);
             puckNewPosition = [[CCDirector sharedDirector] convertToGL:puckNewPosition];
@@ -789,22 +799,24 @@ typedef enum{
         default:
             break;
     }
-
+    
     [sm post:@"deffendMode"];
     [[CCDirector sharedDirector] touchDispatcher].dispatchEvents = YES;
     [paddleTwo runAction:[CCSequence actions:
-                     [CCMoveTo actionWithDuration:1.0 position:paddleTwoNewPosition],
-                     [CCCallFunc actionWithTarget:self selector:@selector(assignObjectsBodiesAgain)], nil]];
+                          [CCMoveTo actionWithDuration:1.0 position:paddleTwoNewPosition],
+                          [CCCallFunc actionWithTarget:self selector:@selector(assignObjectsBodiesAgain)], nil]];
 }
 
 -(void)playSound{
-    [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey puck set down wobble.mp3"];
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"]) {
+        [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey puck set down wobble.mp3"];
+    }
     puckBody->SetAngularVelocity(10);
 }
 
 -(void)updateComp
 {
-        updateComputer = YES;
+    updateComputer = YES;
 }
 
 -(void)assignObjectsBodiesAgain{
@@ -861,7 +873,7 @@ typedef enum{
         NSValue* value = [dataDictionary objectForKey:@"Speed"];
         CGPoint newSpeed;
         [value getValue:&newSpeed];
-                
+        
         puckBody->SetLinearVelocity(b2Vec2(newSpeed.x, newSpeed.y));
         
     }else if ([dataType isEqualToString:@"DataForPuckCoordinates"]){
@@ -873,23 +885,23 @@ typedef enum{
         puckBody->SetTransform(b2Vec2(newCoord.x * winSize.width, newCoord.y * winSize.height), 0.0);
         
     }else if([dataType isEqualToString:@"DataForPaddleStartMoving"]){
-
+        
         [paddleTwo paddleWillStartMoving];
         
     }else if([dataType isEqualToString:@"DataForPaddleIsMoving"]){
         CGFloat xCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"x"]).floatValue * winSize.width;
         CGFloat yCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"y"]).floatValue * winSize.height;
-                
+        
         paddleTwo.mouseJoint->SetTarget(b2Vec2(xCoodinate, yCoodinate));
         
     }else if([dataType isEqualToString:@"DataForPaddleStopMoving"]){
         CGFloat xCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"x"]).floatValue;
         CGFloat yCoodinate = ((NSNumber *)[dataDictionary objectForKey:@"y"]).floatValue;
-
+        
         paddleTwo.body->ApplyLinearImpulse(b2Vec2(xCoodinate, yCoodinate), paddleTwo.body->GetWorldCenter());
         
         [paddleTwo paddleWillStopMoving];
-    
+        
     }else if([dataType isEqualToString:@"CreationDateData"]){
         NSDate* peerDate = [dataDictionary objectForKey:@"Date"];
         if([creationDate compare:peerDate] == NSOrderedAscending){
@@ -932,17 +944,17 @@ typedef enum{
     paddleOne.friendID = [[NSMutableArray arrayWithCapacity:1] retain];
     [paddleOne.friendID addObject:peerID];
     paddleOne.session = session;
-
-//    paddleTwo.session = [[GKSession alloc] init];
-//    paddleTwo.friendID = [[NSMutableArray arrayWithCapacity:1] retain];
-//    [paddleTwo.friendID addObject:peerID];
-//    paddleTwo.session = session;
+    
+    //    paddleTwo.session = [[GKSession alloc] init];
+    //    paddleTwo.friendID = [[NSMutableArray arrayWithCapacity:1] retain];
+    //    [paddleTwo.friendID addObject:peerID];
+    //    paddleTwo.session = session;
     
     
     [paddleOne.session setDataReceiveHandler:self withContext:nil];
     //[paddleTwo.session setDataReceiveHandler:self withContext:nil];
     
-
+    
     session.delegate = self;
     [session setDataReceiveHandler: self withContext:nil];
     
@@ -1022,7 +1034,7 @@ typedef enum{
     switch (type) {
         case ScoreAlert:
             if(playerTwoScore == 7 || playerOneScore == 7){
-               
+                
                 NSString* title = [NSString stringWithFormat:@"Player %@ Wins!", playerOneScore > playerTwoScore?@"One":@"Two"];
                 
                 UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Game Over!"
@@ -1030,8 +1042,8 @@ typedef enum{
                                                                delegate:self
                                                       cancelButtonTitle:@"Exit"
                                                       otherButtonTitles:@"Rematch", nil];
-
-                 updateComputer = NO;
+                
+                updateComputer = NO;
                 
                 [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(3) afterDelay:1.5];
                 [alert setAlertViewStyle:UIAlertViewStyleDefault];

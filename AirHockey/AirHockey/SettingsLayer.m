@@ -9,9 +9,6 @@
 #import "SettingsLayer.h"
 
 @implementation SettingsLayer
-{
-    NSDictionary * infoDict;
-}
 
 @synthesize delegate = _delegate;
 
@@ -135,7 +132,15 @@
 
 -(void)gameSoundsState{
     BOOL actualState = [[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"];
-    [[NSUserDefaults standardUserDefaults] setBool:!actualState forKey:@"soundsActivated"];
+    
+    if(actualState){
+        actualState = NO;
+    }else{
+        actualState = YES;
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setBool:actualState forKey:@"soundsActivated"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 -(void)exitScreen: (CCMenuItem *) item{

@@ -33,7 +33,7 @@ void MyContactListener::BeginContact(b2Contact* contact) {
             if ((spriteA.tag == 1 || spriteA.tag == 2) && spriteB.tag == 3) {
                 [[SimpleAudioEngine sharedEngine] playEffect:@"Air Hockey Paddle Hit.mp3"];
             }
-        }else if (spriteA.tag != 1 || spriteA.tag != 2){
+        }else if (spriteB.tag != 1 && spriteB.tag != 2){
             [[SimpleAudioEngine sharedEngine] playEffect:@"Air_hockey_wall_hit.mp3"];
         }
         

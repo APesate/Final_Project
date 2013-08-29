@@ -50,7 +50,6 @@
     bodyTextureDef.density = 5.0f;
     bodyTextureDef.friction = (0.5 * bodyTextureDef.density);
     bodyTextureDef.restitution = 0.8f;
-    bodyTextureDef.filter.groupIndex = 1;
     
     _body->CreateFixture(&bodyTextureDef);
     _body->SetFixedRotation(YES);
