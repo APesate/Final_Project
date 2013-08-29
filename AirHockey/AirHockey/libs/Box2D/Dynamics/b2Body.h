@@ -145,6 +145,7 @@ public:
 	b2Fixture* CreateFixture(const b2Shape* shape, float32 density);
 
     b2Fixture* CreateMyFixture(const b2Shape* shape, float32 density);
+    b2Fixture* CreateMyFixtureLeft(const b2Shape* shape, float32 density);
 	/// Destroy a fixture. This removes the fixture from the broad-phase and
 	/// destroys all contacts associated with this fixture. This will
 	/// automatically adjust the mass of the body if the body is dynamic and the

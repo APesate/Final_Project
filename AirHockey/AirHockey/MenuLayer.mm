@@ -32,6 +32,7 @@
         if ([[NSUserDefaults standardUserDefaults] objectForKey:@"firstRun"]) {
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstRun"];
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"soundsActivated"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
         }
 
         CGSize winSize = [[CCDirector sharedDirector] winSize];
@@ -53,6 +54,7 @@
         [backgroundImage addChild:backgroundSprite];
         
         [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
+        
         
         CCSprite* paddleOne = [[CCSprite alloc] initWithFile:@"Paddle_blue.gif" rect:CGRectMake(0, 0, 120, 120)];
         paddleOne.position = ccp(90, winSize.height / 2);
@@ -78,34 +80,40 @@
         [self addChild:backgroundImage];
         [backgroundImage release];
         
-        CCLayerColor* fogLayer = [[CCLayerColor alloc] initWithColor:ccc4(100, 100, 100, 190)];
+        CCLayerColor* fogLayer = [[CCLayerColor alloc] initWithColor:ccc4(255, 255, 255, 120)];
         [self addChild:fogLayer];
         [fogLayer release];
+        
+        CCSprite* logo = [CCSprite spriteWithFile:@"AirHockeyLogo.png"];
+        logo.position = ccp(winSize.width / 2, winSize.height - 50);
+        //logo.scale = 0.75;
+        [self addChild:logo];
         
         CCMenuItemFont* singlePlayerButton = [CCMenuItemFont itemWithString:@"Single Player"
                                                        target:self
                                                      selector:@selector(playSinglePlayerMode:)];
-        [singlePlayerButton setColor:ccc3(241, 196, 15)];
+        [singlePlayerButton setColor:ccc3(24, 38, 176)];
         
         CCMenuItemFont* twoPlayersButton = [CCMenuItemFont itemWithString:@"Two Players"
                                                        target:self
                                                      selector:@selector(playMultiplayerMode:)];
-        [twoPlayersButton setColor:ccc3(241, 196, 15)];
+        [twoPlayersButton setColor:ccc3(24, 38, 176)];
         
         CCMenuItemFont* multiplayerButton = [CCMenuItemFont itemWithString:@"Multiplayer"
                                                        target:self
                                                      selector:@selector(hostGameMode:)];
-        [multiplayerButton setColor:ccc3(241, 196, 15)];
+        [multiplayerButton setColor:ccc3(24, 38, 176)];
         
         CCMenuItemFont* settingsButton = [CCMenuItemFont itemWithString:@"Settings"
                                                                     target:self
                                                                selector:@selector(settingsMode:)];
-        [settingsButton setColor:ccc3(241, 196, 15)];
+        [settingsButton setColor:ccc3(24, 38, 176)];
         
         CCMenu *myMenu = [CCMenu menuWithItems: singlePlayerButton, twoPlayersButton, multiplayerButton, settingsButton, nil];
         
         [myMenu alignItemsVerticallyWithPadding:10];
-
+        myMenu.position = ccp(winSize.width / 2, (winSize.height / 2) - 30);
+        
         [self addChild:myMenu];
     }
     
