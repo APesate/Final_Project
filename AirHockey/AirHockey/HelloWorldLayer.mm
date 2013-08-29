@@ -357,40 +357,6 @@ typedef enum{
     paddleTwo.body->ApplyForce(force, paddleTwo.body->GetWorldCenter() );
 }
 
--(void) dealloc
-{
-	delete world;
-	world = NULL;
-    puckBody = NULL;
-    scoreImagesArray = nil;
-    [scoreImagesArray release];
-    paddleOne = nil;
-    [paddleOne release];
-    paddleTwo = nil;
-    [paddleTwo release];
-    playerOneScoreSprite = nil;
-    [playerOneScoreSprite release];
-    playerTwoScoreSprite = nil;
-    [playerTwoScoreSprite release];
-    backgroundSprite = nil;
-    [backgroundSprite release];
-    puckSprite = nil;
-    [puckSprite release];
-    _delegate = nil;
-    [_delegate release];
-    _layer = nil;
-    [_layer release];
-    [_session disconnectFromAllPeers];
-    _session.available = NO;
-    [_session setDataReceiveHandler: nil withContext: nil];
-    _session.delegate = nil;
-    [_session release];
-    creationDate = nil;
-    [creationDate release];
-    [self release];
-    delete _contactListener;
-	[super dealloc];
-}
 
 #pragma mark - Init Physics
 
@@ -1294,7 +1260,9 @@ typedef enum{
     [_session release];
     creationDate = nil;
     [creationDate release];
+    [self release];
     delete _contactListener;
 	[super dealloc];
 }
+
 @end
