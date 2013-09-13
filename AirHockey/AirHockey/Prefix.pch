@@ -16,6 +16,7 @@
 #endif
 
 #define SESSION_ID @"DoubleA"
+#define IS_RETINA ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0))
 
 typedef enum
 {

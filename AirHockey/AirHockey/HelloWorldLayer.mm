@@ -15,6 +15,7 @@
 
 #define MAX_PUCK_SPEED 25.0
 
+
 static GameMode sGameMode;
 
 typedef enum{
@@ -203,6 +204,7 @@ typedef enum{
     else
     {
         backgroundSprite = [CCSprite spriteWithFile:@"air_hockey_tabletop.jpg"];
+        backgroundSprite.scale = 0.50;
     }
     
     backgroundSprite.position = ccp(winSize.width / 2,winSize.height / 2);
@@ -220,21 +222,43 @@ typedef enum{
     [playerTwoScoreLabel setColor:ccc3(255, 0, 0)];
     [self addChild:playerTwoScoreLabel];
     
-    pauseButton = [[CCSprite alloc] initWithFile:@"Pause_Button.gif" rect:CGRectMake(0, 0, 164, 164)];
+    
+    if( winSize.width == 568 )
+    {
+        pauseButton = [[CCSprite alloc] initWithFile:@"Pause_Button.gif" rect:CGRectMake(0, 0, 164, 164)];
+        pauseButton.scale = 0.40;
+    }
+    else
+    {
+        pauseButton = [[CCSprite alloc] initWithFile:@"Pause_Button.gif" rect:CGRectMake(0, 0, 328, 328)];
+        pauseButton.scale = 0.20;
+    }
     pauseButton.position = ccp(winSize.width - 20, winSize.height - 50);
-    pauseButton.scale = 0.40;
     [self addChild:pauseButton];
     
-    paddleOne = [[PaddleSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_One_Color"]] rect:CGRectMake(0, 0, 120, 120)];
+    if (IS_RETINA) {
+        paddleOne = [[PaddleSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_One_Color"]] rect:CGRectMake(0, 0, 120, 120)];
+        paddleOne.scale = 0.50;
+    }else{
+        paddleOne = [[PaddleSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_One_Color"]] rect:CGRectMake(0, 0, 240, 240)];
+        paddleOne.scale = 0.25;
+    }
+    
     paddleOne.position = ccp(90, winSize.height / 2);
-    paddleOne.scale = 0.50;
     paddleOne.tag = 1;
     paddleOne.enabled = YES;
     [self addChild:paddleOne];
     
-    paddleTwo = [[PaddleSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_Two_Color"]] rect:CGRectMake(0, 0, 120, 120)];
+    
+    if (IS_RETINA) {
+        paddleTwo = [[PaddleSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_Two_Color"]] rect:CGRectMake(0, 0, 120, 120)];
+        paddleTwo.scale = 0.50;
+    }else{
+        paddleTwo = [[PaddleSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_Two_Color"]] rect:CGRectMake(0, 0, 240, 240)];
+        paddleTwo.scale = 0.25;
+    }
+    
     paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
-    paddleTwo.scale = 0.50;
     paddleTwo.tag = 2;
     
     switch (sGameMode) {
@@ -255,9 +279,14 @@ typedef enum{
     
     [self addChild:paddleTwo];
     
-    puckSprite = [[CCSprite alloc] initWithFile:@"Puck.gif" rect:CGRectMake(0, 0, 215, 215)];
+    if (IS_RETINA) {
+        puckSprite = [[CCSprite alloc] initWithFile:@"Puck.gif" rect:CGRectMake(0, 0, 215, 215)];
+        puckSprite.scale = 0.20;
+    }else{
+        puckSprite = [[CCSprite alloc] initWithFile:@"Puck.gif" rect:CGRectMake(0, 0, 430, 430)];
+        puckSprite.scale = 0.10;
+    }
     puckSprite.position = ccp(winSize.width / 2, winSize.height / 2);
-    puckSprite.scale = 0.20;
     puckSprite.tag = 3;
     [self addChild:puckSprite];
     
@@ -1138,7 +1167,7 @@ typedef enum{
     puckBody->SetLinearVelocity(b2Vec2(0, 0));
     
     if(isInGolArea){
-        puckSpeedBeforePause = CGPointMake(0, 0);
+        puckSpeedBeforePause = ccp(0, 0);
     }else{
         isInGolArea = YES;
     }
@@ -1182,7 +1211,13 @@ typedef enum{
         soundState = @"Mute";
     }
     
-    speakerIcon = [CCSprite spriteWithFile:[NSString stringWithFormat:@"%@_Speaker.png",  soundState] rect:CGRectMake(0, 0, 78, 78)];
+    if (IS_RETINA) {
+        speakerIcon = [CCSprite spriteWithFile:[NSString stringWithFormat:@"%@_Speaker.png",  soundState] rect:CGRectMake(0, 0, 78, 78)];
+    }else{
+        speakerIcon = [CCSprite spriteWithFile:[NSString stringWithFormat:@"%@_Speaker.png",  soundState] rect:CGRectMake(0, 0, 156, 156)];
+        speakerIcon.scale = 0.50;
+    }
+    
     speakerIcon.position = ccp(winSize.width - 10, 10);
     [pauseLayer addChild:speakerIcon];
 }

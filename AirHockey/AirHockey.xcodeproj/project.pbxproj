@@ -223,8 +223,6 @@
 		82D1519117CFBED500968787 /* Selection_Shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 82D1519017CFBED500968787 /* Selection_Shadow.png */; };
 		82ED993117C6CEE9008CAA4D /* MenuLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82ED993017C6CEE9008CAA4D /* MenuLayer.mm */; };
 		82ED99BF17C7D869008CAA4D /* MyContactListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 82ED99BE17C7D869008CAA4D /* MyContactListener.mm */; };
-		82ED99C617C7F079008CAA4D /* AlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82ED99C417C7F079008CAA4D /* AlertViewController.m */; };
-		82ED99C717C7F079008CAA4D /* AlertViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 82ED99C517C7F079008CAA4D /* AlertViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -655,9 +653,6 @@
 		82ED993017C6CEE9008CAA4D /* MenuLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuLayer.mm; sourceTree = "<group>"; };
 		82ED99BD17C7D869008CAA4D /* MyContactListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyContactListener.h; sourceTree = "<group>"; };
 		82ED99BE17C7D869008CAA4D /* MyContactListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MyContactListener.mm; sourceTree = "<group>"; };
-		82ED99C317C7F079008CAA4D /* AlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlertViewController.h; sourceTree = "<group>"; };
-		82ED99C417C7F079008CAA4D /* AlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlertViewController.m; sourceTree = "<group>"; };
-		82ED99C517C7F079008CAA4D /* AlertViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlertViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -762,9 +757,6 @@
 				829E02E217BAD0F20056CD4B /* Resources */,
 				829E02FA17BAD0F20056CD4B /* libs */,
 				829E050117BAD0F80056CD4B /* Supporting Files */,
-				82ED99C317C7F079008CAA4D /* AlertViewController.h */,
-				82ED99C417C7F079008CAA4D /* AlertViewController.m */,
-				82ED99C517C7F079008CAA4D /* AlertViewController.xib */,
 			);
 			path = AirHockey;
 			sourceTree = "<group>";
@@ -1425,7 +1417,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				829E045217BAD0F60056CD4B /* ChangeLog in Resources */,
-				82ED99C717C7F079008CAA4D /* AlertViewController.xib in Resources */,
 				82D150FE17CBAC1400968787 /* Lets_go_Digital_Regular.ttf in Resources */,
 				82D1511F17CE459D00968787 /* Pause_Button.gif in Resources */,
 				82D1514717CEAD0D00968787 /* Default-568h@2x.png in Resources */,
@@ -1640,7 +1631,6 @@
 				8248341517C2B83D0050BA27 /* SMTransition.m in Sources */,
 				82ED993117C6CEE9008CAA4D /* MenuLayer.mm in Sources */,
 				82ED99BF17C7D869008CAA4D /* MyContactListener.mm in Sources */,
-				82ED99C617C7F079008CAA4D /* AlertViewController.m in Sources */,
 				8278015917CE92F800DF35D4 /* SettingsLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1743,8 +1733,8 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "34200DFC-56BF-41EC-B5EC-54F244FC5004";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6D4FC6B4-CC56-4BA2-90C5-DA662EBD7547";
+				PROVISIONING_PROFILE = "271EB1C3-EC34-4A08-A60B-F3272A4656EA";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "271EB1C3-EC34-4A08-A60B-F3272A4656EA";
 				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = "\"AirHockey/libs\"";
 				VALIDATE_PRODUCT = YES;

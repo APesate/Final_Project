@@ -52,6 +52,7 @@
         else
         {
             backgroundSprite = [CCSprite spriteWithFile:@"air_hockey_tabletop.jpg"];
+            backgroundSprite.scale = 0.50;
         }
         
         backgroundSprite.position = ccp(winSize.width / 2,winSize.height / 2);
@@ -59,24 +60,47 @@
         
         [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
         
+        CCSprite* paddleOne;
         
-        CCSprite* paddleOne = [[CCSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_One_Color"]] rect:CGRectMake(0, 0, 120, 120)];
+        if (IS_RETINA) {
+            paddleOne = [[PaddleSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_One_Color"]] rect:CGRectMake(0, 0, 120, 120)];
+            paddleOne.scale = 0.50;
+        }else{
+            paddleOne = [[PaddleSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_One_Color"]] rect:CGRectMake(0, 0, 240, 240)];
+            paddleOne.scale = 0.25;
+        }
         paddleOne.position = ccp(90, winSize.height / 2);
-        paddleOne.scale = 0.50;
         [backgroundImage addChild:paddleOne];
         
         [paddleOne release];
         
-        CCSprite* paddleTwo = [[CCSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_Two_Color"]] rect:CGRectMake(0, 0, 120, 120)];
+        
+        CCSprite* paddleTwo;
+        
+        if (IS_RETINA) {
+            paddleTwo = [[CCSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_Two_Color"]] rect:CGRectMake(0, 0, 120, 120)];
+            paddleTwo.scale = 0.50;
+        }else{
+            paddleTwo = [[CCSprite alloc] initWithFile:[NSString stringWithFormat:@"Paddle_%@.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"Paddle_Two_Color"]] rect:CGRectMake(0, 0, 240, 240)];
+            paddleTwo.scale = 0.25;
+        }
+        
         paddleTwo.position = ccp(winSize.width - 90, winSize.height / 2);
-        paddleTwo.scale = 0.50;
         [backgroundImage addChild:paddleTwo];
         
         [paddleTwo release];
         
-        CCSprite* puckSprite = [[CCSprite alloc] initWithFile:@"Puck.gif" rect:CGRectMake(0, 0, 215, 215)];
+        CCSprite* puckSprite;
+        
+        if (IS_RETINA) {
+            puckSprite = [[CCSprite alloc] initWithFile:@"Puck.gif" rect:CGRectMake(0, 0, 215, 215)];
+            puckSprite.scale = 0.20;
+        }else{
+            puckSprite = [[CCSprite alloc] initWithFile:@"Puck.gif" rect:CGRectMake(0, 0, 430, 430)];
+            puckSprite.scale = 0.10;
+        }
+        
         puckSprite.position = ccp(winSize.width / 2, winSize.height / 2);
-        puckSprite.scale = 0.20;
         [backgroundImage addChild:puckSprite];
         
         [puckSprite release];
