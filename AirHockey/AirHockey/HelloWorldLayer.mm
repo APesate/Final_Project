@@ -30,8 +30,6 @@ typedef enum{
     PaddleSprite* paddleOne;
     PaddleSprite* paddleTwo;
     CCLayerColor* pauseLayer;
-    CCSprite* playerOneScoreSprite;
-    CCSprite* playerTwoScoreSprite;
     CCSprite* backgroundSprite;
     CCSprite* puckSprite;
     CCSprite* pauseButton;
@@ -613,7 +611,7 @@ typedef enum{
             playerOneScoreLabel.string = [NSString stringWithFormat:@"%i", playerOneScore];
             
             //[paddleOne destroyLink];
-            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] integerValue]) {
+            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] boolValue]) {
                 [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3" pitch:1.0f pan:1.0f gain:1.0f];
                 AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 
@@ -629,7 +627,7 @@ typedef enum{
             playerTwoScoreLabel.string = [NSString stringWithFormat:@"%i", playerTwoScore];
             
             //[paddleOne destroyLink];
-            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] integerValue]) {
+            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] boolValue]) {
                 [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3" pitch:1.0f pan:-1.0f gain:1.0f];
                 AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
             }
@@ -863,7 +861,7 @@ typedef enum{
 }
 
 -(void)playSound{
-    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] integerValue]) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] boolValue]) {
         [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey puck set down wobble.mp3"];
     }
     puckBody->SetAngularVelocity(10);
@@ -1086,9 +1084,11 @@ typedef enum{
 #pragma mark UIAlerts
 
 -(void)showAlertFor:(AlertType)type{
+    NSInteger scoreTarget = [[[NSUserDefaults standardUserDefaults] objectForKey:@"Score"] integerValue];
+    
     switch (type) {
         case ScoreAlert:
-            if(playerTwoScore == 7 || playerOneScore == 7){
+            if(playerTwoScore == scoreTarget || playerOneScore == scoreTarget){
                 
                 NSString* title = [NSString stringWithFormat:@"Player %@ Wins!", playerOneScore > playerTwoScore?@"One":@"Two"];
                 
@@ -1178,7 +1178,7 @@ typedef enum{
         }
     }else if (CGRectContainsPoint(speakerIcon.boundingBox, coord)) {
         
-        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] integerValue]) {
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] boolValue]) {
             CCTexture2D* tex = [[CCTextureCache sharedTextureCache] addImage:@"Mute_Speaker.png"];
             [speakerIcon setTexture: tex];
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"soundsActivated"];
@@ -1242,7 +1242,7 @@ typedef enum{
             break;
     }
     
-    if((int)[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"]){
+    if([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] boolValue]){
         soundState = @"Unmute";
     }else{
         soundState = @"Mute";
@@ -1339,10 +1339,6 @@ typedef enum{
     [paddleOne release];
     paddleTwo = nil;
     [paddleTwo release];
-    playerOneScoreSprite = nil;
-    [playerOneScoreSprite release];
-    playerTwoScoreSprite = nil;
-    [playerTwoScoreSprite release];
     backgroundSprite = nil;
     [backgroundSprite release];
     puckSprite = nil;

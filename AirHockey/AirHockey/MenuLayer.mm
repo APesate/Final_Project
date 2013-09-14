@@ -34,11 +34,11 @@
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"soundsActivated"];
             [[NSUserDefaults standardUserDefaults] setValue:@"red" forKey:@"Paddle_One_Color"];
             [[NSUserDefaults standardUserDefaults] setValue:@"blue" forKey:@"Paddle_Two_Color"];
+            [[NSUserDefaults standardUserDefaults] setValue:@(7) forKey:@"Score"];
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"IsLeftSideSelected"];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
         
-        
-
         CGSize winSize = [[CCDirector sharedDirector] winSize];
         CCLayer* backgroundImage = [[CCLayer alloc] init];
         CCSprite* backgroundSprite;

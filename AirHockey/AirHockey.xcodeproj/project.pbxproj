@@ -16,6 +16,8 @@
 		8248341317C2B83D0050BA27 /* SMStateMachineAsync.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340817C2B83D0050BA27 /* SMStateMachineAsync.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		8248341417C2B83D0050BA27 /* SMStateMachineExecuteContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340A17C2B83D0050BA27 /* SMStateMachineExecuteContext.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		8248341517C2B83D0050BA27 /* SMTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 8248340C17C2B83D0050BA27 /* SMTransition.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		8266CEBF17E4E10500D99070 /* SelectedLeftSideImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 8266CEBE17E4E10500D99070 /* SelectedLeftSideImage.png */; };
+		8266CEC117E4E3BA00D99070 /* SelectedRightSideImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 8266CEC017E4E3BA00D99070 /* SelectedRightSideImage.png */; };
 		8278015917CE92F800DF35D4 /* SettingsLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8278015817CE92F800DF35D4 /* SettingsLayer.m */; };
 		829E02CE17BAD0F10056CD4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CD17BAD0F10056CD4B /* QuartzCore.framework */; };
 		829E02D017BAD0F10056CD4B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 829E02CF17BAD0F10056CD4B /* OpenGLES.framework */; };
@@ -245,6 +247,8 @@
 		8248340A17C2B83D0050BA27 /* SMStateMachineExecuteContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMStateMachineExecuteContext.m; sourceTree = "<group>"; };
 		8248340B17C2B83D0050BA27 /* SMTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTransition.h; sourceTree = "<group>"; };
 		8248340C17C2B83D0050BA27 /* SMTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTransition.m; sourceTree = "<group>"; };
+		8266CEBE17E4E10500D99070 /* SelectedLeftSideImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SelectedLeftSideImage.png; path = Images/SelectedLeftSideImage.png; sourceTree = "<group>"; };
+		8266CEC017E4E3BA00D99070 /* SelectedRightSideImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SelectedRightSideImage.png; path = Images/SelectedRightSideImage.png; sourceTree = "<group>"; };
 		8278015717CE92F800DF35D4 /* SettingsLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsLayer.h; sourceTree = "<group>"; };
 		8278015817CE92F800DF35D4 /* SettingsLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsLayer.m; sourceTree = "<group>"; };
 		829E02CA17BAD0F10056CD4B /* AirHockey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirHockey.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1319,6 +1323,8 @@
 		82D1513917CEA56900968787 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				8266CEC017E4E3BA00D99070 /* SelectedRightSideImage.png */,
+				8266CEBE17E4E10500D99070 /* SelectedLeftSideImage.png */,
 				82D1518C17CFAEF800968787 /* Mute_Speaker.png */,
 				82D1518D17CFAEF800968787 /* Unmute_Speaker.png */,
 				82D1519017CFBED500968787 /* Selection_Shadow.png */,
@@ -1451,6 +1457,8 @@
 				82D1518E17CFAEF800968787 /* Mute_Speaker.png in Resources */,
 				82D1518F17CFAEF800968787 /* Unmute_Speaker.png in Resources */,
 				82D1519117CFBED500968787 /* Selection_Shadow.png in Resources */,
+				8266CEBF17E4E10500D99070 /* SelectedLeftSideImage.png in Resources */,
+				8266CEC117E4E3BA00D99070 /* SelectedRightSideImage.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

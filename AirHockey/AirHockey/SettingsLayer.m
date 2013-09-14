@@ -21,7 +21,11 @@
     CCSprite* paddleSix;
     CCSprite* paddleSeven;
     CCSprite* paddleEight;
-    BOOL actualState;
+    CCSprite* selectedLeftSide;
+    CCSprite* selectedRightSide;
+    CCLabelTTF* playerOneScoreLabel;
+    CCLabelTTF* playerTwoScoreLabel;
+    
     NSString* soundState;
 }
 
@@ -140,6 +144,16 @@
     
     [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
     
+    playerOneScoreLabel = [CCLabelTTF labelWithString:[NSString stringWithFormat:@"%i", [(NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"Score"] integerValue]] fontName:@"Let's go Digital" fontSize:35];
+    playerOneScoreLabel.position = ccp(winSize.width / 2 - 28, winSize.height - 34.5);
+    [playerOneScoreLabel setColor:ccc3(255, 0, 0)];
+    [backgroundImage addChild:playerOneScoreLabel];
+    
+    playerTwoScoreLabel = [CCLabelTTF labelWithString:[NSString stringWithFormat:@"%i", [(NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"Score"] integerValue]] fontName:@"Let's go Digital" fontSize:35];;
+    playerTwoScoreLabel.position = ccp(winSize.width / 2 + 28, winSize.height - 34.5);
+    [playerTwoScoreLabel setColor:ccc3(255, 0, 0)];
+    [backgroundImage addChild:playerTwoScoreLabel];
+    
     selectionShadowLeft = [CCSprite spriteWithFile:@"Selection_Shadow.png" rect:CGRectMake(0, 0, selectionShadowWidth, selectionShadowHeight)];
     selectionShadowLeft.scale = selectionShadowScaleRate;
     [backgroundImage addChild:selectionShadowLeft];
@@ -148,7 +162,7 @@
     
     //Left Side
     
-    paddleOne = [[CCSprite alloc] initWithFile:@"Paddle_red.png" rect:CGRectMake(0, 0, 240, 240)];
+    paddleOne = [[CCSprite alloc] initWithFile:@"Paddle_red.png" rect:CGRectMake(0, 0, paddleWidth, paddleHeight)];
     paddleOne.position = ccp(90, winSize.height / 3);
     paddleOne.scale = paddleScaleRate;
     [backgroundImage addChild:paddleOne];
@@ -234,6 +248,23 @@
     [self addChild:backgroundImage];
     [backgroundImage release];
     
+    selectedLeftSide = [CCSprite spriteWithFile:@"SelectedLeftSideImage.png" rect:CGRectMake(0, 0, winSize.width / 2, winSize.height)];
+    selectedLeftSide.position = ccp((winSize.width / 2) - (winSize.width / 4) , winSize.height / 2);
+    
+    selectedRightSide = [CCSprite spriteWithFile:@"SelectedRightSideImage.png" rect:CGRectMake(0, 0, winSize.width / 2, winSize.height)];
+    selectedRightSide.position = ccp((winSize.width / 2) + (winSize.width / 4) , winSize.height / 2);
+    
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"IsLeftSideSelected"] boolValue]) {
+        [selectedLeftSide setOpacity:0];
+        [selectedRightSide setOpacity:255];
+    }else{
+        [selectedLeftSide setOpacity:255];
+        [selectedRightSide setOpacity:0];
+    }
+    
+    [self addChild:selectedLeftSide];
+    [self addChild:selectedRightSide];
+    
     CCMenuItemFont* exitButton = [CCMenuItemFont itemWithString:@"Back"
                                                          target:self
                                                        selector:@selector(exitScreen:)];
@@ -241,10 +272,8 @@
     
     CCMenu *myMenu = [CCMenu menuWithItems: exitButton, nil];
     [myMenu setPosition: CGPointMake(winSize.width/7, 3.4*winSize.height/4) ];
-    
-    actualState = [[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] boolValue];
-    
-    if(actualState){
+        
+    if([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] boolValue]){
         soundState = @"Unmute";
     }else{
         soundState = @"Mute";
@@ -258,10 +287,6 @@
     [self addChild:myMenu];
 }
 
--(void)selectColor{
-    
-}
-
 -(void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
     UITouch* touch = [touches anyObject];
     CGPoint coord = [touch locationInView:touch.view];
@@ -269,17 +294,63 @@
     
     if (CGRectContainsPoint(speakerIcon.boundingBox, coord)) {
         
-        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] integerValue]) {
+        if (![[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] boolValue]) {
             CCTexture2D* tex = [[CCTextureCache sharedTextureCache] addImage:@"Unmute_Speaker.png"];
             [speakerIcon setTexture: tex];
-            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"soundsActivated"];
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"soundsActivated"];
         }else{
             CCTexture2D* tex = [[CCTextureCache sharedTextureCache] addImage:@"Mute_Speaker.png"];
             [speakerIcon setTexture: tex];
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"soundsActivated"];
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"soundsActivated"];
         }
         
         [[NSUserDefaults standardUserDefaults] synchronize];
+    }else if(CGRectContainsPoint(playerOneScoreLabel.boundingBox, coord)){
+        NSInteger actualScore = [(NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"Score"] integerValue];
+        
+        switch (actualScore) {
+            case 5:
+                [[NSUserDefaults standardUserDefaults] setValue:@(7) forKey:@"Score"];
+                playerOneScoreLabel.string = @"7";
+                playerTwoScoreLabel.string = @"7";
+                break;
+            case 7:
+                [[NSUserDefaults standardUserDefaults] setValue:@(11) forKey:@"Score"];
+                playerOneScoreLabel.string = @"11";
+                playerTwoScoreLabel.string = @"11";
+                break;
+            case 11:
+                [[NSUserDefaults standardUserDefaults] setValue:@(5) forKey:@"Score"];
+                playerOneScoreLabel.string = @"5";
+                playerTwoScoreLabel.string = @"5";
+                break;
+            default:
+                break;
+        }
+        
+    }else if(CGRectContainsPoint(playerTwoScoreLabel.boundingBox, coord)){
+        NSInteger actualScore = [(NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"Score"] integerValue];
+        
+        switch (actualScore) {
+            case 5:
+                [[NSUserDefaults standardUserDefaults] setValue:@(7) forKey:@"Score"];
+                playerOneScoreLabel.string = @"7";
+                playerTwoScoreLabel.string = @"7";
+                break;
+            case 7:
+                [[NSUserDefaults standardUserDefaults] setValue:@(11) forKey:@"Score"];
+                playerOneScoreLabel.string = @"11";
+                playerTwoScoreLabel.string = @"11";
+                break;
+            case 11:
+                [[NSUserDefaults standardUserDefaults] setValue:@(5) forKey:@"Score"];
+                playerOneScoreLabel.string = @"5";
+                playerTwoScoreLabel.string = @"5";
+                break;
+            default:
+                break;
+        }
+        
     }else if (CGRectContainsPoint(paddleOne.boundingBox, coord)){ //Left Side
         [selectionShadowLeft stopAllActions];
         [selectionShadowLeft runAction:[CCMoveTo actionWithDuration:0.5 position:paddleOne.position]];
@@ -327,6 +398,20 @@
         [selectionShadowRight runAction:[CCMoveTo actionWithDuration:0.5 position:paddleEight.position]];
         [[NSUserDefaults standardUserDefaults] setValue:@"yellow" forKey:@"Paddle_Two_Color"];
         [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    }else if (CGRectContainsPoint(selectedLeftSide.boundingBox, coord)){
+        if (![[[NSUserDefaults standardUserDefaults] objectForKey:@"IsLeftSideSelected"] boolValue]) {
+            [selectedRightSide runAction:[CCFadeIn actionWithDuration:1.0f]];
+            [selectedLeftSide runAction:[CCFadeOut actionWithDuration:1.0f]];
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"IsLeftSideSelected"];
+        }
+        
+    }else if(CGRectContainsPoint(selectedRightSide.boundingBox, coord)){
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"IsLeftSideSelected"] boolValue]) {
+            [selectedRightSide runAction:[CCFadeOut actionWithDuration:1.0f]];
+            [selectedLeftSide runAction:[CCFadeIn actionWithDuration:1.0f]];
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"IsLeftSideSelected"];
+        }
     }
 }
 
