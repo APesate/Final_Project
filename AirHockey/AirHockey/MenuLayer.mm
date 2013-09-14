@@ -52,6 +52,9 @@
         else
         {
             backgroundSprite = [CCSprite spriteWithFile:@"air_hockey_tabletop.jpg"];
+        }
+        
+        if (!IS_RETINA) {
             backgroundSprite.scale = 0.50;
         }
         

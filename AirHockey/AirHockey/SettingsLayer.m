@@ -110,7 +110,7 @@
     }else{
         paddleWidth = 240;
         paddleHeight = 240;
-        paddleScaleRate = 0.25;
+        paddleScaleRate = 0.50;
         selectionShadowWidth = 290;
         selectionShadowHeight = 290;
         selectionShadowScaleRate = 0.30;

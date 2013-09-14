@@ -204,6 +204,9 @@ typedef enum{
     else
     {
         backgroundSprite = [CCSprite spriteWithFile:@"air_hockey_tabletop.jpg"];
+    }
+    
+    if (!IS_RETINA) {
         backgroundSprite.scale = 0.50;
     }
     
@@ -223,7 +226,7 @@ typedef enum{
     [self addChild:playerTwoScoreLabel];
     
     
-    if( winSize.width == 568 )
+    if( IS_RETINA )
     {
         pauseButton = [[CCSprite alloc] initWithFile:@"Pause_Button.gif" rect:CGRectMake(0, 0, 164, 164)];
         pauseButton.scale = 0.40;
@@ -233,6 +236,7 @@ typedef enum{
         pauseButton = [[CCSprite alloc] initWithFile:@"Pause_Button.gif" rect:CGRectMake(0, 0, 328, 328)];
         pauseButton.scale = 0.20;
     }
+    
     pauseButton.position = ccp(winSize.width - 20, winSize.height - 50);
     [self addChild:pauseButton];
     
@@ -610,7 +614,9 @@ typedef enum{
             
             //[paddleOne destroyLink];
             if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] integerValue]) {
-                [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3"];
+                [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3" pitch:1.0f pan:1.0f gain:1.0f];
+                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+
             }
             
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(1) afterDelay:1.0];
@@ -624,7 +630,8 @@ typedef enum{
             
             //[paddleOne destroyLink];
             if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"soundsActivated"] integerValue]) {
-                [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3"];
+                [[SimpleAudioEngine sharedEngine] playEffect:@"Air hockey Goal.mp3" pitch:1.0f pan:-1.0f gain:1.0f];
+                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
             }
             
             [self performSelector:@selector(resetObjectsPositionAfterGoal:) withObject:@(2) afterDelay:1.0];
@@ -758,22 +765,16 @@ typedef enum{
     
     switch (position.integerValue) {
         case 1:{
-            puckBody->SetTransform(b2Vec2((winSize.width / (2 * PTM_RATIO)) + (50 / PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
-            puckNewPosition = CGPointMake((puckBody->GetPosition()).x * PTM_RATIO, (puckBody->GetPosition()).y * PTM_RATIO);
-            puckNewPosition = [[CCDirector sharedDirector] convertToGL:puckNewPosition];
-            [puckSprite stopAllActions];
-            [puckSprite runAction:[CCSequence actionOne:[CCJumpTo actionWithDuration:0.7
-                                                                            position:puckNewPosition
-                                                                              height:100
-                                                                               jumps:1]
-                                                    two:[CCCallFunc actionWithTarget:self selector:@selector(playSound)]]];;
-            [self showAlertFor:ScoreAlert];
-            break;
-        }
-        case 2:{
-            puckBody->SetTransform(b2Vec2((winSize.width / (2 * PTM_RATIO)) - (50 / PTM_RATIO), winSize.height / (2 * PTM_RATIO)), 0.0);
-            puckNewPosition = CGPointMake((puckBody->GetPosition()).x * PTM_RATIO, (puckBody->GetPosition()).y * PTM_RATIO);
-            puckNewPosition = [[CCDirector sharedDirector] convertToGL:puckNewPosition];
+            puckNewPosition = ccp((winSize.width / 2) + 50, winSize.height / 2);
+            
+            if (CGRectContainsPoint(paddleTwo.boundingBox, puckNewPosition)) {
+                [paddleTwo destroyLink];
+                paddleTwo.body->ApplyLinearImpulse(b2Vec2(500, 0), paddleOne.body->GetWorldCenter());
+                [self performSelector:@selector(movePuckBody:) withObject:[NSValue valueWithCGPoint:puckNewPosition] afterDelay:0.5f];
+            }else{
+                [self movePuckBody:[NSValue valueWithCGPoint:puckNewPosition]];
+            }
+            
             
             [puckSprite stopAllActions];
             [puckSprite runAction:[CCSequence actionOne:[CCJumpTo actionWithDuration:0.7
@@ -781,6 +782,33 @@ typedef enum{
                                                                               height:100
                                                                                jumps:1]
                                                     two:[CCCallFunc actionWithTarget:self selector:@selector(playSound)]]];
+
+            
+            
+            [self showAlertFor:ScoreAlert];
+            break;
+        }
+        case 2:{
+            
+            puckNewPosition = ccp((winSize.width / 2) - 50, winSize.height / 2);
+            
+            if (CGRectContainsPoint(paddleOne.boundingBox, puckNewPosition)) {
+                [paddleOne destroyLink];
+                paddleOne.body->ApplyLinearImpulse(b2Vec2(-500, 0), paddleTwo.body->GetWorldCenter());
+                [self performSelector:@selector(movePuckBody:) withObject:[NSValue valueWithCGPoint:puckNewPosition] afterDelay:0.5f];
+            }else{
+                [self movePuckBody:[NSValue valueWithCGPoint:puckNewPosition]];
+            }
+            
+            
+            [puckSprite stopAllActions];
+            [puckSprite runAction:[CCSequence actionOne:[CCJumpTo actionWithDuration:0.7
+                                                                            position:puckNewPosition
+                                                                              height:100
+                                                                               jumps:1]
+                                                    two:[CCCallFunc actionWithTarget:self selector:@selector(playSound)]]];
+            
+            
             [self showAlertFor:ScoreAlert];
             break;
         }
@@ -825,6 +853,13 @@ typedef enum{
     [paddleTwo runAction:[CCSequence actions:
                           [CCMoveTo actionWithDuration:1.0 position:paddleTwoNewPosition],
                           [CCCallFunc actionWithTarget:self selector:@selector(assignObjectsBodiesAgain)], nil]];
+}
+
+- (void)movePuckBody:(NSValue *)position{
+    CGPoint newPosition;
+    [position getValue:&newPosition];
+    
+    puckBody->SetTransform(b2Vec2(newPosition.x / PTM_RATIO, newPosition.y / PTM_RATIO), 0.0);
 }
 
 -(void)playSound{
@@ -1161,6 +1196,8 @@ typedef enum{
     pauseLayer = [[CCLayerColor alloc] initWithColor:ccc4(255, 255, 255, 120)];
     [self addChild:pauseLayer];
     
+    [paddleOne destroyLink];
+    [paddleTwo destroyLink];
     paddleOne.body->SetLinearVelocity(b2Vec2(0, 0));
     paddleTwo.body->SetLinearVelocity(b2Vec2(0, 0));
     puckSpeedBeforePause = CGPointMake((puckBody->GetLinearVelocity()).x, (puckBody->GetLinearVelocity()).y);

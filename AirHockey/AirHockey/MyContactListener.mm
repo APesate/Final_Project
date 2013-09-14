@@ -10,6 +10,9 @@
 #import "SimpleAudioEngine.h"
 #import "cocos2d.h"
 
+static float32 sMaxForce = 0;
+static float32 sWallForce = 0;
+
 MyContactListener::MyContactListener() : _contacts() {
 }
 
@@ -31,10 +34,34 @@ void MyContactListener::BeginContact(b2Contact* contact) {
         
         if (bodyA->GetUserData() != NULL && bodyB->GetUserData() != NULL) {
             if ((spriteA.tag == 1 || spriteA.tag == 2) && spriteB.tag == 3) {
-                [[SimpleAudioEngine sharedEngine] playEffect:@"Air Hockey Paddle Hit.mp3"];
+                float32 soundPan;
+                float32 halfScreenWidth = [[CCDirector sharedDirector] winSize].width / 2;
+                float32 volume = bodyB->GetLinearVelocity().Normalize() + bodyA->GetLinearVelocity().Normalize();
+                
+                if (sMaxForce < volume) {
+                    
+                    sMaxForce = volume;
+                }
+                
+                if (bodyA->GetLinearVelocity().Normalize() < 5) {
+                        sMaxForce = bodyB->GetLinearVelocity().Normalize();
+                }
+                
+                if (spriteB.position.x < halfScreenWidth) {
+                    soundPan = (spriteB.position.x / halfScreenWidth) * (-1);
+                }else{
+                    soundPan = (spriteB.position.x * 2) / halfScreenWidth;
+                }
+                                
+                [[SimpleAudioEngine sharedEngine] playEffect:@"Air Hockey Paddle Hit.mp3" pitch:1.0f pan:soundPan gain:(volume / sMaxForce)];
             }
         }else if (spriteB.tag != 1 && spriteB.tag != 2){
-            [[SimpleAudioEngine sharedEngine] playEffect:@"Air_hockey_wall_hit.mp3"];
+            float32 volume = bodyB->GetLinearVelocity().Normalize();
+            if (sWallForce < volume) {
+                sWallForce = volume;
+            }
+            
+            [[SimpleAudioEngine sharedEngine] playEffect:@"Air_hockey_wall_hit.mp3" pitch:1.0f pan:0.0f gain:(volume / sWallForce)];
         }
         
     }
