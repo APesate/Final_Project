@@ -177,7 +177,6 @@ typedef enum{
 
 -(void)initialize{
 
-    
     winSize = [[CCDirector sharedDirector] winSize];
     isServer = NO;
     isInPauseScreen = NO;

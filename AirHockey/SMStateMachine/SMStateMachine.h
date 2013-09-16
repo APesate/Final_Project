@@ -66,7 +66,7 @@
 
 @property(nonatomic, weak) NSObject *globalExecuteIn;
 @property(nonatomic, readonly) SMNode *curState;
-@property(nonatomic) SMNode *initialState;
+@property(nonatomic, assign) SMNode *initialState;
 @property(nonatomic, weak) id <SMMonitorDelegate> monitor;
 
 @end
